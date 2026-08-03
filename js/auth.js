@@ -1,12 +1,16 @@
 // ===============================================
-// AUTH.JS - Authentication v1 V-Forge (Firebase)
-// Login, register, reset password, session, guard, dan logout.
+// AUTH.JS - Authentication v1 + Profile Sync v1 V-Forge (Firebase)
+// Login, register, reset password, session, guard, logout, dan profil real-time.
 // ===============================================
 
 const AUTH_PUBLIC_PAGES = ['page-login', 'page-register', 'page-forgot-password'];
 let registrationInProgress = false;
 let authRouteToken = 0;
 let lastFocusedBeforeDialog = null;
+let activeProfileData = null;
+let profileUnsubscribe = null;
+let profileFormDirty = false;
+let profileSaveInProgress = false;
 
 function setAuthButtonLoading(btnId, isLoading, originalText) {
     const btn = document.getElementById(btnId);
@@ -192,6 +196,101 @@ function generateUsername(name, email) {
     return `@${fromName || fromEmail || 'vforgeuser'}`;
 }
 
+function normalizeProfileUsername(value) {
+    return String(value || '').trim().toLowerCase().replace(/^@+/, '');
+}
+
+function formatProfileUsername(value, name, email) {
+    const raw = normalizeProfileUsername(value || generateUsername(name, email));
+    return `@${raw || 'vforgeuser'}`;
+}
+
+function isValidProfileUsername(value) {
+    const raw = normalizeProfileUsername(value);
+    return /^[a-z0-9](?:[a-z0-9._]{1,22}[a-z0-9])$/.test(raw) && !/[._]{2}/.test(raw);
+}
+
+function getProfileInitials(name) {
+    const parts = String(name || 'V Forge').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return 'VF';
+    if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+    return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+}
+
+function isValidDateOfBirth(value) {
+    if (!value) return true;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+
+    const date = new Date(`${value}T00:00:00`);
+    const today = new Date();
+    const earliest = new Date('1900-01-01T00:00:00');
+    return !Number.isNaN(date.getTime()) && date >= earliest && date <= today;
+}
+
+function setProfileSyncStatus(state, customLabel) {
+    const config = {
+        synced: { label: 'Tersinkron dengan akun', icon: 'cloud_done' },
+        syncing: { label: 'Menyinkronkan...', icon: 'sync' },
+        unsaved: { label: 'Perubahan belum disimpan', icon: 'edit_note' },
+        offline: { label: 'Offline — perubahan belum tersimpan', icon: 'cloud_off' },
+        error: { label: 'Sinkronisasi bermasalah', icon: 'sync_problem' }
+    };
+    const selected = config[state] || config.syncing;
+
+    document.querySelectorAll('.profile-sync-line, .profile-sync-status').forEach((element) => {
+        element.dataset.state = state;
+    });
+    document.querySelectorAll('[data-profile-sync-label]').forEach((element) => {
+        element.textContent = customLabel || selected.label;
+    });
+    document.querySelectorAll('[data-profile-sync-icon]').forEach((element) => {
+        element.textContent = selected.icon;
+        element.classList.toggle('sync-spin', state === 'syncing');
+    });
+}
+
+function setProfileButtonLoading(isLoading) {
+    const button = document.getElementById('profile-save-btn');
+    if (!button) return;
+
+    const label = button.querySelector('.profile-button-label');
+    button.disabled = isLoading;
+    button.setAttribute('aria-busy', String(isLoading));
+    button.classList.toggle('loading', isLoading);
+    if (label) label.textContent = isLoading ? 'Menyimpan...' : 'Simpan perubahan';
+}
+
+function showProfileError(message) {
+    const errorElement = document.getElementById('profile-form-error');
+    if (errorElement) errorElement.textContent = message || '';
+}
+
+function applyProfileAvatar(name, photoURL) {
+    const initials = getProfileInitials(name);
+
+    document.querySelectorAll('[data-profile-avatar]').forEach((avatar) => {
+        const image = avatar.querySelector('.profile-avatar-photo');
+        const fallback = avatar.querySelector('.profile-avatar-initials');
+
+        if (image && photoURL) {
+            image.src = photoURL;
+            image.hidden = false;
+            if (fallback) fallback.hidden = true;
+        } else {
+            if (image) {
+                image.hidden = true;
+                image.removeAttribute('src');
+            }
+            if (fallback) {
+                fallback.hidden = false;
+                fallback.textContent = initials;
+            }
+        }
+
+        avatar.setAttribute('aria-label', `Avatar ${name}`);
+    });
+}
+
 function buildDefaultUserData(user, overrides = {}) {
     const email = normalizeEmail(overrides.email || user?.email);
     const name = String(overrides.name || user?.displayName || email.split('@')[0] || 'V-Forge User').trim();
@@ -202,6 +301,7 @@ function buildDefaultUserData(user, overrides = {}) {
         points: 0,
         isPremium: false,
         completedTasks: 0,
+        profileSchemaVersion: 1,
         schemaVersion: 1,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
@@ -209,7 +309,7 @@ function buildDefaultUserData(user, overrides = {}) {
     };
 }
 
-function applyUserDataToApp(data, user) {
+function applyUserDataToApp(data, user, options = {}) {
     const safeData = data || {};
 
     try { userPoints = Number.isFinite(safeData.points) ? safeData.points : 0; } catch (error) {}
@@ -218,15 +318,31 @@ function applyUserDataToApp(data, user) {
 
     const fallbackName = user?.displayName || normalizeEmail(user?.email).split('@')[0] || 'V-Forge User';
     const name = String(safeData.name || fallbackName).trim();
-    const username = safeData.username || generateUsername(name, user?.email);
+    const username = formatProfileUsername(safeData.username, name, user?.email);
+    const email = normalizeEmail(safeData.email || user?.email);
+    const dateOfBirth = typeof safeData.dateOfBirth === 'string' ? safeData.dateOfBirth : '';
+    const photoURL = String(safeData.photoURL || user?.photoURL || '').trim();
+
+    activeProfileData = {
+        ...safeData,
+        name,
+        username,
+        email,
+        dateOfBirth,
+        photoURL
+    };
 
     const nameInput = document.getElementById('input-name');
     const usernameInput = document.getElementById('input-username');
     const dobInput = document.getElementById('input-dob');
+    const emailInput = document.getElementById('input-email');
 
-    if (nameInput) nameInput.value = name;
-    if (usernameInput) usernameInput.value = username;
-    if (dobInput && safeData.dateOfBirth) dobInput.value = safeData.dateOfBirth;
+    if (options.forceForm === true || !profileFormDirty) {
+        if (nameInput) nameInput.value = name;
+        if (usernameInput) usernameInput.value = normalizeProfileUsername(username);
+        if (dobInput) dobInput.value = dateOfBirth;
+        if (emailInput) emailInput.value = email;
+    }
 
     const displayName = document.getElementById('display-name');
     const displayUsername = document.getElementById('display-username');
@@ -237,6 +353,10 @@ function applyUserDataToApp(data, user) {
     if (displayUsername) displayUsername.textContent = username;
     if (settingsName) settingsName.textContent = name;
     if (greeting) greeting.textContent = `Hey, ${name.split(' ')[0]}`;
+    applyProfileAvatar(name, photoURL);
+
+    if (typeof updatePointsDisplay === 'function') updatePointsDisplay();
+    if (typeof renderPremiumUI === 'function') renderPremiumUI();
 }
 
 // Memuat dokumen user. Jika akun lama belum punya dokumen Firestore, dokumen dibuat otomatis.
@@ -246,6 +366,7 @@ async function loadUserDataFromFirestore(uid) {
         throw new Error('Firestore belum siap.');
     }
 
+    setProfileSyncStatus('syncing');
     const userRef = db.collection('users').doc(uid);
     const snapshot = await userRef.get();
 
@@ -259,6 +380,160 @@ async function loadUserDataFromFirestore(uid) {
     await userRef.set(defaultData, { merge: true });
     applyUserDataToApp(defaultData, user);
     return defaultData;
+}
+
+function stopProfileRealtimeSync() {
+    if (typeof profileUnsubscribe === 'function') profileUnsubscribe();
+    profileUnsubscribe = null;
+}
+
+function startProfileRealtimeSync(uid) {
+    stopProfileRealtimeSync();
+
+    const user = auth?.currentUser;
+    if (!db || !user || user.uid !== uid) return;
+
+    const userRef = db.collection('users').doc(uid);
+    if (typeof userRef.onSnapshot !== 'function') {
+        setProfileSyncStatus('synced');
+        return;
+    }
+
+    profileUnsubscribe = userRef.onSnapshot(
+        (snapshot) => {
+            if (auth?.currentUser?.uid !== uid || !snapshot.exists) return;
+            applyUserDataToApp(snapshot.data() || {}, auth.currentUser);
+            if (!profileFormDirty) {
+                const hasPendingWrites = snapshot.metadata?.hasPendingWrites === true;
+                setProfileSyncStatus(hasPendingWrites ? 'syncing' : 'synced');
+            }
+        },
+        (error) => {
+            console.warn('Sinkronisasi profil real-time terputus:', error);
+            setProfileSyncStatus(isOffline() ? 'offline' : 'error');
+        }
+    );
+}
+
+function openProfileEditor() {
+    const user = auth?.currentUser;
+    if (!user) {
+        navigateToPage('page-login', -1);
+        return;
+    }
+
+    profileFormDirty = false;
+    showProfileError('');
+    applyUserDataToApp(activeProfileData || buildDefaultUserData(user), user, { forceForm: true });
+    setProfileSyncStatus(isOffline() ? 'offline' : 'synced');
+    navigateToPage('page-edit-profile', -1);
+}
+
+function closeProfileEditor() {
+    if (profileSaveInProgress) return;
+
+    profileFormDirty = false;
+    showProfileError('');
+    if (auth?.currentUser && activeProfileData) {
+        applyUserDataToApp(activeProfileData, auth.currentUser, { forceForm: true });
+    }
+    setProfileSyncStatus(isOffline() ? 'offline' : 'synced');
+    navigateToPage('page-profile', 3);
+}
+
+function markProfileFormDirty() {
+    profileFormDirty = true;
+    showProfileError('');
+    setProfileSyncStatus(isOffline() ? 'offline' : 'unsaved');
+}
+
+function normalizeProfileUsernameField() {
+    const input = document.getElementById('input-username');
+    if (!input) return;
+    input.value = normalizeProfileUsername(input.value).replace(/[^a-z0-9._]/g, '').slice(0, 24);
+}
+
+function translateProfileSaveError(error) {
+    const map = {
+        'permission-denied': 'Profil tidak dapat disimpan karena izin Firestore ditolak.',
+        'unavailable': 'Layanan sinkronisasi sedang tidak tersedia. Coba lagi beberapa saat.',
+        'failed-precondition': 'Firestore belum siap menerima perubahan profil.',
+        'auth/network-request-failed': 'Koneksi internet bermasalah. Periksa jaringan lalu coba lagi.'
+    };
+    return map[error?.code] || 'Profil belum berhasil disimpan. Periksa koneksi lalu coba lagi.';
+}
+
+async function saveProfile(event) {
+    event?.preventDefault();
+    if (profileSaveInProgress) return;
+
+    const user = auth?.currentUser;
+    const name = String(document.getElementById('input-name')?.value || '').trim().replace(/\s+/g, ' ');
+    const usernameRaw = normalizeProfileUsername(document.getElementById('input-username')?.value);
+    const dateOfBirth = document.getElementById('input-dob')?.value || '';
+
+    showProfileError('');
+
+    if (!user || !db) {
+        showProfileError('Sesi akun tidak ditemukan. Silakan masuk kembali.');
+        return;
+    }
+    if (isOffline()) {
+        showProfileError('Kamu sedang offline. Sambungkan internet sebelum menyimpan profil.');
+        setProfileSyncStatus('offline');
+        return;
+    }
+    if (name.length < 2 || name.length > 50) {
+        showProfileError('Nama lengkap harus terdiri dari 2–50 karakter.');
+        return;
+    }
+    if (!isValidProfileUsername(usernameRaw)) {
+        showProfileError('Username harus 3–24 karakter, tidak boleh diawali/diakhiri titik atau memakai simbol berurutan.');
+        return;
+    }
+    if (!isValidDateOfBirth(dateOfBirth)) {
+        showProfileError('Tanggal lahir tidak valid atau berada di masa depan.');
+        return;
+    }
+
+    const profilePayload = {
+        name,
+        username: `@${usernameRaw}`,
+        email: normalizeEmail(user.email),
+        dateOfBirth: dateOfBirth || null,
+        profileSchemaVersion: 1,
+        updatedAt: serverTimestamp()
+    };
+
+    profileSaveInProgress = true;
+    setProfileButtonLoading(true);
+    setProfileSyncStatus('syncing', 'Menyimpan perubahan...');
+
+    try {
+        await db.collection('users').doc(user.uid).set(profilePayload, { merge: true });
+
+        try {
+            if (typeof user.updateProfile === 'function' && user.displayName !== name) {
+                await user.updateProfile({ displayName: name });
+            }
+        } catch (authProfileError) {
+            console.warn('Nama Auth belum ikut diperbarui:', authProfileError);
+        }
+
+        profileFormDirty = false;
+        activeProfileData = { ...(activeProfileData || {}), ...profilePayload };
+        applyUserDataToApp(activeProfileData, user, { forceForm: true });
+        setProfileSyncStatus('synced');
+        safeShowToast('Profil berhasil disimpan dan disinkronkan.', 'check');
+        navigateToPage('page-profile', 3);
+    } catch (error) {
+        console.warn('Profil gagal disimpan:', error);
+        showProfileError(translateProfileSaveError(error));
+        setProfileSyncStatus(isOffline() ? 'offline' : 'error');
+    } finally {
+        profileSaveInProgress = false;
+        setProfileButtonLoading(false);
+    }
 }
 
 // Dipakai sementara oleh fitur poin/premium lama. Validasi server akan ditambahkan di tahap backend terkait.
@@ -528,6 +803,8 @@ async function openAuthenticatedSession(user, alreadyHasSyncWarning = false) {
 
     if (routeToken !== authRouteToken || auth?.currentUser?.uid !== user.uid) return;
 
+    startProfileRealtimeSync(user.uid);
+
     hideAuthLoadingScreen();
     navigateToPage('page-home', 0);
 
@@ -546,9 +823,22 @@ function updateOnlineStatus() {
     banner.classList.toggle('show', shouldShow);
 }
 
+function updateProfileConnectionStatus() {
+    updateOnlineStatus();
+    if (!auth?.currentUser) return;
+
+    if (isOffline()) {
+        setProfileSyncStatus('offline');
+    } else if (profileFormDirty) {
+        setProfileSyncStatus('unsaved');
+    } else {
+        setProfileSyncStatus('syncing', 'Menghubungkan kembali...');
+    }
+}
+
 function initializeAuthentication() {
-    window.addEventListener('online', updateOnlineStatus);
-    window.addEventListener('offline', updateOnlineStatus);
+    window.addEventListener('online', updateProfileConnectionStatus);
+    window.addEventListener('offline', updateProfileConnectionStatus);
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') closeLogoutConfirm();
     });
@@ -573,6 +863,9 @@ function initializeAuthentication() {
             }
 
             authRouteToken += 1;
+            stopProfileRealtimeSync();
+            activeProfileData = null;
+            profileFormDirty = false;
             closeLogoutConfirm();
             resetSensitiveAuthFields();
             hideAuthLoadingScreen();
