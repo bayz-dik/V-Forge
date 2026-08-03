@@ -9,11 +9,6 @@
         let hasNotifPermission = false; 
         let notifSourcePage = 'page-home';
 
-        let editorHistory = [
-            { id: 1, title: "Mazda_RX7_Raw.mp4", status: "COMPLETED", img: "assets/images/1000069349.jpg" },
-            { id: 2, title: "Nissan_Silvia_Edit.mp4", status: "IN PROGRESS", img: "assets/images/1000069350.jpg" }
-        ];
-
         let notificationList = [
             { title: "VIP Pro Activated!", desc: 'All Pro features are now unlocked.', time: "Just now", icon: "verified", color: "#34C759" },
             { title: "Video Exported Successfully", desc: 'Your project is ready.', time: "1h", icon: "movie_filter", color: "#6366F1" },
@@ -317,32 +312,9 @@
         }
 
         function renderEditorHistory() {
-            const container = document.getElementById('editor-history-list'); if (!container) return; let html = '';
-            editorHistory.forEach(item => {
-                let statClass = item.status.replace(" ", "-"); 
-                let statusBg = item.status === 'IN PROGRESS' ? 'rgba(255, 149, 0, 0.85)' : 'rgba(255, 255, 255, 0.15)'; 
-                let statusBorder = item.status === 'IN PROGRESS' ? 'rgba(255, 149, 0, 0.5)' : 'rgba(255, 255, 255, 0.3)';
-                html += `<div class="rc-item" onclick="showToast('Memuat ${item.title}...', 'info')"><div class="rc-thumb" style="background-image: url('${item.img}')"><div class="rc-status status-${statClass}" style="background: ${statusBg}; border: 1px solid ${statusBorder}; color:white;">${item.status}</div></div><div class="rc-info" style="margin-top:8px;"><h4 style="font-size: 14px; font-weight: 700; color: white; margin-bottom: 2px;">${item.title}</h4><p style="font-size: 11px; font-weight: 500; color: #8E8E93;">Ketuk untuk mengedit</p></div></div>`;
-            });
-            container.innerHTML = html;
-        }
-
-        let isExporting = false;
-        function updateVideoFileName(input) {
-            if(input.files && input.files[0]) { showToast('File video dimuat. Memulai render...', 'info'); setTimeout(() => { startExportEngine(input.files[0].name); }, 1000); }
-        }
-
-        function startExportEngine(fileName) {
-            if(isExporting) return;
-            isExporting = true;
-            const newProject = { id: Date.now(), title: fileName, status: "IN PROGRESS", img: "assets/images/1000069349.jpg" };
-            editorHistory.unshift(newProject); renderEditorHistory(); showToast('Memproses AI Rendering...', 'sync');
-            setTimeout(() => {
-                isExporting = false;
-                const projIndex = editorHistory.findIndex(p => p.id === newProject.id);
-                if(projIndex > -1) { editorHistory[projIndex].status = "COMPLETED"; renderEditorHistory(); }
-                showToast('Export Berhasil! ✨', 'check');
-            }, 3000); 
+            if (typeof renderProjectEditorHistory === 'function') {
+                renderProjectEditorHistory();
+            }
         }
 
         function filterSettings(query) {
