@@ -1,6 +1,6 @@
 // ===============================================
-// AUTH.JS - Authentication v1 + Profile Sync v1 V-Forge (Firebase)
-// Login, register, reset password, session, guard, logout, dan profil real-time.
+// AUTH.JS - Authentication v1 + Profile Sync v1 + Project Sync v1 (Firebase)
+// Login, register, reset password, session, guard, profil, dan lifecycle proyek real-time.
 // ===============================================
 
 const AUTH_PUBLIC_PAGES = ['page-login', 'page-register', 'page-forgot-password'];
@@ -804,6 +804,9 @@ async function openAuthenticatedSession(user, alreadyHasSyncWarning = false) {
     if (routeToken !== authRouteToken || auth?.currentUser?.uid !== user.uid) return;
 
     startProfileRealtimeSync(user.uid);
+    if (typeof startProjectsRealtimeSync === 'function') {
+        startProjectsRealtimeSync(user.uid);
+    }
 
     hideAuthLoadingScreen();
     navigateToPage('page-home', 0);
@@ -864,6 +867,7 @@ function initializeAuthentication() {
 
             authRouteToken += 1;
             stopProfileRealtimeSync();
+            if (typeof stopProjectsRealtimeSync === 'function') stopProjectsRealtimeSync({ clear: true });
             activeProfileData = null;
             profileFormDirty = false;
             closeLogoutConfirm();
