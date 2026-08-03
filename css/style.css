@@ -545,3 +545,26 @@
 
         /* KELAS UNTUK MENYEMBUNYIKAN NAVIGASI DI MENU EDITOR */
         body.hide-nav .bottom-nav-wrapper { transform: translateY(100px) !important; opacity: 0 !important; pointer-events: none !important; }
+
+        /* =========================================
+           HALAMAN LOGIN & REGISTER
+           ========================================= */
+        #page-login, #page-register { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 40px 24px; background-color: var(--bg-color); }
+        .auth-logo-area { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
+        .auth-logo-area h1 { font-size: 26px; font-weight: 800; margin-top: 16px; letter-spacing: -0.5px; }
+        .auth-logo-area p { font-size: 14px; color: var(--text-sub); margin-top: 4px; }
+        .auth-form { display: flex; flex-direction: column; gap: 14px; }
+        .auth-input-group { background: var(--card-bg); border: 1px solid var(--border-solid); border-radius: 18px; padding: 14px 16px; box-shadow: 0 4px 12px var(--border-color); }
+        .auth-input-group label { font-size: 11px; font-weight: 700; color: #8E8E93; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .auth-input-group input { width: 100%; border: none; outline: none; font-size: 15px; font-weight: 600; color: var(--input-text); background: transparent; }
+        .auth-error-msg { color: #EF4444; font-size: 13px; font-weight: 600; text-align: center; min-height: 18px; }
+        .auth-main-btn { background: #0B192C; color: white; text-align: center; padding: 16px; border-radius: 20px; font-size: 15px; font-weight: 800; margin-top: 10px; box-shadow: 0 8px 24px rgba(11, 25, 44, 0.3); cursor: pointer; transition: 0.15s ease; }
+        .auth-main-btn:active { transform: scale(0.97); }
+        .auth-main-btn.loading { opacity: 0.6; pointer-events: none; }
+        .auth-switch-text { text-align: center; font-size: 14px; color: var(--text-sub); margin-top: 24px; }
+        .auth-switch-text span { color: var(--accent-blue); font-weight: 700; cursor: pointer; }
+
+        /* Loading screen sementara nunggu Firebase cek status login */
+        #auth-loading-screen { position: fixed; inset: 0; background: var(--bg-color); z-index: 999999; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+        .auth-spinner { width: 36px; height: 36px; border: 3px solid var(--border-solid); border-top-color: var(--text-main); border-radius: 50%; animation: spin 0.8s linear infinite; }
+
