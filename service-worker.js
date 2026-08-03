@@ -1,14 +1,14 @@
 // V-Forge Service Worker
 // Ganti angka versi ini tiap kali ada update besar, biar cache lama dibuang otomatis
-const CACHE_VERSION = 'vforge-v4-0-project-history-v1';
+const CACHE_VERSION = 'vforge-v4-0-1-project-history-hotfix';
 
 const ASSETS_TO_CACHE = [
   './index.html',
-  './css/style.css?v=4.0.0',
-  './js/firebase-config.js?v=4.0.0',
-  './js/app.js?v=4.0.0',
-  './js/projects.js?v=4.0.0',
-  './js/auth.js?v=4.0.0',
+  './css/style.css?v=4.0.1',
+  './js/firebase-config.js?v=4.0.1',
+  './js/app.js?v=4.0.1',
+  './js/projects.js?v=4.0.1',
+  './js/auth.js?v=4.0.1',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'
