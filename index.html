@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css?v=4.0.0">
+    <link rel="stylesheet" href="css/style.css?v=4.0.1">
 </head>
 <body class="">
     <!-- LOADING SCREEN - tampil sementara nunggu Firebase cek status login -->
@@ -222,7 +222,7 @@
                 <span class="material-icons-round">add_circle</span><span>Buat Draft Proyek</span>
             </button>
 
-            <input type="file" id="video-editor-input" accept="video/*" onchange="updateVideoFileName(this)">
+            <input type="file" id="video-editor-input" accept="video/*" onchange="handleProjectFileSelected(this)">
 
             <div class="history-section-alt">
                 <div class="editor-history-heading"><div><h3>Proyek Terbaru</h3><p>Tersinkron real-time dengan akunmu</p></div><button type="button" onclick="goToPage('page-search', 2)">Lihat semua</button></div>
@@ -301,9 +301,9 @@
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
-        <script src="js/firebase-config.js?v=4.0.0"></script>
-        <script src="js/app.js?v=4.0.0"></script>
-        <script src="js/projects.js?v=4.0.0"></script>
-        <script src="js/auth.js?v=4.0.0"></script>
+        <script src="js/firebase-config.js?v=4.0.1"></script>
+        <script src="js/app.js?v=4.0.1"></script>
+        <script src="js/projects.js?v=4.0.1"></script>
+        <script src="js/auth.js?v=4.0.1"></script>
 </body>
 </html>
