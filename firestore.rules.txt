@@ -1,0 +1,21 @@
+// ===============================================
+// FIRESTORE SECURITY RULES - V-Forge
+// ===============================================
+// CARA PASANG:
+// 1. Buka console.firebase.google.com -> project vforge-app
+// 2. Sidebar kiri -> Build -> Firestore Database
+// 3. Tap tab "Rules" (di sebelah tab "Data")
+// 4. Hapus semua isi yang ada, ganti dengan kode di bawah ini
+// 5. Tap "Publish"
+//
+// Aturan ini artinya: setiap user CUMA bisa baca & ubah data miliknya
+// sendiri (dicocokkan lewat User ID), gak bisa intip/ubah data user lain.
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

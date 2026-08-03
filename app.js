@@ -107,7 +107,7 @@
         }
 
         function updateNavVisibility() {
-            const hiddenPages = ['page-enhancer', 'page-subscription', 'page-notifications', 'page-settings', 'page-cloud', 'page-edit-profile', 'page-achievements', 'page-login', 'page-register'];
+            const hiddenPages = ['page-enhancer', 'page-subscription', 'page-notifications', 'page-settings', 'page-cloud', 'page-edit-profile', 'page-achievements'];
             let shouldHide = hiddenPages.includes(currentPage);
             const activeEl = document.activeElement; 
             if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) { shouldHide = true; }
@@ -129,7 +129,6 @@
             if(!isPremium) {
                 isPremium = true; 
                 renderPremiumUI(); 
-                if (typeof syncUserDataToFirestore === 'function') syncUserDataToFirestore();
                 showToast('Payment Successful! You are now PRO. 🎉', 'check');
                 addNotification("VIP Pro Activated!", "All Pro features are now unlocked.", "verified", "#8A2BE2");
             }
@@ -139,7 +138,6 @@
             if(isPremium) {
                 isPremium = false; 
                 renderPremiumUI(); 
-                if (typeof syncUserDataToFirestore === 'function') syncUserDataToFirestore();
                 showToast('Subscription Cancelled.', 'info');
                 addNotification("VIP Pro Cancelled.", "Account reverted to free tier.", "remove_circle_outline", "#EF4444");
             }
@@ -302,7 +300,6 @@
             taskEl.style.transform = 'scale(0.9)'; taskEl.style.opacity = '0';
             setTimeout(() => {
                 taskEl.style.display = 'none'; userPoints += 50; completedTasks += 1; updatePointsDisplay(); 
-                if (typeof syncUserDataToFirestore === 'function') syncUserDataToFirestore();
                 const dCount = document.getElementById('done-count'); const tCount = document.getElementById('todo-count');
                 if(dCount) dCount.innerText = completedTasks; if(tCount) tCount.innerText = "0"; 
                 showToast(`Mission Completed! ✨ +50 Pts`, 'check'); 
@@ -312,7 +309,7 @@
 
         function redeemSubscription(cost) {
             if (isPremium) { showToast('You are already a VIP Pro!', 'info'); return; }
-            if (userPoints >= cost) { userPoints -= cost; updatePointsDisplay(); if (typeof syncUserDataToFirestore === 'function') syncUserDataToFirestore(); upgradeToPro(); } 
+            if (userPoints >= cost) { userPoints -= cost; updatePointsDisplay(); upgradeToPro(); } 
             else { showToast(`You need ${cost - userPoints} more points!`, 'info'); }
         }
 
@@ -379,10 +376,9 @@
         }
 
         // INIT LOAD
-        // Catatan: initRealTime() & renderPremiumUI() TIDAK dipanggil di sini lagi.
-        // Keduanya sekarang dipanggil oleh auth.js (di auth.onAuthStateChanged),
-        // setelah dipastikan user sudah login dan data dari Firestore selesai dimuat.
         window.onload = () => { 
+            initRealTime();
+            renderPremiumUI(); 
             // Pastikan listener input navigasi tetap jalan
             const inputs = document.querySelectorAll('input[type="text"], input[type="date"], textarea');
             inputs.forEach(input => { input.addEventListener('focus', () => document.body.classList.add('hide-nav')); input.addEventListener('blur', () => setTimeout(updateNavVisibility, 150)); });

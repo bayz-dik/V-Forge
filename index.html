@@ -7,17 +7,66 @@
     <meta name="referrer" content="no-referrer">
     
     <title>V-Forge - AI Video Studio</title>
-    
+
+    <!-- PWA: manifest & icon supaya bisa "Install App" ke home screen -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1C1C1E">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="V-Forge">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-        <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body class=""> <div id="storage-permission-modal" class="permission-modal-wrapper"><div class="permission-sheet"><div class="perm-icon-box"><span class="material-icons-round">folder_shared</span></div><h3>Allow V-Forge Access?</h3><p>V-Forge needs permission to read your device videos.</p><div class="perm-btn-group"><button class="perm-btn deny" onclick="handlePermission(false)">Deny</button><button class="perm-btn allow" onclick="handlePermission(true)">Allow</button></div></div></div>
+<body class="">
+    <!-- LOADING SCREEN - tampil sementara nunggu Firebase cek status login -->
+    <div id="auth-loading-screen">
+        <div class="auth-spinner"></div>
+        <p style="font-size: 13px; color: var(--text-sub); font-weight: 600;">Memuat V-Forge...</p>
+    </div>
+
+    <!-- HALAMAN LOGIN -->
+    <div id="page-login" class="page">
+        <div class="auth-logo-area">
+            <div class="custom-logo-container" style="width: 64px; height: 64px;"><svg viewBox="0 0 24 24" width="65%" height="65%" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg></div>
+            <h1>Masuk ke V-Forge</h1>
+            <p>Lanjutkan proyek video kamu</p>
+        </div>
+        <div class="auth-form">
+            <div class="auth-input-group"><label>Email</label><input type="email" id="login-email" placeholder="nama@email.com" autocomplete="email"></div>
+            <div class="auth-input-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"></div>
+            <p class="auth-error-msg" id="login-error"></p>
+            <div class="auth-main-btn" id="login-submit-btn" onclick="handleLogin()">Masuk</div>
+        </div>
+        <p class="auth-switch-text">Belum punya akun? <span onclick="goToPage('page-register', -1)">Daftar di sini</span></p>
+    </div>
+
+    <!-- HALAMAN REGISTER -->
+    <div id="page-register" class="page">
+        <div class="auth-logo-area">
+            <div class="custom-logo-container" style="width: 64px; height: 64px;"><svg viewBox="0 0 24 24" width="65%" height="65%" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg></div>
+            <h1>Buat Akun Baru</h1>
+            <p>Mulai edit video pertamamu bareng V-Forge</p>
+        </div>
+        <div class="auth-form">
+            <div class="auth-input-group"><label>Nama Lengkap</label><input type="text" id="register-name" placeholder="Nama kamu" autocomplete="name"></div>
+            <div class="auth-input-group"><label>Email</label><input type="email" id="register-email" placeholder="nama@email.com" autocomplete="email"></div>
+            <div class="auth-input-group"><label>Password</label><input type="password" id="register-password" placeholder="Minimal 6 karakter" autocomplete="new-password"></div>
+            <p class="auth-error-msg" id="register-error"></p>
+            <div class="auth-main-btn" id="register-submit-btn" onclick="handleRegister()">Daftar</div>
+        </div>
+        <p class="auth-switch-text">Sudah punya akun? <span onclick="goToPage('page-login', -1)">Masuk di sini</span></p>
+    </div>
+
+    <div id="storage-permission-modal" class="permission-modal-wrapper"><div class="permission-sheet"><div class="perm-icon-box"><span class="material-icons-round">folder_shared</span></div><h3>Allow V-Forge Access?</h3><p>V-Forge needs permission to read your device videos.</p><div class="perm-btn-group"><button class="perm-btn deny" onclick="handlePermission(false)">Deny</button><button class="perm-btn allow" onclick="handlePermission(true)">Allow</button></div></div></div>
     <div id="notif-permission-modal" class="permission-modal-wrapper"><div class="permission-sheet"><div class="perm-icon-box" style="background: rgba(255, 140, 0, 0.1); color: var(--accent-gold);"><span class="material-icons-round">notifications_active</span></div><h3>Enable Notifications?</h3><p>V-Forge needs your permission to alert you when rendering is complete.</p><div class="perm-btn-group"><button class="perm-btn deny" onclick="handleNotifPermission(false)">Maybe Later</button><button class="perm-btn allow" onclick="handleNotifPermission(true)" style="background: var(--accent-gold); box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);">Allow</button></div></div></div>
     <div id="toast-alert"><span class="material-icons-round" id="toast-icon" style="color: #34C759; font-size: 20px;">check_circle</span><span id="toast-text">Success!</span></div>
 
-    <div id="page-home" class="page active">
+    <div id="page-home" class="page">
         <div class="app-header-brand"><div class="brand-left"><div class="custom-logo-container"><svg viewBox="0 0 24 24" width="65%" height="65%" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg></div><h1>V-Forge</h1></div><div class="univ-btn" onclick="openNotifications('page-home')"><span class="material-icons-round">notifications_none</span><div class="notif-badge-dot"></div></div></div>
         <div class="status-bar-top"><div class="status-pills"><div class="pill fire"><span class="material-icons-round" style="font-size: 18px;">local_fire_department</span> 0</div><div class="pill trophy"><span class="material-icons-round" style="font-size: 18px;">emoji_events</span> 1</div><div class="pill points" onclick="goToPage('page-achievements', 3)"><span class="material-icons-round" style="font-size: 18px;">auto_awesome</span> <span id="global-points-display">348</span></div></div></div>
         <div class="header-section"><div><h1 class="day-counter" id="day-display">Day 1/66</h1><p class="sub-text">Your video journey starts. Don't screw it.</p></div></div>
@@ -104,7 +153,7 @@
                 <div class="pm-item" onclick="goToPage('page-achievements', 3)"><div class="pm-left"><div class="pm-icon" style="background: rgba(255, 149, 0, 0.15); color: var(--accent-gold);"><span class="material-icons-round">emoji_events</span></div>Achievements & Rewards</div><span class="material-icons-round" style="color: #C7C7CC;">chevron_right</span></div>
                 <div class="pm-item" onclick="goToPage('page-edit-profile', 3)"><div class="pm-left"><div class="pm-icon"><span class="material-icons-round">person_outline</span></div>Your profile</div><span class="material-icons-round" style="color: #C7C7CC;">chevron_right</span></div>
                 <div class="pm-item" onclick="goToPage('page-settings', 3)"><div class="pm-left"><div class="pm-icon"><span class="material-icons-round">settings</span></div>Settings</div><span class="material-icons-round" style="color: #C7C7CC;">chevron_right</span></div>
-                <div class="pm-item logout" onclick="showToast('Logged out safely', 'check')"><div class="pm-left"><div class="pm-icon"><span class="material-icons-round">logout</span></div>Log out</div><span class="material-icons-round" style="color: #C7C7CC;">chevron_right</span></div>
+                <div class="pm-item logout" onclick="handleLogout()"><div class="pm-left"><div class="pm-icon"><span class="material-icons-round">logout</span></div>Log out</div><span class="material-icons-round" style="color: #C7C7CC;">chevron_right</span></div>
             </div>
         </div>
     </div>
@@ -132,6 +181,12 @@
         <div class="center-cta-wrapper"><div class="center-cta" onclick="goToPage('page-enhancer', -1)"><span class="material-icons-round" style="font-size: 28px;">add</span></div></div>
     </div>
 
+        <!-- Firebase SDK (versi compat, gak butuh build tool) -->
+        <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+        <script src="js/firebase-config.js"></script>
+        <script src="js/auth.js"></script>
         <script src="js/app.js"></script>
 </body>
 </html>
