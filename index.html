@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css?v=3.1.0">
+    <link rel="stylesheet" href="css/style.css?v=4.0.0">
 </head>
 <body class="">
     <!-- LOADING SCREEN - tampil sementara nunggu Firebase cek status login -->
@@ -135,6 +135,30 @@
     <div id="notif-permission-modal" class="permission-modal-wrapper"><div class="permission-sheet"><div class="perm-icon-box" style="background: rgba(255, 140, 0, 0.1); color: var(--accent-gold);"><span class="material-icons-round">notifications_active</span></div><h3>Enable Notifications?</h3><p>V-Forge needs your permission to alert you when rendering is complete.</p><div class="perm-btn-group"><button class="perm-btn deny" onclick="handleNotifPermission(false)">Maybe Later</button><button class="perm-btn allow" onclick="handleNotifPermission(true)" style="background: var(--accent-gold); box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);">Allow</button></div></div></div>
     <div id="toast-alert"><span class="material-icons-round" id="toast-icon" style="color: #34C759; font-size: 20px;">check_circle</span><span id="toast-text">Success!</span></div>
 
+    <!-- PROJECT & HISTORY V1: video hanya dibaca sebagai metadata, belum diunggah -->
+    <div id="project-create-modal" class="project-sheet-backdrop" role="dialog" aria-modal="true" aria-labelledby="project-create-title" aria-hidden="true" onclick="handleProjectSheetBackdrop(event)">
+        <form class="project-sheet" id="project-create-form" onsubmit="createProjectDraft(event)" novalidate>
+            <div class="project-sheet-handle" aria-hidden="true"></div>
+            <div class="project-sheet-header"><div><span class="project-sheet-kicker">Proyek baru</span><h2 id="project-create-title">Simpan sebagai draft</h2></div><button type="button" class="project-sheet-close" onclick="closeProjectCreateSheet()" aria-label="Tutup"><span class="material-icons-round">close</span></button></div>
+            <p class="project-sheet-note"><span class="material-icons-round">info</span><span>Pada tahap ini video belum diunggah. V-Forge hanya menyimpan nama dan informasi file ke akunmu.</span></p>
+            <label class="project-name-field" for="project-name-input"><span>Nama proyek</span><input type="text" id="project-name-input" maxlength="80" autocomplete="off" placeholder="Contoh: Cinematic Merapi"></label>
+            <div class="project-file-summary"><div class="project-file-icon"><span class="material-icons-round">movie</span></div><div><strong id="project-file-name">Video dipilih</strong><span id="project-file-meta">Informasi file</span></div></div>
+            <p class="project-form-error" id="project-create-error" role="alert" aria-live="assertive"></p>
+            <div class="project-sheet-actions"><button type="button" class="project-secondary-btn" onclick="closeProjectCreateSheet()">Batal</button><button type="submit" class="project-primary-btn" id="project-create-submit"><span class="project-button-label">Simpan draft</span></button></div>
+        </form>
+    </div>
+
+    <div id="project-detail-modal" class="project-sheet-backdrop" role="dialog" aria-modal="true" aria-labelledby="project-detail-title" aria-hidden="true" onclick="handleProjectDetailBackdrop(event)">
+        <section class="project-sheet project-detail-sheet">
+            <div class="project-sheet-handle" aria-hidden="true"></div>
+            <div class="project-sheet-header"><div><span class="project-sheet-kicker">Detail proyek</span><h2 id="project-detail-title">Nama proyek</h2></div><button type="button" class="project-sheet-close" onclick="closeProjectDetailSheet()" aria-label="Tutup"><span class="material-icons-round">close</span></button></div>
+            <div class="project-detail-status"><span class="project-status-chip" id="project-detail-status">Draft</span><span id="project-detail-updated">Baru saja</span></div>
+            <dl class="project-detail-grid"><div><dt>File sumber</dt><dd id="project-detail-file">—</dd></div><div><dt>Ukuran</dt><dd id="project-detail-size">—</dd></div><div><dt>Dibuat</dt><dd id="project-detail-created">—</dd></div><div><dt>Sinkronisasi</dt><dd><span class="material-icons-round">cloud_done</span> Firestore</dd></div></dl>
+            <div class="project-next-step"><span class="material-icons-round">cloud_upload</span><div><strong>Upload video belum aktif</strong><p>Draft ini sudah aman di akunmu. File video akan dihubungkan pada tahap Upload Video berikutnya.</p></div></div>
+            <button type="button" class="project-primary-btn project-full-btn" onclick="closeProjectDetailSheet()">Selesai</button>
+        </section>
+    </div>
+
     <div id="page-home" class="page">
         <div class="app-header-brand"><div class="brand-left"><div class="custom-logo-container"><svg viewBox="0 0 24 24" width="65%" height="65%" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg></div><h1>V-Forge</h1></div><div class="univ-btn" onclick="openNotifications('page-home')"><span class="material-icons-round">notifications_none</span><div class="notif-badge-dot"></div></div></div>
         <div class="status-bar-top"><div class="status-pills"><div class="pill fire"><span class="material-icons-round" style="font-size: 18px;">local_fire_department</span> 0</div><div class="pill trophy"><span class="material-icons-round" style="font-size: 18px;">emoji_events</span> 1</div><div class="pill points" onclick="goToPage('page-achievements', 3)"><span class="material-icons-round" style="font-size: 18px;">auto_awesome</span> <span id="global-points-display">348</span></div></div></div>
@@ -194,21 +218,28 @@
                 </div>
             </div>
 
-            <div class="create-video-btn" onclick="document.getElementById('video-editor-input').click()">
-                <span>Buat Video</span>
-            </div>
+            <button type="button" class="create-video-btn" onclick="document.getElementById('video-editor-input').click()">
+                <span class="material-icons-round">add_circle</span><span>Buat Draft Proyek</span>
+            </button>
 
             <input type="file" id="video-editor-input" accept="video/*" onchange="updateVideoFileName(this)">
 
             <div class="history-section-alt">
-                <h3>History Editing</h3>
+                <div class="editor-history-heading"><div><h3>Proyek Terbaru</h3><p>Tersinkron real-time dengan akunmu</p></div><button type="button" onclick="goToPage('page-search', 2)">Lihat semua</button></div>
                 <div id="editor-history-list" class="recent-grid">
-                    </div>
+                    <div class="editor-project-loading"><span class="project-loading-spinner"></span><p>Memuat proyek...</p></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="page-search" class="page"><div class="univ-header" style="background: transparent; border: none;"><div style="width: 44px;"></div><h2>Library</h2><div class="univ-btn" onclick="showToast('Filters opened', 'info')"><span class="material-icons-round">filter_list</span></div></div><div class="search-bar-container" style="padding: 0 20px;"><div class="search-input-box"><span class="material-icons-round" style="color: #8E8E93;">search</span><input type="text" placeholder="Search edited videos..." onfocus="document.body.classList.add('hide-nav')" onblur="setTimeout(() => { document.body.classList.remove('hide-nav'); }, 200);"></div></div><div class="library-scroll-area" id="library-list-area"><div class="recent-header"><h3>Completed Projects</h3></div><div class="project-item" onclick="showToast('Playing Sunrise_Puncak_Andong...', 'info')"><div class="project-icon"><span class="material-icons-round" style="color: #0B192C;">play_arrow</span></div><div class="project-details"><div class="project-title">Sunrise_Puncak_Andong</div><div class="project-meta">15/05/2026 • ✂ 45MB</div></div><span class="material-icons-round" style="color: #C7C7CC; font-size: 20px;">more_vert</span></div><div class="project-item" onclick="showToast('Playing Night_Ride_Vario...', 'info')"><div class="project-icon" style="background: #FEF2F2;"><span class="material-icons-round" style="color: #EF4444;">local_fire_department</span></div><div class="project-details"><div class="project-title">Night_Ride_Vario_Color_Graded</div><div class="project-meta">01/03/2026 • ✂ 120MB</div></div><span class="material-icons-round" style="color: #C7C7CC; font-size: 20px;">more_vert</span></div></div></div>
+    <div id="page-search" class="page">
+        <div class="univ-header library-header"><div><span class="library-kicker">Workspace</span><h2>Project Library</h2></div><div class="project-sync-pill" id="project-sync-pill" data-state="loading"><span class="material-icons-round">sync</span><span>Memuat</span></div></div>
+        <div class="library-summary" aria-label="Ringkasan proyek"><div><span id="project-total-count">0</span><small>Semua</small></div><div><span id="project-active-count">0</span><small>Diproses</small></div><div><span id="project-completed-count">0</span><small>Selesai</small></div></div>
+        <div class="search-bar-container library-search"><div class="search-input-box"><span class="material-icons-round">search</span><input type="search" id="project-search-input" placeholder="Cari nama proyek atau file..." autocomplete="off" oninput="setProjectSearch(this.value)" onfocus="document.body.classList.add('hide-nav')" onblur="setTimeout(() => { document.body.classList.remove('hide-nav'); }, 200);"><button type="button" id="project-search-clear" onclick="clearProjectSearch()" aria-label="Hapus pencarian" hidden><span class="material-icons-round">cancel</span></button></div></div>
+        <div class="project-filter-row" role="group" aria-label="Filter status proyek"><button type="button" class="project-filter active" data-project-filter="all" onclick="setProjectFilter('all', this)">Semua</button><button type="button" class="project-filter" data-project-filter="draft" onclick="setProjectFilter('draft', this)">Draft</button><button type="button" class="project-filter" data-project-filter="active" onclick="setProjectFilter('active', this)">Proses</button><button type="button" class="project-filter" data-project-filter="completed" onclick="setProjectFilter('completed', this)">Selesai</button><button type="button" class="project-filter" data-project-filter="failed" onclick="setProjectFilter('failed', this)">Gagal</button></div>
+        <div class="library-scroll-area" id="library-list-area"><div class="recent-header"><h3 id="project-list-heading">Semua proyek</h3><span id="project-result-count">0 proyek</span></div><div id="project-list-state" class="project-list-state" role="status" aria-live="polite"><span class="project-loading-spinner"></span><p>Memuat proyek dari akunmu...</p></div><div id="project-list"></div></div>
+    </div>
 
     <div id="page-profile" class="page">
         <div class="profile-bg-wrapper"><div class="profile-bg"></div></div>
@@ -270,8 +301,9 @@
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
-        <script src="js/firebase-config.js?v=3.1.0"></script>
-        <script src="js/auth.js?v=3.1.0"></script>
-        <script src="js/app.js?v=3.1.0"></script>
+        <script src="js/firebase-config.js?v=4.0.0"></script>
+        <script src="js/app.js?v=4.0.0"></script>
+        <script src="js/projects.js?v=4.0.0"></script>
+        <script src="js/auth.js?v=4.0.0"></script>
 </body>
 </html>
