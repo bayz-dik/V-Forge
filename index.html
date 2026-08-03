@@ -20,46 +20,115 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=3.0.0">
 </head>
 <body class="">
     <!-- LOADING SCREEN - tampil sementara nunggu Firebase cek status login -->
-    <div id="auth-loading-screen">
+    <div id="auth-loading-screen" role="status" aria-live="polite">
+        <div class="auth-loading-logo" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg></div>
         <div class="auth-spinner"></div>
-        <p style="font-size: 13px; color: var(--text-sub); font-weight: 600;">Memuat V-Forge...</p>
+        <p>Menyiapkan V-Forge...</p>
+    </div>
+
+    <div id="auth-network-banner" class="auth-network-banner" role="status">
+        <span class="material-icons-round" aria-hidden="true">wifi_off</span>
+        <span>Kamu sedang offline. Login memerlukan internet.</span>
     </div>
 
     <!-- HALAMAN LOGIN -->
-    <div id="page-login" class="page">
-        <div class="auth-logo-area">
-            <div class="custom-logo-container" style="width: 64px; height: 64px;"><svg viewBox="0 0 24 24" width="65%" height="65%" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg></div>
-            <h1>Masuk ke V-Forge</h1>
-            <p>Lanjutkan proyek video kamu</p>
-        </div>
-        <div class="auth-form">
-            <div class="auth-input-group"><label>Email</label><input type="email" id="login-email" placeholder="nama@email.com" autocomplete="email"></div>
-            <div class="auth-input-group"><label>Password</label><input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password"></div>
-            <p class="auth-error-msg" id="login-error"></p>
-            <div class="auth-main-btn" id="login-submit-btn" onclick="handleLogin()">Masuk</div>
-        </div>
-        <p class="auth-switch-text">Belum punya akun? <span onclick="goToPage('page-register', -1)">Daftar di sini</span></p>
+    <div id="page-login" class="page auth-page" data-public-page="true">
+        <main class="auth-shell">
+            <div class="auth-logo-area">
+                <div class="custom-logo-container"><svg viewBox="0 0 24 24" width="65%" height="65%" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg></div>
+                <div class="auth-brand-name">V-FORGE</div>
+            </div>
+            <section class="auth-card" aria-labelledby="login-title">
+                <div class="auth-card-heading">
+                    <span class="auth-kicker">Selamat datang kembali</span>
+                    <h1 id="login-title">Masuk ke akunmu</h1>
+                    <p>Lanjutkan proyek video dari perangkat mana pun.</p>
+                </div>
+                <form class="auth-form" id="login-form" onsubmit="handleLogin(event)" novalidate>
+                    <div class="auth-input-group">
+                        <label for="login-email">Email</label>
+                        <div class="auth-input-row"><span class="material-icons-round auth-field-icon" aria-hidden="true">mail_outline</span><input type="email" id="login-email" placeholder="nama@email.com" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></div>
+                    </div>
+                    <div class="auth-input-group">
+                        <label for="login-password">Password</label>
+                        <div class="auth-input-row"><span class="material-icons-round auth-field-icon" aria-hidden="true">lock_outline</span><input type="password" id="login-password" placeholder="Masukkan password" autocomplete="current-password"><button class="auth-password-toggle" type="button" data-target="login-password" onclick="togglePasswordVisibility(this)" aria-label="Tampilkan password"><span class="material-icons-round" aria-hidden="true">visibility</span></button></div>
+                    </div>
+                    <div class="auth-options">
+                        <label class="auth-checkbox" for="login-remember"><input type="checkbox" id="login-remember" checked><span>Tetap masuk</span></label>
+                        <button class="auth-text-button" type="button" onclick="switchAuthPage('page-forgot-password')">Lupa password?</button>
+                    </div>
+                    <p class="auth-error-msg" id="login-error" role="alert" aria-live="assertive"></p>
+                    <button class="auth-main-btn" id="login-submit-btn" type="submit"><span class="auth-button-label">Masuk</span></button>
+                </form>
+            </section>
+            <p class="auth-switch-text">Belum punya akun? <button type="button" onclick="switchAuthPage('page-register')">Buat akun</button></p>
+            <p class="auth-trust"><span class="material-icons-round" aria-hidden="true">verified_user</span> Akunmu dilindungi Firebase Authentication</p>
+        </main>
     </div>
 
     <!-- HALAMAN REGISTER -->
-    <div id="page-register" class="page">
-        <div class="auth-logo-area">
-            <div class="custom-logo-container" style="width: 64px; height: 64px;"><svg viewBox="0 0 24 24" width="65%" height="65%" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg></div>
-            <h1>Buat Akun Baru</h1>
-            <p>Mulai edit video pertamamu bareng V-Forge</p>
+    <div id="page-register" class="page auth-page" data-public-page="true">
+        <main class="auth-shell">
+            <div class="auth-logo-area auth-logo-compact">
+                <div class="custom-logo-container"><svg viewBox="0 0 24 24" width="65%" height="65%" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg></div>
+                <div class="auth-brand-name">V-FORGE</div>
+            </div>
+            <section class="auth-card" aria-labelledby="register-title">
+                <div class="auth-card-heading">
+                    <span class="auth-kicker">Mulai berkarya</span>
+                    <h1 id="register-title">Buat akun baru</h1>
+                    <p>Satu akun untuk menyimpan dan menyinkronkan proyekmu.</p>
+                </div>
+                <form class="auth-form" id="register-form" onsubmit="handleRegister(event)" novalidate>
+                    <div class="auth-input-group"><label for="register-name">Nama lengkap</label><div class="auth-input-row"><span class="material-icons-round auth-field-icon" aria-hidden="true">person_outline</span><input type="text" id="register-name" placeholder="Nama kamu" autocomplete="name" maxlength="50"></div></div>
+                    <div class="auth-input-group"><label for="register-email">Email</label><div class="auth-input-row"><span class="material-icons-round auth-field-icon" aria-hidden="true">mail_outline</span><input type="email" id="register-email" placeholder="nama@email.com" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></div></div>
+                    <div class="auth-input-group"><label for="register-password">Password</label><div class="auth-input-row"><span class="material-icons-round auth-field-icon" aria-hidden="true">lock_outline</span><input type="password" id="register-password" placeholder="Minimal 6 karakter" autocomplete="new-password"><button class="auth-password-toggle" type="button" data-target="register-password" onclick="togglePasswordVisibility(this)" aria-label="Tampilkan password"><span class="material-icons-round" aria-hidden="true">visibility</span></button></div></div>
+                    <div class="auth-input-group"><label for="register-confirm-password">Ulangi password</label><div class="auth-input-row"><span class="material-icons-round auth-field-icon" aria-hidden="true">lock_reset</span><input type="password" id="register-confirm-password" placeholder="Ketik ulang password" autocomplete="new-password"><button class="auth-password-toggle" type="button" data-target="register-confirm-password" onclick="togglePasswordVisibility(this)" aria-label="Tampilkan password"><span class="material-icons-round" aria-hidden="true">visibility</span></button></div></div>
+                    <p class="auth-password-hint"><span class="material-icons-round" aria-hidden="true">info</span> Gunakan sedikitnya 6 karakter.</p>
+                    <p class="auth-error-msg" id="register-error" role="alert" aria-live="assertive"></p>
+                    <button class="auth-main-btn" id="register-submit-btn" type="submit"><span class="auth-button-label">Buat akun</span></button>
+                </form>
+            </section>
+            <p class="auth-switch-text">Sudah punya akun? <button type="button" onclick="switchAuthPage('page-login')">Masuk</button></p>
+        </main>
+    </div>
+
+    <!-- HALAMAN LUPA PASSWORD -->
+    <div id="page-forgot-password" class="page auth-page" data-public-page="true">
+        <main class="auth-shell auth-shell-short">
+            <button class="auth-back-button" type="button" onclick="switchAuthPage('page-login')" aria-label="Kembali ke halaman masuk"><span class="material-icons-round" aria-hidden="true">arrow_back</span></button>
+            <div class="auth-logo-area auth-logo-compact">
+                <div class="custom-logo-container auth-reset-icon"><span class="material-icons-round" aria-hidden="true">key</span></div>
+            </div>
+            <section class="auth-card" aria-labelledby="reset-title">
+                <div class="auth-card-heading">
+                    <span class="auth-kicker">Pulihkan akun</span>
+                    <h1 id="reset-title">Reset password</h1>
+                    <p>Masukkan email akunmu. Kami akan mengirim link untuk membuat password baru.</p>
+                </div>
+                <form class="auth-form" id="forgot-password-form" onsubmit="handlePasswordReset(event)" novalidate>
+                    <div class="auth-input-group"><label for="reset-email">Email</label><div class="auth-input-row"><span class="material-icons-round auth-field-icon" aria-hidden="true">mail_outline</span><input type="email" id="reset-email" placeholder="nama@email.com" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"></div></div>
+                    <p class="auth-error-msg" id="reset-error" role="alert" aria-live="assertive"></p>
+                    <p class="auth-success-msg" id="reset-success" role="status" aria-live="polite"></p>
+                    <button class="auth-main-btn" id="reset-submit-btn" type="submit"><span class="auth-button-label">Kirim link reset</span></button>
+                </form>
+            </section>
+            <p class="auth-switch-text"><button type="button" onclick="switchAuthPage('page-login')">Kembali ke halaman masuk</button></p>
+        </main>
+    </div>
+
+    <!-- KONFIRMASI LOGOUT -->
+    <div id="logout-confirm-modal" class="auth-dialog-backdrop" role="dialog" aria-modal="true" aria-labelledby="logout-dialog-title" aria-hidden="true" onclick="handleLogoutBackdrop(event)">
+        <div class="auth-dialog">
+            <div class="auth-dialog-icon"><span class="material-icons-round" aria-hidden="true">logout</span></div>
+            <h2 id="logout-dialog-title">Keluar dari V-Forge?</h2>
+            <p>Kamu harus masuk lagi untuk melanjutkan proyek dan membuka data akunmu.</p>
+            <div class="auth-dialog-actions"><button type="button" class="auth-dialog-cancel" onclick="closeLogoutConfirm()">Batal</button><button type="button" class="auth-dialog-confirm" id="logout-confirm-btn" onclick="confirmLogout()"><span class="auth-button-label">Keluar</span></button></div>
         </div>
-        <div class="auth-form">
-            <div class="auth-input-group"><label>Nama Lengkap</label><input type="text" id="register-name" placeholder="Nama kamu" autocomplete="name"></div>
-            <div class="auth-input-group"><label>Email</label><input type="email" id="register-email" placeholder="nama@email.com" autocomplete="email"></div>
-            <div class="auth-input-group"><label>Password</label><input type="password" id="register-password" placeholder="Minimal 6 karakter" autocomplete="new-password"></div>
-            <p class="auth-error-msg" id="register-error"></p>
-            <div class="auth-main-btn" id="register-submit-btn" onclick="handleRegister()">Daftar</div>
-        </div>
-        <p class="auth-switch-text">Sudah punya akun? <span onclick="goToPage('page-login', -1)">Masuk di sini</span></p>
     </div>
 
     <div id="storage-permission-modal" class="permission-modal-wrapper"><div class="permission-sheet"><div class="perm-icon-box"><span class="material-icons-round">folder_shared</span></div><h3>Allow V-Forge Access?</h3><p>V-Forge needs permission to read your device videos.</p><div class="perm-btn-group"><button class="perm-btn deny" onclick="handlePermission(false)">Deny</button><button class="perm-btn allow" onclick="handlePermission(true)">Allow</button></div></div></div>
@@ -185,8 +254,8 @@
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
-        <script src="js/firebase-config.js"></script>
-        <script src="js/auth.js"></script>
-        <script src="js/app.js"></script>
+        <script src="js/firebase-config.js?v=3.0.0"></script>
+        <script src="js/auth.js?v=3.0.0"></script>
+        <script src="js/app.js?v=3.0.0"></script>
 </body>
 </html>

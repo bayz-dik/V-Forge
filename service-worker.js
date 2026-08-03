@@ -1,11 +1,13 @@
 // V-Forge Service Worker
 // Ganti angka versi ini tiap kali ada update besar, biar cache lama dibuang otomatis
-const CACHE_VERSION = 'vforge-v1';
+const CACHE_VERSION = 'vforge-v3-auth-v1';
 
 const ASSETS_TO_CACHE = [
   './index.html',
-  './css/style.css',
-  './js/app.js',
+  './css/style.css?v=3.0.0',
+  './js/firebase-config.js?v=3.0.0',
+  './js/auth.js?v=3.0.0',
+  './js/app.js?v=3.0.0',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'
@@ -35,10 +37,31 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// FETCH: strategi "cache first, lalu update di background" (stale-while-revalidate)
+// FETCH: navigasi memakai network-first agar update UI tidak tertahan cache lama.
+// Asset lokal lain memakai stale-while-revalidate agar aplikasi tetap cepat.
 self.addEventListener('fetch', (event) => {
   // Jangan cache request ke domain luar (font, unsplash, dll) — biarkan langsung ke network
   if (!event.request.url.startsWith(self.location.origin)) {
+    return;
+  }
+
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            caches.open(CACHE_VERSION).then((cache) => {
+              cache.put('./index.html', networkResponse.clone());
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match('./index.html'))
+    );
     return;
   }
 

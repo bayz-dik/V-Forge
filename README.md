@@ -1,4 +1,6 @@
-# V-Forge - AI Video Studio
+# V-Forge — Authentication v1
+
+Versi ini sudah menyelesaikan Login, Daftar, Reset Password, session persistence, proteksi halaman, konfirmasi Logout, dan pembuatan dokumen user di Firestore. Panduan pengujian dari HP tersedia di `TEST-AUTH-V1.md`.
 
 ## Struktur Project
 
@@ -24,18 +26,18 @@ vforge/
    atau ganti nama filenya di `css/style.css` (baris ~231-234) dan
    `js/app.js` (baris ~13-14) sesuai nama file kamu.
 
-2. **Status project saat ini: Frontend/UI prototype.**
-   Semua data (poin, history, notifikasi, subscription) masih disimulasikan
-   di JavaScript — belum tersambung ke server/database sungguhan.
-   Refresh browser = data kembali ke kondisi awal.
+2. **Status project saat ini: Authentication v1 sudah terhubung ke Firebase.**
+   Login dan data dasar akun sudah aktif. Poin, history, notifikasi,
+   subscription, Library, dan Analytics masih berupa prototipe/simulasi.
 
 3. **Fitur render video masih simulasi** (`setTimeout`), belum memproses
    file video sungguhan.
 
 ## Langkah Selanjutnya (disarankan urut)
 
-1. ✅ Pisah HTML/CSS/JS — **SUDAH SELESAI**
-2. ⬜ Setup PWA (manifest.json + service-worker.js + icons) → supaya bisa
-   di-install ke HP/desktop
-3. ⬜ Bangun backend (auth, database untuk user/poin/history)
-4. ⬜ Integrasi proses video sungguhan (client-side ringan + server-side berat)
+1. ✅ Pisah HTML/CSS/JS
+2. ✅ Setup PWA dasar
+3. ✅ Authentication v1 + dokumen user Firestore
+4. ⬜ Profile Sync (nama, username, tanggal lahir, foto profil)
+5. ⬜ Project/History dan upload video
+6. ⬜ Rendering video melalui backend cloud
