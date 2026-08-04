@@ -4,7 +4,7 @@ Versi ini menambahkan Template Studio, Smart Timeline, preview transisi, efek wa
 
 # V-Forge — AI Video Studio
 
-Versi: **6.2.0 — Video Processing v1.2 Premium Output Lock**
+Versi: **7.0.1 — Motion Studio Mobile Layout Hotfix**
 
 ## Fitur yang sudah terhubung
 
