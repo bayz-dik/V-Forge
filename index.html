@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css?v=5.0.0">
+    <link rel="stylesheet" href="css/style.css?v=6.2.0">
 </head>
 <body class="">
     <!-- LOADING SCREEN - tampil sementara nunggu Firebase cek status login -->
@@ -140,9 +140,9 @@
             <div class="project-sheet-handle" aria-hidden="true"></div>
             <div class="project-sheet-header"><div><span class="project-sheet-kicker">Detail proyek</span><h2 id="project-detail-title">Nama proyek</h2></div><button type="button" class="project-sheet-close" onclick="closeProjectDetailSheet()" aria-label="Tutup"><span class="material-icons-round">close</span></button></div>
             <div class="project-detail-status"><span class="project-status-chip" id="project-detail-status">Draft</span><span id="project-detail-updated">Baru saja</span></div>
-            <dl class="project-detail-grid"><div><dt>File sumber</dt><dd id="project-detail-file">—</dd></div><div><dt>Ukuran</dt><dd id="project-detail-size">—</dd></div><div><dt>Durasi</dt><dd id="project-detail-duration">—</dd></div><div><dt>Resolusi sumber</dt><dd id="project-detail-resolution">—</dd></div><div><dt>Setelan output</dt><dd id="project-detail-output">—</dd></div><div><dt>Dibuat</dt><dd id="project-detail-created">—</dd></div></dl>
-            <div class="project-next-step"><span class="material-icons-round">phonelink</span><div><strong>Video tetap aman di perangkat</strong><p>Firestore hanya menyimpan metadata dan setelan. Setelah aplikasi ditutup, pilih ulang file yang sama untuk melanjutkan workspace.</p></div></div>
-            <div class="project-detail-actions"><button type="button" class="project-secondary-btn" onclick="closeProjectDetailSheet()">Tutup</button><button type="button" class="project-primary-btn" id="project-continue-button" onclick="continueProjectInWorkspace()"><span class="material-icons-round">movie_edit</span>Lanjutkan</button></div>
+            <dl class="project-detail-grid"><div><dt>File sumber</dt><dd id="project-detail-file">—</dd></div><div><dt>Ukuran</dt><dd id="project-detail-size">—</dd></div><div><dt>Durasi</dt><dd id="project-detail-duration">—</dd></div><div><dt>Resolusi sumber</dt><dd id="project-detail-resolution">—</dd></div><div><dt>Setelan output</dt><dd id="project-detail-output">—</dd></div><div><dt>Ekspor terakhir</dt><dd id="project-detail-export">Belum diekspor</dd></div><div><dt>Dibuat</dt><dd id="project-detail-created">—</dd></div></dl>
+            <div class="project-next-step"><span class="material-icons-round">phonelink</span><div><strong id="project-next-step-title">Video tetap aman di perangkat</strong><p id="project-next-step-text">Firestore hanya menyimpan metadata dan setelan. Setelah aplikasi ditutup, pilih ulang file yang sama untuk melanjutkan workspace.</p></div></div>
+            <div class="project-detail-actions"><button type="button" class="project-secondary-btn" onclick="closeProjectDetailSheet()">Tutup</button><button type="button" class="project-primary-btn" id="project-continue-button" onclick="continueProjectInWorkspace()"><span class="material-icons-round">movie_edit</span><span id="project-continue-label">Lanjutkan</span></button></div>
         </section>
     </div>
 
@@ -188,20 +188,20 @@
             </div>
 
             <div class="feature-scroll-container">
-                <div id="fcard-res" class="f-card" onclick="showToast('Resolusi 4K Terkunci (Premium)', 'info')">
+                <div id="fcard-res" class="f-card premium-locked" onclick="handlePremiumFeatureCard('4K Ultra HD')">
                     <span class="material-icons-round">hd</span>
                     <h4>Res</h4>
-                    <p id="ftext-res">4K Locked<br>(Premium)</p>
+                    <p id="ftext-res">4K Ultra HD<br><span class="premium-inline-label"><span class="material-icons-round">lock</span>Premium</span></p>
                 </div>
-                <div id="fcard-fps" class="f-card" onclick="showToast('FPS 120 Terkunci (Premium)', 'info')">
+                <div id="fcard-fps" class="f-card premium-locked" onclick="handlePremiumFeatureCard('120 FPS')">
                     <span class="material-icons-round">speed</span>
                     <h4>FPS</h4>
-                    <p id="ftext-fps">120 FPS Locked<br>(Premium)</p>
+                    <p id="ftext-fps">120 FPS<br><span class="premium-inline-label"><span class="material-icons-round">lock</span>Premium</span></p>
                 </div>
-                <div id="fcard-audio" class="f-card" onclick="showToast('Hires Lossless Terkunci (Premium)', 'info')">
+                <div id="fcard-audio" class="f-card premium-locked" onclick="handlePremiumFeatureCard('Hi-Res Lossless')">
                     <span class="material-icons-round">graphic_eq</span>
                     <h4>Audio</h4>
-                    <p id="ftext-audio">Hi-Res Locked<br>(Premium)</p>
+                    <p id="ftext-audio">Hi-Res Lossless<br><span class="premium-inline-label"><span class="material-icons-round">lock</span>Premium</span></p>
                 </div>
             </div>
 
@@ -249,7 +249,7 @@
             <form id="workspace-form" class="workspace-settings-card" onsubmit="saveVideoWorkspace(event)" novalidate>
                 <div class="workspace-section-heading"><div><span>Draft proyek</span><h2>Pengaturan workspace</h2></div><span class="material-icons-round workspace-heading-icon">tune</span></div>
 
-                <label class="workspace-name-field" for="workspace-project-name"><span>Nama proyek</span><input id="workspace-project-name" type="text" maxlength="80" autocomplete="off" placeholder="Contoh: Cinematic Merapi"></label>
+                <label class="workspace-name-field" for="workspace-project-name"><span>Nama proyek</span><input id="workspace-project-name" type="text" maxlength="80" autocomplete="off" placeholder="Contoh: Cinematic Merapi" oninput="handleWorkspaceNameChanged()"></label>
 
                 <fieldset class="workspace-setting-group"><legend>Rasio video</legend><div class="workspace-choice-grid ratio-choices" role="group">
                     <button type="button" class="workspace-choice active" data-workspace-setting="aspectRatio" data-value="original" onclick="selectWorkspaceSetting('aspectRatio', 'original', this)"><span class="ratio-icon original"></span><strong>Asli</strong></button>
@@ -259,15 +259,49 @@
                 </div></fieldset>
 
                 <div class="workspace-select-grid">
-                    <label><span>Kualitas target</span><select id="workspace-resolution-select" onchange="selectWorkspaceSetting('outputResolution', this.value)"><option value="720p">720p</option><option value="1080p" selected>1080p</option><option value="source">Ikuti sumber</option></select></label>
-                    <label><span>Frame rate</span><select id="workspace-fps-select" onchange="selectWorkspaceSetting('frameRate', this.value)"><option value="30" selected>30 FPS</option><option value="60">60 FPS</option><option value="source">Ikuti sumber</option></select></label>
+                    <label><span>Kualitas target</span><select id="workspace-resolution-select" onchange="selectWorkspaceSetting('outputResolution', this.value)"><option value="720p">720p</option><option value="1080p" selected>1080p</option><option value="2160p" data-premium-locked="true">4K Ultra HD — Premium</option><option value="source">Ikuti sumber</option></select></label>
+                    <label><span>Frame rate</span><select id="workspace-fps-select" onchange="selectWorkspaceSetting('frameRate', this.value)"><option value="30" selected>30 FPS</option><option value="60">60 FPS</option><option value="120" data-premium-locked="true">120 FPS — Premium</option><option value="source">Ikuti sumber</option></select></label>
                 </div>
 
                 <button type="button" class="workspace-audio-toggle active" id="workspace-audio-toggle" aria-pressed="true" onclick="toggleWorkspaceAudio(this)"><span class="material-icons-round">volume_up</span><span><strong>Pertahankan audio</strong><small id="workspace-audio-label">Audio akan disertakan</small></span><span class="workspace-toggle-knob"></span></button>
+                <label class="workspace-audio-quality" id="workspace-audio-quality-field"><span>Kualitas audio</span><select id="workspace-audio-quality-select" onchange="selectWorkspaceSetting('audioQuality', this.value)"><option value="standard" selected>Standar</option><option value="hires-lossless" data-premium-locked="true">Hi-Res Lossless — WAV 24-bit — Premium</option></select><small id="workspace-audio-quality-note">Audio menyatu dengan video mengikuti encoder browser.</small></label>
 
-                <p class="workspace-scope-note"><span class="material-icons-round">info</span><span>Preview diputar langsung dari file di HP. Menyimpan draft hanya mengirim metadata dan setelan ke Firestore—bukan isi videonya.</span></p>
+                <div class="workspace-premium-access locked" id="workspace-premium-access" role="button" tabindex="0" onclick="openWorkspacePremiumPage()" onkeydown="handleWorkspacePremiumKey(event)" aria-label="Buka halaman Premium untuk mengakses output Ultra."><span class="material-icons-round" id="workspace-premium-icon">lock</span><div><strong id="workspace-premium-title">Output Ultra dikunci</strong><small id="workspace-premium-description">4K, 120 FPS, dan Hi-Res Lossless khusus akun Premium.</small></div><span class="workspace-premium-action" id="workspace-premium-action">Lihat Premium</span></div>
+
+                <p class="workspace-scope-note"><span class="material-icons-round">info</span><span>Preview dan pemrosesan berjalan langsung di HP. Firestore hanya menerima metadata serta catatan ekspor—bukan isi videonya.</span></p>
                 <p class="workspace-form-error" id="workspace-form-error" role="alert" aria-live="assertive"></p>
                 <button type="submit" class="workspace-save-button" id="workspace-save-button" disabled><span class="material-icons-round">cloud_done</span><span class="workspace-button-label">Simpan draft</span></button>
+
+                <section class="processor-card" aria-labelledby="processor-title">
+                    <div class="workspace-section-heading"><div><span>Video Processing v1.2</span><h2 id="processor-title">Proses langsung di HP</h2></div><span class="material-icons-round workspace-heading-icon">memory</span></div>
+                    <div class="processor-output-grid" aria-label="Perkiraan hasil ekspor">
+                        <div><span>Format</span><strong id="processor-output-format">—</strong></div>
+                        <div><span>Resolusi</span><strong id="processor-output-resolution">—</strong></div>
+                        <div><span>Frame rate</span><strong id="processor-output-fps">—</strong></div>
+                        <div><span>Audio</span><strong id="processor-output-audio">—</strong></div>
+                    </div>
+                    <p class="processor-capability"><span class="material-icons-round">verified_user</span><span id="processor-capability-text">Memeriksa kemampuan browser…</span></p>
+                    <button type="button" class="processor-start-button" id="processor-start-button" onclick="startVideoProcessing()" disabled><span class="material-icons-round">movie_filter</span><span class="processor-button-label">Proses &amp; ekspor video</span></button>
+
+                    <div class="processor-progress-panel" id="processor-progress-panel" hidden>
+                        <div class="processor-progress-heading"><div><span class="processor-live-dot"></span><strong id="processor-progress-status">Memproses video secara real-time…</strong></div><span id="processor-progress-percent">0%</span></div>
+                        <div class="processor-progress-track" role="progressbar" aria-label="Progres pemrosesan" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="processor-progress-bar"></span></div>
+                        <div class="processor-progress-meta"><span id="processor-progress-time">0:00 / 0:00</span><span>Jangan tutup aplikasi</span></div>
+                        <div class="processor-progress-actions"><button type="button" id="processor-pause-button" onclick="toggleVideoProcessingPause()"><span class="material-icons-round">pause</span>Jeda</button><button type="button" class="danger" onclick="cancelVideoProcessing()"><span class="material-icons-round">close</span>Batalkan</button></div>
+                    </div>
+
+                    <div class="processor-result-panel" id="processor-result-panel" hidden>
+                        <div class="processor-result-heading"><span class="material-icons-round">check_circle</span><div><span>Video selesai</span><strong id="processor-result-file-name">hasil-video.webm</strong></div></div>
+                        <video id="processor-result-video" controls playsinline preload="metadata" controlslist="nodownload noremoteplayback"></video>
+                        <p class="processor-result-details" id="processor-result-details">—</p>
+                        <p class="processor-result-audio" id="processor-result-audio" hidden>—</p>
+                        <p class="processor-result-sync" id="processor-result-sync">File hasil tetap hanya di perangkatmu.</p>
+                        <div class="processor-result-actions"><button type="button" onclick="downloadProcessedVideo()"><span class="material-icons-round">download</span>Simpan video</button><button type="button" class="audio" id="processor-audio-download-button" onclick="downloadProcessedLosslessAudio()" hidden><span class="material-icons-round">audio_file</span>Simpan WAV</button><button type="button" class="secondary" id="processor-share-button" onclick="shareProcessedVideo()" hidden><span class="material-icons-round">share</span>Bagikan</button></div>
+                    </div>
+
+                    <p class="processor-error" id="processor-error" role="alert" aria-live="assertive"></p>
+                    <p class="processor-footnote"><span class="material-icons-round">schedule</span><span>Pemrosesan berjalan real-time. Mode normal maksimal 5 menit; 4K, 120 FPS, atau Hi-Res Lossless maksimal 60 detik untuk menjaga memori HP.</span></p>
+                </section>
             </form>
         </main>
     </div>
@@ -298,13 +332,13 @@
         </div>
     </div>
 
-    <div id="page-achievements" class="page"><div class="univ-header" style="background: transparent; border: none; z-index: 10;"><div class="univ-btn" onclick="goToPage('page-profile', 3)"><span class="material-icons-round">arrow_back</span></div><h2>Rewards</h2><div style="width: 44px;"></div></div><div class="ach-hero"><h3>My Forge Points</h3><div class="ach-points-display"><span class="material-icons-round">auto_awesome</span> <span id="ach-points-text">348</span></div><p>Selesaikan misi edit untuk panen poin.</p></div><div class="ach-section"><div class="ach-section-title">Redeem Rewards</div><div class="reward-card"><div class="reward-left"><div class="reward-icon"><span class="material-icons-round">workspace_premium</span></div><div class="reward-info"><h4>1 Month VIP Pro</h4><p>Unlock 4K & Color AI</p></div></div><div class="redeem-btn" id="redeem-vip-btn" onclick="redeemSubscription(1000)">1000 Pts</div></div><div class="reward-card"><div class="reward-left"><div class="reward-icon" style="background: linear-gradient(135deg, #0B192C, #1E3E62);"><span class="material-icons-round">music_note</span></div><div class="reward-info"><h4>Premium SFX Pack</h4><p>Download 50+ Audio FX</p></div></div><div class="redeem-btn" onclick="showToast('Poin belum cukup!', 'info')">500 Pts</div></div></div></div>
+    <div id="page-achievements" class="page"><div class="univ-header" style="background: transparent; border: none; z-index: 10;"><div class="univ-btn" onclick="goToPage('page-profile', 3)"><span class="material-icons-round">arrow_back</span></div><h2>Rewards</h2><div style="width: 44px;"></div></div><div class="ach-hero"><h3>My Forge Points</h3><div class="ach-points-display"><span class="material-icons-round">auto_awesome</span> <span id="ach-points-text">348</span></div><p>Selesaikan misi edit untuk panen poin.</p></div><div class="ach-section"><div class="ach-section-title">Redeem Rewards</div><div class="reward-card"><div class="reward-left"><div class="reward-icon"><span class="material-icons-round">workspace_premium</span></div><div class="reward-info"><h4>1 Month VIP Pro</h4><p>Unlock Color AI & Pro tools</p></div></div><div class="redeem-btn" id="redeem-vip-btn" onclick="redeemSubscription(1000)">1000 Pts</div></div><div class="reward-card"><div class="reward-left"><div class="reward-icon" style="background: linear-gradient(135deg, #0B192C, #1E3E62);"><span class="material-icons-round">music_note</span></div><div class="reward-info"><h4>Premium SFX Pack</h4><p>Download 50+ Audio FX</p></div></div><div class="redeem-btn" onclick="showToast('Poin belum cukup!', 'info')">500 Pts</div></div></div></div>
 
     <div id="page-settings" class="page"><div class="univ-header" style="background: transparent; border: none; padding-bottom: 0; z-index: 10;"><div class="univ-btn" onclick="goToPage('page-profile', 3)"><span class="material-icons-round">arrow_back</span></div></div><div class="settings-top-info"><div class="sti-left"><h2 id="settings-display-name">Bayu Andika</h2><p>Personal account</p></div><div class="settings-avatar profile-avatar" data-profile-avatar><img class="profile-avatar-photo" alt="" hidden><span class="profile-avatar-initials" aria-hidden="true">VF</span></div></div><div class="search-bar-container" style="margin-top: 20px; position: relative;"><div class="search-input-box"><span class="material-icons-round" style="color: #8E8E93;">search</span><input type="text" id="settings-search" placeholder="Search settings..." oninput="filterSettings(this.value)"></div></div><div id="settings-no-results">Oops! No settings found.</div><div class="settings-section"><div class="settings-section-title">Profile</div><div class="settings-card"><div class="settings-item" onclick="openProfileEditor()"><span class="material-icons-round si-icon">account_balance</span><span class="si-text">Account details</span><span class="material-icons-round si-chevron">chevron_right</span></div><div class="settings-item" onclick="openSubscription('page-settings')"><span class="material-icons-round si-icon">history</span><span class="si-text">Subscription history</span><span class="material-icons-round si-chevron">chevron_right</span></div><div class="settings-item" onclick="checkPermissionAndOpenCloud()"><span class="material-icons-round si-icon">cloud_done</span><span class="si-text">Cloud storage</span><span class="material-icons-round si-chevron">chevron_right</span></div></div></div><div class="settings-section"><div class="settings-section-title">Security & Preferences</div><div class="settings-card"><div class="settings-item"><span class="material-icons-round si-icon">devices</span><span class="si-text">Devices</span><span class="material-icons-round si-chevron">chevron_right</span></div><div class="settings-item"><span class="material-icons-round si-icon">lock_outline</span><span class="si-text">Privacy</span><span class="material-icons-round si-chevron">chevron_right</span></div><div class="settings-item"><span class="material-icons-round si-icon">face</span><span class="si-text">Face ID</span><div class="toggle-switch active" onclick="this.classList.toggle('active')"></div></div><div class="settings-item"><span class="material-icons-round si-icon">dark_mode</span><span class="si-text">Dark Mode</span><div class="toggle-switch" onclick="toggleDarkMode(this)"></div></div></div></div></div>
 
     <div id="page-cloud" class="page"><div class="univ-header" style="background: transparent; border: none; padding-bottom: 0; z-index: 10;"><div class="univ-btn" onclick="goToPage('page-settings', 3)"><span class="material-icons-round">arrow_back</span></div></div><div class="cloud-top-area"><div class="cloud-brand"><div class="cloud-logo"><svg viewBox="0 0 24 24" width="60%" height="60%" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg></div><h2>V-Forge</h2></div><div class="sync-btn" onclick="triggerSync(this)"><span class="material-icons-round" id="sync-icon">sync</span><span id="sync-text">Synchronizing</span></div></div><div class="cloud-section"><div class="storage-main-card"><div class="storage-title">Storage Space (512 GB Device)</div><div class="storage-amount"><strong id="cloud-used">275.7 GB</strong> of <span id="cloud-total">512 GB</span> occupied</div><div class="progress-bar-container"><div class="pb-segment pb-img" id="bar-img" style="width: 25%"></div><div class="pb-segment pb-doc" id="bar-doc" style="width: 10%"></div><div class="pb-segment pb-vid" id="bar-vid" style="width: 14%"></div><div class="pb-segment pb-oth" id="bar-oth" style="width: 4.8%"></div></div><div class="storage-legend"><div class="legend-item"><div class="dot pb-img"></div> Image</div><div class="legend-item"><div class="dot pb-doc"></div> Documents</div><div class="legend-item"><div class="dot pb-vid"></div> Videos</div><div class="legend-item"><div class="dot pb-oth"></div> Others</div></div></div><div class="recent-files-card"><div class="rf-header"><h3>Editor Assets & Folders</h3><span class="material-icons-round">format_list_bulleted</span></div><div class="rf-grid"><div class="rf-item" onclick="showToast('Opening Exported Videos...', 'info')"><div class="rf-icon" style="background: rgba(175, 82, 222, 0.15); color: #AF52DE;"><span class="material-icons-round">movie_creation</span></div><div class="rf-text"><h4>Exports</h4><p id="cloud-exported-videos">-- Items</p></div></div><div class="rf-item" onclick="showToast('Opening Project Files...', 'info')"><div class="rf-icon" style="background: rgba(255, 59, 48, 0.15); color: #FF3B30;"><span class="material-icons-round">layers</span><div class="rf-badge"><span class="material-icons-round" style="color: #007AFF; font-size: 14px;">cloud_done</span></div></div><div class="rf-text"><h4>Project Files</h4><p id="cloud-project-files" style="max-width: 100%;">-- Synced</p></div></div><div class="rf-item" onclick="showToast('Opening Temp Cache...', 'info')"><div class="rf-icon" style="background: rgba(255, 149, 0, 0.15); color: #FF9500;"><span class="material-icons-round">data_usage</span></div><div class="rf-text"><h4>Temp Cache</h4><p id="cloud-cache">45.2 MB</p></div></div><div class="rf-item" onclick="showToast('Opening Trash Bin...', 'info')"><div class="rf-icon" style="background: rgba(142, 142, 147, 0.15); color: #8E8E93;"><span class="material-icons-round">delete_outline</span></div><div class="rf-text"><h4>Trash Bin</h4><p id="cloud-trash">12 Items</p></div></div></div></div></div></div>
 
-    <div id="page-subscription" class="page free"><div class="sub-bg-glow"></div><div class="univ-header" style="background: transparent; border: none; z-index: 10;"><div class="univ-btn" onclick="closeSubscription()"><span class="material-icons-round">arrow_back</span></div><h2>SUBSCRIPTION</h2><div class="univ-btn" onclick="openNotifications('page-subscription')"><span class="material-icons-round" style="color: var(--text-main); font-size: 20px;">notifications_none</span></div></div><div class="sub-body"><div class="sub-hero-card" id="sub-hero-content"></div><div id="sub-pro-details" style="display: none;"><div class="sub-grid"><div class="sub-grid-card"><div class="grid-header"><span class="material-icons-round" style="font-size: 14px;">calendar_today</span> NEXT PAYMENT</div><h4>Sept 14, 2026</h4><p>in next month</p></div><div class="sub-grid-card"><div class="grid-header"><span class="material-icons-round" style="font-size: 14px;">autorenew</span> BILLING CYCLE</div><h4>Monthly</h4><p>Since Nov, 2024</p></div></div><div class="cancel-text-btn" onclick="cancelSubscription()">Cancel Subscription</div></div><h4 class="benefits-title">Pro Benefits</h4><div class="benefits-list"><div class="benefit-item"><div class="bi-icon"><span class="material-icons-round">high_quality</span></div><div class="bi-text"><h4>4K Ultra HD Export</h4><p>Render your videos in crystal clear 4K resolution.</p></div></div><div class="benefit-item"><div class="bi-icon"><span class="material-icons-round">color_lens</span></div><div class="bi-text"><h4>AI Color Grading</h4><p>Apply cinematic color presets instantly powered by AI.</p></div></div><div class="benefit-item"><div class="bi-icon"><span class="material-icons-round">water_drop</span></div><div class="bi-text"><h4>No Watermark</h4><p>Keep your content clean and professional.</p></div></div></div></div></div>
+    <div id="page-subscription" class="page free"><div class="sub-bg-glow"></div><div class="univ-header" style="background: transparent; border: none; z-index: 10;"><div class="univ-btn" onclick="closeSubscription()"><span class="material-icons-round">arrow_back</span></div><h2>SUBSCRIPTION</h2><div class="univ-btn" onclick="openNotifications('page-subscription')"><span class="material-icons-round" style="color: var(--text-main); font-size: 20px;">notifications_none</span></div></div><div class="sub-body"><div class="sub-hero-card" id="sub-hero-content"></div><div id="sub-pro-details" style="display: none;"><div class="sub-grid"><div class="sub-grid-card"><div class="grid-header"><span class="material-icons-round" style="font-size: 14px;">verified</span> STATUS</div><h4>Premium Aktif</h4><p>Entitlement terverifikasi</p></div><div class="sub-grid-card"><div class="grid-header"><span class="material-icons-round" style="font-size: 14px;">high_quality</span> OUTPUT ULTRA</div><h4>Terbuka</h4><p>4K • 120 FPS • Hi-Res</p></div></div><div class="cancel-text-btn" onclick="manageSubscription()">Kelola Subscription</div></div><h4 class="benefits-title">Premium Benefits</h4><div class="benefits-list"><div class="benefit-item"><div class="bi-icon"><span class="material-icons-round">4k</span></div><div class="bi-text"><h4>4K Ultra HD</h4><p>Target output hingga 2160p sesuai kemampuan encoder HP.</p></div></div><div class="benefit-item"><div class="bi-icon"><span class="material-icons-round">speed</span></div><div class="bi-text"><h4>120 FPS</h4><p>Target frame rate tinggi untuk sumber dan perangkat yang mendukung.</p></div></div><div class="benefit-item"><div class="bi-icon"><span class="material-icons-round">graphic_eq</span></div><div class="bi-text"><h4>Hi-Res Lossless</h4><p>File WAV PCM 24-bit terpisah, hingga 96 kHz sesuai dukungan HP.</p></div></div></div></div></div>
 
     <div id="page-notifications" class="page"><div class="univ-header"><div class="univ-btn" onclick="closeNotifications()"><span class="material-icons-round">arrow_back</span></div><h2>Notification</h2><div class="notif-badge-pill" id="notif-badge-count">2 NEW</div></div><div class="notif-section-header"><span>TODAY</span><span class="clear-all-btn" onclick="clearAll()">Clear all</span></div><div id="notif-section-today"></div></div>
 
@@ -340,10 +374,11 @@
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
-        <script src="js/firebase-config.js?v=5.0.0"></script>
-        <script src="js/app.js?v=5.0.0"></script>
-        <script src="js/projects.js?v=5.0.0"></script>
-        <script src="js/workspace.js?v=5.0.0"></script>
-        <script src="js/auth.js?v=5.0.0"></script>
+        <script src="js/firebase-config.js?v=6.2.0"></script>
+        <script src="js/app.js?v=6.2.0"></script>
+        <script src="js/projects.js?v=6.2.0"></script>
+        <script src="js/workspace.js?v=6.2.0"></script>
+        <script src="js/processor.js?v=6.2.0"></script>
+        <script src="js/auth.js?v=6.2.0"></script>
 </body>
 </html>
