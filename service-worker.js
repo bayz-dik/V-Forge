@@ -1,16 +1,21 @@
 // V-Forge Service Worker
 // Ganti angka versi ini tiap kali ada update besar, biar cache lama dibuang otomatis
-const CACHE_VERSION = 'vforge-v6-2-0-premium-output-lock';
+const CACHE_VERSION = 'vforge-v7-0-0-motion-studio';
 
 const ASSETS_TO_CACHE = [
   './index.html',
-  './css/style.css?v=6.2.0',
-  './js/firebase-config.js?v=6.2.0',
-  './js/app.js?v=6.2.0',
-  './js/projects.js?v=6.2.0',
-  './js/workspace.js?v=6.2.0',
-  './js/processor.js?v=6.2.0',
-  './js/auth.js?v=6.2.0',
+  './css/style.css?v=7.0.0',
+  './js/firebase-config.js?v=7.0.0',
+  './js/app.js?v=7.0.0',
+  './js/projects.js?v=7.0.0',
+  './js/workspace.js?v=7.0.0',
+  './js/processor.js?v=7.0.0',
+  './js/auth.js?v=7.0.0',
+  './js/studio.js?v=7.0.0',
+  './assets/images/vf-car-01.jpg',
+  './assets/images/vf-car-02.jpg',
+  './assets/images/vf-car-03.jpg',
+  './assets/images/vf-car-04.jpg',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png'

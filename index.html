@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css?v=6.2.0">
+    <link rel="stylesheet" href="css/style.css?v=7.0.0">
 </head>
 <body class="">
     <!-- LOADING SCREEN - tampil sementara nunggu Firebase cek status login -->
@@ -171,75 +171,122 @@
             </div>
         </div>
 
-        <div class="hero-banner-container">
-            <div class="hero-banner-track">
-                <!-- SLIDE 1 -->
-                <div class="promo-slide theme-gold">
-                    <div class="promo-logo-wm"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg><span>V-FORGE</span></div>
-                    <div class="promo-car-wrap">
-                        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg">
-                            <ellipse class="car-glow" cx="150" cy="115" rx="120" ry="10" opacity="0.35"/>
-                            <path class="car-body-fill car-accent" stroke-width="2" d="M18,92 C18,78 30,72 48,70 L70,50 C78,42 90,38 104,38 L190,38 C204,38 214,44 220,54 L236,70 C258,72 272,80 276,92 L276,100 C276,106 272,108 266,108 L246,108 C246,94 234,84 220,84 C206,84 194,94 194,108 L104,108 C104,94 92,84 78,84 C64,84 52,94 52,108 L30,108 C22,108 18,104 18,98 Z"/>
-                            <path class="car-accent" fill="none" stroke-width="2" d="M82,70 L100,50 C104,46 110,44 116,44 L150,44 L150,70 Z" opacity="0.9"/>
-                            <path class="car-accent" fill="none" stroke-width="2" d="M154,44 L188,44 C196,44 202,47 207,53 L218,70 L154,70 Z" opacity="0.9"/>
-                            <g class="wheel-group" style="transform-origin: 78px 108px;"><circle cx="78" cy="108" r="20" fill="#0a0a0a" stroke="#555" stroke-width="2"/><circle cx="78" cy="108" r="7" fill="#333"/><line x1="78" y1="92" x2="78" y2="124" stroke="#777" stroke-width="2"/><line x1="62" y1="108" x2="94" y2="108" stroke="#777" stroke-width="2"/><line x1="67" y1="97" x2="89" y2="119" stroke="#777" stroke-width="1.5"/><line x1="89" y1="97" x2="67" y2="119" stroke="#777" stroke-width="1.5"/></g>
-                            <g class="wheel-group" style="transform-origin: 220px 108px;"><circle cx="220" cy="108" r="20" fill="#0a0a0a" stroke="#555" stroke-width="2"/><circle cx="220" cy="108" r="7" fill="#333"/><line x1="220" y1="92" x2="220" y2="124" stroke="#777" stroke-width="2"/><line x1="204" y1="108" x2="236" y2="108" stroke="#777" stroke-width="2"/><line x1="209" y1="97" x2="231" y2="119" stroke="#777" stroke-width="1.5"/><line x1="231" y1="97" x2="209" y2="119" stroke="#777" stroke-width="1.5"/></g>
-                        </svg>
-                        <div class="exhaust-smoke" style="left: 8px; bottom: 18px;"><div class="smoke-puff"></div><div class="smoke-puff"></div><div class="smoke-puff"></div></div>
+        <div class="hero-banner-container" aria-label="Preview iklan mobil animatif V-Forge">
+            <div class="hero-ambient-orb orb-one" aria-hidden="true"></div>
+            <div class="hero-ambient-orb orb-two" aria-hidden="true"></div>
+            <div class="hero-glass-shell">
+                <div class="hero-marquee" aria-hidden="true">
+                    <div class="hero-marquee-track">
+                        <span class="hero-marquee-pill"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg>V-Forge Motion Ads</span>
+                        <span class="hero-marquee-pill"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg>Wheel Spin FX</span>
+                        <span class="hero-marquee-pill"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg>Smoke Trail</span>
+                        <span class="hero-marquee-pill"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg>Editor Showcase</span>
+                        <span class="hero-marquee-pill"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg>V-Forge Motion Ads</span>
+                        <span class="hero-marquee-pill"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg>Wheel Spin FX</span>
                     </div>
-                    <div class="promo-text"><h3>Render Tanpa Batas</h3><p>4K Ultra HD dengan kualitas sinematik</p></div>
-                    <div class="promo-dots"><span class="active"></span><span></span><span></span></div>
                 </div>
-                <!-- SLIDE 2 -->
-                <div class="promo-slide theme-purple">
-                    <div class="promo-logo-wm"><svg viewBox="0 0 24 24" fill="none" stroke="#C58BFA" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg><span>V-FORGE</span></div>
-                    <div class="promo-car-wrap">
-                        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg">
-                            <ellipse class="car-glow" cx="150" cy="115" rx="120" ry="10" opacity="0.35"/>
-                            <path class="car-body-fill car-accent" stroke-width="2" d="M18,92 C18,78 30,72 48,70 L70,50 C78,42 90,38 104,38 L190,38 C204,38 214,44 220,54 L236,70 C258,72 272,80 276,92 L276,100 C276,106 272,108 266,108 L246,108 C246,94 234,84 220,84 C206,84 194,94 194,108 L104,108 C104,94 92,84 78,84 C64,84 52,94 52,108 L30,108 C22,108 18,104 18,98 Z"/>
-                            <path class="car-accent" fill="none" stroke-width="2" d="M82,70 L100,50 C104,46 110,44 116,44 L150,44 L150,70 Z" opacity="0.9"/>
-                            <path class="car-accent" fill="none" stroke-width="2" d="M154,44 L188,44 C196,44 202,47 207,53 L218,70 L154,70 Z" opacity="0.9"/>
-                            <g class="wheel-group" style="transform-origin: 78px 108px;"><circle cx="78" cy="108" r="20" fill="#0a0a0a" stroke="#555" stroke-width="2"/><circle cx="78" cy="108" r="7" fill="#333"/><line x1="78" y1="92" x2="78" y2="124" stroke="#777" stroke-width="2"/><line x1="62" y1="108" x2="94" y2="108" stroke="#777" stroke-width="2"/><line x1="67" y1="97" x2="89" y2="119" stroke="#777" stroke-width="1.5"/><line x1="89" y1="97" x2="67" y2="119" stroke="#777" stroke-width="1.5"/></g>
-                            <g class="wheel-group" style="transform-origin: 220px 108px;"><circle cx="220" cy="108" r="20" fill="#0a0a0a" stroke="#555" stroke-width="2"/><circle cx="220" cy="108" r="7" fill="#333"/><line x1="220" y1="92" x2="220" y2="124" stroke="#777" stroke-width="2"/><line x1="204" y1="108" x2="236" y2="108" stroke="#777" stroke-width="2"/><line x1="209" y1="97" x2="231" y2="119" stroke="#777" stroke-width="1.5"/><line x1="231" y1="97" x2="209" y2="119" stroke="#777" stroke-width="1.5"/></g>
-                        </svg>
-                        <div class="exhaust-smoke" style="left: 8px; bottom: 18px;"><div class="smoke-puff"></div><div class="smoke-puff"></div><div class="smoke-puff"></div></div>
-                    </div>
-                    <div class="promo-text"><h3>VIP Pro Unlocked</h3><p>120 FPS &amp; Hi-Res Lossless Audio</p></div>
-                    <div class="promo-dots"><span></span><span class="active"></span><span></span></div>
+                <div class="hero-showcase-track">
+                    <article class="hero-slide slide-1">
+                        <div class="hero-slide-copy">
+                            <span class="hero-slide-chip">Turbo Promo</span>
+                            <h3>Launch edits with racing energy</h3>
+                            <p>Poster mobil, logo V-Forge, ban berputar, dan efek asap untuk iklan editor.</p>
+                        </div>
+                        <div class="hero-poster-stack" aria-hidden="true">
+                            <div class="hero-poster poster-a"></div>
+                            <div class="hero-poster poster-b"></div>
+                        </div>
+                        <div class="hero-car-stage" aria-hidden="true">
+                            <div class="hero-smoke smoke-left"></div>
+                            <div class="hero-smoke smoke-mid"></div>
+                            <div class="hero-smoke smoke-right"></div>
+                            <div class="hero-car-body"></div>
+                            <div class="hero-wheel rear"></div>
+                            <div class="hero-wheel front"></div>
+                        </div>
+                        <div class="hero-slide-stats">
+                            <div><strong>4K</strong><span>Poster</span></div>
+                            <div><strong>FX</strong><span>Smoke</span></div>
+                            <div><strong>AI</strong><span>Ready</span></div>
+                        </div>
+                    </article>
+                    <article class="hero-slide slide-2">
+                        <div class="hero-slide-copy">
+                            <span class="hero-slide-chip">Neon Edit</span>
+                            <h3>Swipe-ready preview for editor apps</h3>
+                            <p>Visual promo sinematik dengan komposisi poster, motion wheel, dan aksen glow.</p>
+                        </div>
+                        <div class="hero-poster-stack" aria-hidden="true">
+                            <div class="hero-poster poster-a"></div>
+                            <div class="hero-poster poster-b"></div>
+                        </div>
+                        <div class="hero-car-stage" aria-hidden="true">
+                            <div class="hero-smoke smoke-left"></div>
+                            <div class="hero-smoke smoke-mid"></div>
+                            <div class="hero-smoke smoke-right"></div>
+                            <div class="hero-car-body"></div>
+                            <div class="hero-wheel rear"></div>
+                            <div class="hero-wheel front"></div>
+                        </div>
+                        <div class="hero-slide-stats">
+                            <div><strong>120</strong><span>Frames</span></div>
+                            <div><strong>UX</strong><span>Glass</span></div>
+                            <div><strong>Pro</strong><span>Look</span></div>
+                        </div>
+                    </article>
+                    <article class="hero-slide slide-3">
+                        <div class="hero-slide-copy">
+                            <span class="hero-slide-chip">Launch Card</span>
+                            <h3>Build premium first impressions</h3>
+                            <p>Komponen hero dibuat seperti iklan premium agar workspace terasa lebih hidup.</p>
+                        </div>
+                        <div class="hero-poster-stack" aria-hidden="true">
+                            <div class="hero-poster poster-a"></div>
+                            <div class="hero-poster poster-b"></div>
+                        </div>
+                        <div class="hero-car-stage" aria-hidden="true">
+                            <div class="hero-smoke smoke-left"></div>
+                            <div class="hero-smoke smoke-mid"></div>
+                            <div class="hero-smoke smoke-right"></div>
+                            <div class="hero-car-body"></div>
+                            <div class="hero-wheel rear"></div>
+                            <div class="hero-wheel front"></div>
+                        </div>
+                        <div class="hero-slide-stats">
+                            <div><strong>Sync</strong><span>Cloud</span></div>
+                            <div><strong>Fast</strong><span>Draft</span></div>
+                            <div><strong>Glow</strong><span>UI</span></div>
+                        </div>
+                    </article>
+                    <article class="hero-slide slide-4">
+                        <div class="hero-slide-copy">
+                            <span class="hero-slide-chip">Studio Ad</span>
+                            <h3>Ready to import, cut, and export</h3>
+                            <p>Hero banner dipoles untuk menonjolkan nuansa studio otomotif yang modern.</p>
+                        </div>
+                        <div class="hero-poster-stack" aria-hidden="true">
+                            <div class="hero-poster poster-a"></div>
+                            <div class="hero-poster poster-b"></div>
+                        </div>
+                        <div class="hero-car-stage" aria-hidden="true">
+                            <div class="hero-smoke smoke-left"></div>
+                            <div class="hero-smoke smoke-mid"></div>
+                            <div class="hero-smoke smoke-right"></div>
+                            <div class="hero-car-body"></div>
+                            <div class="hero-wheel rear"></div>
+                            <div class="hero-wheel front"></div>
+                        </div>
+                        <div class="hero-slide-stats">
+                            <div><strong>Lossless</strong><span>Audio</span></div>
+                            <div><strong>Blur</strong><span>Glass</span></div>
+                            <div><strong>Drive</strong><span>Style</span></div>
+                        </div>
+                    </article>
                 </div>
-                <!-- SLIDE 3 -->
-                <div class="promo-slide theme-blue">
-                    <div class="promo-logo-wm"><svg viewBox="0 0 24 24" fill="none" stroke="#4DB4FF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg><span>V-FORGE</span></div>
-                    <div class="promo-car-wrap">
-                        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg">
-                            <ellipse class="car-glow" cx="150" cy="115" rx="120" ry="10" opacity="0.35"/>
-                            <path class="car-body-fill car-accent" stroke-width="2" d="M18,92 C18,78 30,72 48,70 L70,50 C78,42 90,38 104,38 L190,38 C204,38 214,44 220,54 L236,70 C258,72 272,80 276,92 L276,100 C276,106 272,108 266,108 L246,108 C246,94 234,84 220,84 C206,84 194,94 194,108 L104,108 C104,94 92,84 78,84 C64,84 52,94 52,108 L30,108 C22,108 18,104 18,98 Z"/>
-                            <path class="car-accent" fill="none" stroke-width="2" d="M82,70 L100,50 C104,46 110,44 116,44 L150,44 L150,70 Z" opacity="0.9"/>
-                            <path class="car-accent" fill="none" stroke-width="2" d="M154,44 L188,44 C196,44 202,47 207,53 L218,70 L154,70 Z" opacity="0.9"/>
-                            <g class="wheel-group" style="transform-origin: 78px 108px;"><circle cx="78" cy="108" r="20" fill="#0a0a0a" stroke="#555" stroke-width="2"/><circle cx="78" cy="108" r="7" fill="#333"/><line x1="78" y1="92" x2="78" y2="124" stroke="#777" stroke-width="2"/><line x1="62" y1="108" x2="94" y2="108" stroke="#777" stroke-width="2"/><line x1="67" y1="97" x2="89" y2="119" stroke="#777" stroke-width="1.5"/><line x1="89" y1="97" x2="67" y2="119" stroke="#777" stroke-width="1.5"/></g>
-                            <g class="wheel-group" style="transform-origin: 220px 108px;"><circle cx="220" cy="108" r="20" fill="#0a0a0a" stroke="#555" stroke-width="2"/><circle cx="220" cy="108" r="7" fill="#333"/><line x1="220" y1="92" x2="220" y2="124" stroke="#777" stroke-width="2"/><line x1="204" y1="108" x2="236" y2="108" stroke="#777" stroke-width="2"/><line x1="209" y1="97" x2="231" y2="119" stroke="#777" stroke-width="1.5"/><line x1="231" y1="97" x2="209" y2="119" stroke="#777" stroke-width="1.5"/></g>
-                        </svg>
-                        <div class="exhaust-smoke" style="left: 8px; bottom: 18px;"><div class="smoke-puff"></div><div class="smoke-puff"></div><div class="smoke-puff"></div></div>
-                    </div>
-                    <div class="promo-text"><h3>Cepat Tanpa Kompromi</h3><p>Export instan langsung dari perangkatmu</p></div>
-                    <div class="promo-dots"><span></span><span></span><span class="active"></span></div>
-                </div>
-                <!-- SLIDE 4 (duplikat slide 1, buat looping mulus) -->
-                <div class="promo-slide theme-gold">
-                    <div class="promo-logo-wm"><svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4 L12 19 L20 4" /><path d="M4 4 H14" /><path d="M8 11.5 H16" /></svg><span>V-FORGE</span></div>
-                    <div class="promo-car-wrap">
-                        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg">
-                            <ellipse class="car-glow" cx="150" cy="115" rx="120" ry="10" opacity="0.35"/>
-                            <path class="car-body-fill car-accent" stroke-width="2" d="M18,92 C18,78 30,72 48,70 L70,50 C78,42 90,38 104,38 L190,38 C204,38 214,44 220,54 L236,70 C258,72 272,80 276,92 L276,100 C276,106 272,108 266,108 L246,108 C246,94 234,84 220,84 C206,84 194,94 194,108 L104,108 C104,94 92,84 78,84 C64,84 52,94 52,108 L30,108 C22,108 18,104 18,98 Z"/>
-                            <path class="car-accent" fill="none" stroke-width="2" d="M82,70 L100,50 C104,46 110,44 116,44 L150,44 L150,70 Z" opacity="0.9"/>
-                            <path class="car-accent" fill="none" stroke-width="2" d="M154,44 L188,44 C196,44 202,47 207,53 L218,70 L154,70 Z" opacity="0.9"/>
-                            <g class="wheel-group" style="transform-origin: 78px 108px;"><circle cx="78" cy="108" r="20" fill="#0a0a0a" stroke="#555" stroke-width="2"/><circle cx="78" cy="108" r="7" fill="#333"/><line x1="78" y1="92" x2="78" y2="124" stroke="#777" stroke-width="2"/><line x1="62" y1="108" x2="94" y2="108" stroke="#777" stroke-width="2"/><line x1="67" y1="97" x2="89" y2="119" stroke="#777" stroke-width="1.5"/><line x1="89" y1="97" x2="67" y2="119" stroke="#777" stroke-width="1.5"/></g>
-                            <g class="wheel-group" style="transform-origin: 220px 108px;"><circle cx="220" cy="108" r="20" fill="#0a0a0a" stroke="#555" stroke-width="2"/><circle cx="220" cy="108" r="7" fill="#333"/><line x1="220" y1="92" x2="220" y2="124" stroke="#777" stroke-width="2"/><line x1="204" y1="108" x2="236" y2="108" stroke="#777" stroke-width="2"/><line x1="209" y1="97" x2="231" y2="119" stroke="#777" stroke-width="1.5"/><line x1="231" y1="97" x2="209" y2="119" stroke="#777" stroke-width="1.5"/></g>
-                        </svg>
-                        <div class="exhaust-smoke" style="left: 8px; bottom: 18px;"><div class="smoke-puff"></div><div class="smoke-puff"></div><div class="smoke-puff"></div></div>
-                    </div>
-                    <div class="promo-text"><h3>Render Tanpa Batas</h3><p>4K Ultra HD dengan kualitas sinematik</p></div>
-                    <div class="promo-dots"><span class="active"></span><span></span><span></span></div>
+                <div class="hero-floating-card">
+                    <span class="hero-kicker">V-Forge AD Preview</span>
+                    <strong>Wheel spin, smoke trail, dan banner logo bergulir.</strong>
+                    <small>Dirancang untuk bikin area editor terasa seperti iklan premium aplikasi video.</small>
                 </div>
             </div>
             <div class="image-fade-bottom"></div>
@@ -269,13 +316,32 @@
                 </div>
             </div>
 
-            <button type="button" class="create-video-btn" onclick="openVideoPicker()">
-                <div class="cvb-icon-badge"><span class="material-icons-round">video_call</span></div>
-                <div class="cvb-text-group">
-                    <span class="cvb-title">Pilih Video & Buka Workspace</span>
-                    <span class="cvb-sub">Mulai edit dari galeri perangkatmu</span>
+            <section class="studio-template-section" aria-labelledby="studio-template-title">
+                <div class="studio-section-heading">
+                    <div>
+                        <span class="studio-kicker">Template Studio v7</span>
+                        <h3 id="studio-template-title">Mulai dengan gaya profesional</h3>
+                        <p>Pilih preset untuk rasio, FPS, warna, motion, dan transisi sebelum memasukkan video.</p>
+                    </div>
+                    <button type="button" class="studio-tour-button" onclick="openStudioOnboarding(true)"><span class="material-icons-round">auto_awesome</span>Tour</button>
                 </div>
-                <span class="material-icons-round cvb-arrow">arrow_forward_ios</span>
+                <div class="studio-template-list" id="studio-template-list" role="list" aria-label="Pilihan template video"></div>
+                <div class="studio-selected-template" id="studio-selected-template" role="status" aria-live="polite">
+                    <span class="studio-selected-icon"><span class="material-icons-round">movie_filter</span></span>
+                    <span><small>Template aktif</small><strong id="studio-selected-template-label">Clean Cut</strong></span>
+                    <span class="material-icons-round">check_circle</span>
+                </div>
+            </section>
+
+            <button type="button" class="create-video-btn" onclick="openVideoPicker()">
+                <span class="create-video-icon-shell"><span class="material-icons-round">video_call</span></span>
+                <span class="create-video-copy">
+                    <strong>Pilih Video & Buka Workspace</strong>
+                    <small>Import video, buat draft otomatis, lalu lanjut edit dengan UI yang lebih modern.</small>
+                    <span class="create-video-meta">Draft otomatis • Sinkron realtime • Siap export</span>
+                    <span class="create-video-preset"><span class="material-icons-round">style</span><span id="create-video-template-label">Preset: Clean Cut</span></span>
+                </span>
+                <span class="material-icons-round create-video-arrow">north_east</span>
             </button>
 
             <input type="file" id="video-editor-input" accept="video/*,.mp4,.mov,.m4v,.webm,.3gp" onchange="handleWorkspaceFileSelected(this)" hidden>
@@ -301,6 +367,7 @@
                 <div class="workspace-section-heading"><div><span>Preview lokal</span><h2 id="workspace-preview-title">Tinjau videomu</h2></div><span class="workspace-local-badge"><span class="material-icons-round">smartphone</span>Di HP</span></div>
                 <div class="workspace-video-frame ratio-original" id="workspace-video-frame">
                     <video id="workspace-video" controls playsinline preload="metadata" controlslist="nodownload noremoteplayback" onloadedmetadata="handleWorkspaceMetadataLoaded()" onerror="handleWorkspacePreviewError()"></video>
+                    <div class="studio-transition-preview" id="studio-transition-preview" aria-hidden="true"><span class="studio-transition-flare"></span><span class="studio-transition-grid"></span></div>
                     <div class="workspace-video-loading" id="workspace-video-loading"><span class="workspace-spinner"></span><p>Membaca video...</p></div>
                 </div>
                 <p class="workspace-preview-error" id="workspace-preview-error" role="alert" aria-live="assertive"></p>
@@ -319,6 +386,51 @@
                 <div class="workspace-section-heading"><div><span>Draft proyek</span><h2>Pengaturan workspace</h2></div><span class="material-icons-round workspace-heading-icon">tune</span></div>
 
                 <label class="workspace-name-field" for="workspace-project-name"><span>Nama proyek</span><input id="workspace-project-name" type="text" maxlength="80" autocomplete="off" placeholder="Contoh: Cinematic Merapi" oninput="handleWorkspaceNameChanged()"></label>
+
+                <section class="workspace-creative-suite" aria-labelledby="workspace-creative-title">
+                    <div class="workspace-creative-heading">
+                        <div><span>Motion Studio</span><h3 id="workspace-creative-title">Template, efek, dan transisi</h3></div>
+                        <div class="workspace-history-actions">
+                            <button type="button" id="studio-undo-button" onclick="studioUndo()" aria-label="Urungkan perubahan" disabled><span class="material-icons-round">undo</span></button>
+                            <button type="button" id="studio-redo-button" onclick="studioRedo()" aria-label="Ulangi perubahan" disabled><span class="material-icons-round">redo</span></button>
+                        </div>
+                    </div>
+
+                    <div class="studio-control-block">
+                        <div class="studio-control-label"><span>Template</span><strong id="workspace-template-value">Clean Cut</strong></div>
+                        <div class="studio-control-scroll" id="workspace-template-controls" role="group" aria-label="Template workspace"></div>
+                    </div>
+
+                    <div class="studio-control-block">
+                        <div class="studio-control-label"><span>Transisi</span><strong id="workspace-transition-value">Cross Dissolve</strong></div>
+                        <div class="studio-control-scroll compact" id="workspace-transition-controls" role="group" aria-label="Transisi workspace"></div>
+                    </div>
+
+                    <div class="studio-control-block">
+                        <div class="studio-control-label"><span>Color effect</span><strong id="workspace-effect-value">Natural</strong></div>
+                        <div class="studio-control-scroll compact" id="workspace-effect-controls" role="group" aria-label="Efek warna workspace"></div>
+                    </div>
+
+                    <label class="studio-intensity-control" for="workspace-motion-intensity">
+                        <span><span>Intensitas motion</span><strong id="workspace-motion-intensity-value">55%</strong></span>
+                        <input type="range" id="workspace-motion-intensity" min="0" max="100" value="55" step="1" oninput="setStudioMotionIntensity(this.value)">
+                    </label>
+
+                    <div class="studio-mini-timeline" id="studio-mini-timeline" aria-label="Preview timeline kreatif">
+                        <div class="studio-timeline-toolbar">
+                            <span><span class="material-icons-round">view_timeline</span>Smart Timeline</span>
+                            <button type="button" onclick="previewStudioTransition()"><span class="material-icons-round">play_arrow</span>Preview</button>
+                        </div>
+                        <div class="studio-timeline-ruler"><span>00:00</span><span>00:05</span><span>00:10</span><span>00:15</span></div>
+                        <div class="studio-timeline-track video-track">
+                            <span class="studio-track-icon"><span class="material-icons-round">videocam</span></span>
+                            <div class="studio-clip-block"><span id="studio-timeline-template">Clean Cut</span><small id="studio-timeline-effect">Natural</small></div>
+                            <button type="button" class="studio-transition-marker" onclick="previewStudioTransition()" aria-label="Preview transisi"><span class="material-icons-round">bolt</span><small id="studio-timeline-transition">Dissolve</small></button>
+                        </div>
+                        <div class="studio-timeline-track audio-track"><span class="studio-track-icon"><span class="material-icons-round">graphic_eq</span></span><div class="studio-waveform" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+                        <span class="studio-playhead" id="studio-playhead" aria-hidden="true"></span>
+                    </div>
+                </section>
 
                 <fieldset class="workspace-setting-group"><legend>Rasio video</legend><div class="workspace-choice-grid ratio-choices" role="group">
                     <button type="button" class="workspace-choice active" data-workspace-setting="aspectRatio" data-value="original" onclick="selectWorkspaceSetting('aspectRatio', 'original', this)"><span class="ratio-icon original"></span><strong>Asli</strong></button>
@@ -428,6 +540,31 @@
         </form>
     </div>
 
+    <div class="studio-onboarding" id="studio-onboarding" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="studio-onboarding-title">
+        <div class="studio-onboarding-backdrop" onclick="closeStudioOnboarding(true)"></div>
+        <section class="studio-onboarding-card">
+            <div class="studio-onboarding-topbar">
+                <span class="studio-onboarding-brand"><span class="material-icons-round">auto_awesome</span>V-Forge Studio v7</span>
+                <button type="button" onclick="closeStudioOnboarding(true)" aria-label="Tutup onboarding"><span class="material-icons-round">close</span></button>
+            </div>
+            <div class="studio-onboarding-visual" id="studio-onboarding-visual" data-step="0">
+                <div class="studio-onboarding-orb one"></div><div class="studio-onboarding-orb two"></div>
+                <span class="studio-onboarding-main-icon material-icons-round" id="studio-onboarding-icon">movie_filter</span>
+                <div class="studio-onboarding-mini-cards"><i></i><i></i><i></i></div>
+            </div>
+            <div class="studio-onboarding-copy">
+                <span class="studio-onboarding-kicker" id="studio-onboarding-kicker">Motion-first editor</span>
+                <h2 id="studio-onboarding-title">Edit lebih cepat, tampil lebih premium</h2>
+                <p id="studio-onboarding-description">Mulai dari template, pilih transisi, lalu proses video langsung di HP tanpa mengunggah file sumber.</p>
+            </div>
+            <div class="studio-onboarding-progress" id="studio-onboarding-progress" aria-label="Progres onboarding"></div>
+            <div class="studio-onboarding-actions">
+                <button type="button" class="secondary" id="studio-onboarding-back" onclick="previousStudioOnboardingStep()">Lewati</button>
+                <button type="button" class="primary" id="studio-onboarding-next" onclick="nextStudioOnboardingStep()"><span>Lanjut</span><span class="material-icons-round">arrow_forward</span></button>
+            </div>
+        </section>
+    </div>
+
     <div class="bottom-nav-wrapper" id="bottom-navigation">
         <div class="bottom-nav">
             <div class="nav-item active" onclick="goToPage('page-home', 0)"><span class="material-icons-round nav-icon">home</span><span class="nav-text">Home</span></div>
@@ -443,11 +580,12 @@
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
-        <script src="js/firebase-config.js?v=6.2.0"></script>
-        <script src="js/app.js?v=6.2.0"></script>
-        <script src="js/projects.js?v=6.2.0"></script>
-        <script src="js/workspace.js?v=6.2.0"></script>
-        <script src="js/processor.js?v=6.2.0"></script>
-        <script src="js/auth.js?v=6.2.0"></script>
+        <script src="js/firebase-config.js?v=7.0.0"></script>
+        <script src="js/app.js?v=7.0.0"></script>
+        <script src="js/projects.js?v=7.0.0"></script>
+        <script src="js/workspace.js?v=7.0.0"></script>
+        <script src="js/processor.js?v=7.0.0"></script>
+        <script src="js/auth.js?v=7.0.0"></script>
+        <script src="js/studio.js?v=7.0.0"></script>
 </body>
 </html>
