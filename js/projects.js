@@ -1,7 +1,7 @@
 // ===============================================
-// PROJECTS.JS - Project & History v1 V-Forge
-// Metadata proyek tersimpan di Firestore per akun dan diperbarui real-time.
-// File video BELUM diunggah pada tahap ini.
+// PROJECTS.JS - Project & History + Video Workspace v1 V-Forge
+// Metadata proyek dan setelan workspace tersimpan di Firestore per akun.
+// File video tetap lokal di perangkat dan tidak pernah diunggah dari modul ini.
 // ===============================================
 
 const PROJECT_STATUS = Object.freeze({
@@ -19,8 +19,6 @@ let projectSyncState = 'idle';
 let projectSyncError = '';
 let activeProjectFilter = 'all';
 let activeProjectSearch = '';
-let pendingProjectFile = null;
-let projectCreateInProgress = false;
 let selectedProjectId = null;
 
 function getProjectStatus(status) {
@@ -68,6 +66,23 @@ function formatProjectFileSize(bytes) {
     return `${value >= 10 || index === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[index]}`;
 }
 
+function formatProjectDuration(milliseconds) {
+    const totalSeconds = Math.max(0, Math.round(Number(milliseconds) / 1000));
+    if (!Number.isFinite(totalSeconds) || totalSeconds <= 0) return 'Belum terbaca';
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    if (hours > 0) return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    return `${minutes}:${String(seconds).padStart(2, '0')}`;
+}
+
+function formatProjectSourceResolution(width, height) {
+    const safeWidth = Number(width);
+    const safeHeight = Number(height);
+    if (!Number.isFinite(safeWidth) || !Number.isFinite(safeHeight) || safeWidth <= 0 || safeHeight <= 0) return 'Belum terbaca';
+    return `${Math.round(safeWidth)} × ${Math.round(safeHeight)}`;
+}
+
 function normalizeProjectRecord(id, data = {}) {
     const status = PROJECT_STATUS[data.status] ? data.status : 'draft';
     return {
@@ -78,6 +93,13 @@ function normalizeProjectRecord(id, data = {}) {
         sourceFileSize: Number.isFinite(data.sourceFileSize) ? data.sourceFileSize : 0,
         sourceMimeType: String(data.sourceMimeType || 'video/*').slice(0, 100),
         sourceLastModified: Number.isFinite(data.sourceLastModified) ? data.sourceLastModified : null,
+        sourceDurationMs: Number.isFinite(data.sourceDurationMs) ? Math.max(0, data.sourceDurationMs) : 0,
+        sourceWidth: Number.isFinite(data.sourceWidth) ? Math.max(0, data.sourceWidth) : 0,
+        sourceHeight: Number.isFinite(data.sourceHeight) ? Math.max(0, data.sourceHeight) : 0,
+        aspectRatio: ['original', '9:16', '16:9', '1:1'].includes(data.aspectRatio) ? data.aspectRatio : 'original',
+        outputResolution: ['720p', '1080p', 'source'].includes(data.outputResolution) ? data.outputResolution : '1080p',
+        outputFrameRate: ['30', '60', 'source'].includes(String(data.outputFrameRate)) ? String(data.outputFrameRate) : '30',
+        audioEnabled: data.audioEnabled !== false,
         status,
         progress: Number.isFinite(data.progress) ? Math.max(0, Math.min(100, data.progress)) : 0,
         createdAt: data.createdAt || null,
@@ -247,7 +269,7 @@ function renderProjectEditorHistory() {
     }
 
     if (projectRecords.length === 0) {
-        container.innerHTML = '<div class="editor-project-empty"><span class="material-icons-round">video_call</span><strong>Belum ada draft</strong><p>Tekan “Buat Draft Proyek” untuk memulai.</p></div>';
+        container.innerHTML = '<div class="editor-project-empty"><span class="material-icons-round">video_call</span><strong>Belum ada draft</strong><p>Tekan “Pilih Video & Buka Workspace” untuk memulai.</p></div>';
         return;
     }
 
@@ -268,6 +290,7 @@ function stopProjectsRealtimeSync(options = {}) {
     selectedProjectId = null;
 
     if (options.clear === true) {
+        if (typeof closeVideoWorkspace === 'function') closeVideoWorkspace({ navigate: false, force: true });
         projectRecords = [];
         projectSyncError = '';
         setProjectSyncStatus('idle');
@@ -378,133 +401,63 @@ function defaultProjectName(fileName) {
         .slice(0, 80) || 'Proyek baru';
 }
 
-function setProjectCreateLoading(isLoading) {
-    const button = document.getElementById('project-create-submit');
-    if (!button) return;
-    button.disabled = isLoading;
-    button.setAttribute('aria-busy', String(isLoading));
-    button.classList.toggle('loading', isLoading);
-    const label = button.querySelector('.project-button-label');
-    if (label) label.textContent = isLoading ? 'Menyimpan...' : 'Simpan draft';
+function getProjectRecord(projectId) {
+    return projectRecords.find((item) => item.id === projectId) || null;
 }
 
-function showProjectCreateError(message) {
-    const element = document.getElementById('project-create-error');
-    if (element) element.textContent = message || '';
-}
-
-function handleProjectFileSelected(input) {
-    const file = input?.files?.[0];
-    if (!file) return;
-
-    if (!auth?.currentUser) {
-        input.value = '';
-        navigateToPage('page-login', -1);
-        return;
-    }
-    if (!isSupportedProjectVideo(file)) {
-        input.value = '';
-        safeShowToast('Pilih file video yang didukung.', 'info');
-        return;
-    }
-
-    pendingProjectFile = file;
-    showProjectCreateError('');
-
-    const modal = document.getElementById('project-create-modal');
-    const nameInput = document.getElementById('project-name-input');
-    const fileName = document.getElementById('project-file-name');
-    const fileMeta = document.getElementById('project-file-meta');
-    if (nameInput) nameInput.value = defaultProjectName(file.name);
-    if (fileName) fileName.textContent = file.name;
-    if (fileMeta) fileMeta.textContent = `${formatProjectFileSize(file.size)} • ${file.type || 'Video'}`;
-    if (modal) {
-        modal.classList.add('show');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.classList.add('project-sheet-open');
-        setTimeout(() => nameInput?.focus(), 120);
-    }
-}
-
-function closeProjectCreateSheet(options = {}) {
-    if (projectCreateInProgress) return;
-    const modal = document.getElementById('project-create-modal');
-    if (modal) {
-        modal.classList.remove('show');
-        modal.setAttribute('aria-hidden', 'true');
-    }
-    document.body.classList.remove('project-sheet-open');
-    showProjectCreateError('');
-    pendingProjectFile = null;
-    const fileInput = document.getElementById('video-editor-input');
-    if (fileInput && options.keepInput !== true) fileInput.value = '';
-}
-
-function handleProjectSheetBackdrop(event) {
-    if (event.target === event.currentTarget) closeProjectCreateSheet();
-}
-
-async function createProjectDraft(event) {
-    event?.preventDefault();
-    if (projectCreateInProgress) return;
-
+async function saveWorkspaceProject({ projectId = null, file, name, metadata = {}, settings = {} }) {
     const user = auth?.currentUser;
-    const file = pendingProjectFile;
-    const name = String(document.getElementById('project-name-input')?.value || '').trim().replace(/\s+/g, ' ');
-    showProjectCreateError('');
+    if (!user || !db) throw new Error('workspace/no-session');
+    if (isOffline()) throw new Error('workspace/offline');
+    if (!isSupportedProjectVideo(file)) throw new Error('workspace/invalid-video');
 
-    if (!user || !db) {
-        showProjectCreateError('Sesi akun tidak ditemukan. Silakan masuk kembali.');
-        return;
-    }
-    if (isOffline()) {
-        showProjectCreateError('Kamu sedang offline. Sambungkan internet untuk menyimpan draft.');
-        return;
-    }
-    if (!file) {
-        showProjectCreateError('File video tidak ditemukan. Pilih ulang videonya.');
-        return;
-    }
-    if (name.length < 2 || name.length > 80) {
-        showProjectCreateError('Nama proyek harus terdiri dari 2–80 karakter.');
-        return;
-    }
+    const normalizedName = String(name || '').trim().replace(/\s+/g, ' ');
+    if (normalizedName.length < 2 || normalizedName.length > 80) throw new Error('workspace/invalid-name');
 
     const collection = getProjectsCollection(user.uid);
-    if (!collection || typeof collection.doc !== 'function') {
-        showProjectCreateError('Database proyek belum siap. Muat ulang aplikasi lalu coba lagi.');
+    if (!collection || typeof collection.doc !== 'function') throw new Error('workspace/database-unavailable');
+
+    const existing = projectId ? getProjectRecord(projectId) : null;
+    if (projectId && (!existing || existing.ownerId !== user.uid || existing.status !== 'draft')) {
+        throw new Error('workspace/project-unavailable');
+    }
+
+    const payload = {
+        ownerId: user.uid,
+        name: normalizedName,
+        sourceFileName: String(file.name || 'video').slice(0, 180),
+        sourceFileSize: Number(file.size) || 0,
+        sourceMimeType: String(file.type || 'video/*').slice(0, 100),
+        sourceLastModified: Number(file.lastModified) || null,
+        sourceDurationMs: Math.max(0, Math.round(Number(metadata.durationMs) || 0)),
+        sourceWidth: Math.max(0, Math.round(Number(metadata.width) || 0)),
+        sourceHeight: Math.max(0, Math.round(Number(metadata.height) || 0)),
+        aspectRatio: ['original', '9:16', '16:9', '1:1'].includes(settings.aspectRatio) ? settings.aspectRatio : 'original',
+        outputResolution: ['720p', '1080p', 'source'].includes(settings.outputResolution) ? settings.outputResolution : '1080p',
+        outputFrameRate: ['30', '60', 'source'].includes(String(settings.frameRate)) ? String(settings.frameRate) : '30',
+        audioEnabled: settings.audioEnabled !== false,
+        status: 'draft',
+        progress: 0,
+        schemaVersion: 2,
+        updatedAt: serverTimestamp()
+    };
+
+    const reference = projectId ? collection.doc(projectId) : collection.doc();
+    if (!projectId) payload.createdAt = serverTimestamp();
+    if (projectId) await reference.set(payload, { merge: true });
+    else await reference.set(payload);
+    return reference.id || projectId;
+}
+
+function continueProjectInWorkspace() {
+    const project = getProjectRecord(selectedProjectId);
+    if (!project || project.status !== 'draft') {
+        safeShowToast('Hanya draft yang bisa dilanjutkan di workspace.', 'info');
         return;
     }
-
-    projectCreateInProgress = true;
-    setProjectCreateLoading(true);
-
-    try {
-        const projectReference = collection.doc();
-        await projectReference.set({
-            ownerId: user.uid,
-            name,
-            sourceFileName: String(file.name || 'video').slice(0, 180),
-            sourceFileSize: Number(file.size) || 0,
-            sourceMimeType: String(file.type || 'video/*').slice(0, 100),
-            sourceLastModified: Number(file.lastModified) || null,
-            status: 'draft',
-            progress: 0,
-            schemaVersion: 1,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
-        });
-
-        safeShowToast('Draft proyek berhasil disimpan.', 'check');
-        projectCreateInProgress = false;
-        closeProjectCreateSheet();
-    } catch (error) {
-        console.warn('Draft proyek gagal disimpan:', error);
-        showProjectCreateError(translateProjectError(error));
-    } finally {
-        projectCreateInProgress = false;
-        setProjectCreateLoading(false);
-    }
+    const projectId = project.id;
+    closeProjectDetailSheet();
+    if (typeof openVideoPicker === 'function') openVideoPicker(projectId);
 }
 
 function openProjectDetails(projectId) {
@@ -521,7 +474,12 @@ function openProjectDetails(projectId) {
     const updated = document.getElementById('project-detail-updated');
     const file = document.getElementById('project-detail-file');
     const size = document.getElementById('project-detail-size');
+    const duration = document.getElementById('project-detail-duration');
+    const resolution = document.getElementById('project-detail-resolution');
+    const output = document.getElementById('project-detail-output');
     const created = document.getElementById('project-detail-created');
+    const continueButton = document.getElementById('project-continue-button');
+    const detailActions = continueButton?.parentElement;
     if (title) title.textContent = project.name;
     if (statusElement) {
         statusElement.textContent = status.label;
@@ -530,7 +488,19 @@ function openProjectDetails(projectId) {
     if (updated) updated.textContent = `Diperbarui ${formatProjectDate(project.updatedAt, true)}`;
     if (file) file.textContent = project.sourceFileName;
     if (size) size.textContent = formatProjectFileSize(project.sourceFileSize);
+    if (duration) duration.textContent = formatProjectDuration(project.sourceDurationMs);
+    if (resolution) resolution.textContent = formatProjectSourceResolution(project.sourceWidth, project.sourceHeight);
+    if (output) {
+        if (project.schemaVersion < 2) output.textContent = 'Belum diatur';
+        else {
+            const ratio = project.aspectRatio === 'original' ? 'Asli' : project.aspectRatio;
+            const fps = project.outputFrameRate === 'source' ? 'FPS asli' : `${project.outputFrameRate} FPS`;
+            output.textContent = `${ratio} • ${project.outputResolution} • ${fps} • ${project.audioEnabled ? 'Audio' : 'Mute'}`;
+        }
+    }
     if (created) created.textContent = formatProjectDate(project.createdAt, true);
+    if (continueButton) continueButton.hidden = project.status !== 'draft';
+    if (detailActions) detailActions.classList.toggle('single', project.status !== 'draft');
 
     const modal = document.getElementById('project-detail-modal');
     if (modal) {
@@ -569,6 +539,4 @@ window.addEventListener('offline', handleProjectsConnectionChange);
 document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') return;
     closeProjectDetailSheet();
-    closeProjectCreateSheet();
 });
-

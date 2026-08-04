@@ -102,7 +102,7 @@
         }
 
         function updateNavVisibility() {
-            const hiddenPages = ['page-enhancer', 'page-subscription', 'page-notifications', 'page-settings', 'page-cloud', 'page-edit-profile', 'page-achievements', 'page-login', 'page-register'];
+            const hiddenPages = ['page-enhancer', 'page-video-workspace', 'page-subscription', 'page-notifications', 'page-settings', 'page-cloud', 'page-edit-profile', 'page-achievements', 'page-login', 'page-register'];
             let shouldHide = hiddenPages.includes(currentPage);
             const activeEl = document.activeElement; 
             if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) { shouldHide = true; }
@@ -285,7 +285,7 @@
 
         function handleTaskClick(taskId) {
             if(taskId === 'mission-card-1') { 
-                if(mission1State === 'todo') { goToPage('page-enhancer', -1); showToast('Upload video untuk selesaikan misi!', 'info'); } 
+                if(mission1State === 'todo') { goToPage('page-enhancer', -1); showToast('Pilih video untuk membuka workspace.', 'info'); } 
                 else if(mission1State === 'ready') { claimTask1Reward(); } 
             }
         }
