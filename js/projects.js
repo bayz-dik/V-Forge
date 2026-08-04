@@ -1,7 +1,7 @@
 // ===============================================
-// PROJECTS.JS - Project & History + Video Workspace v1 V-Forge
-// Metadata proyek dan setelan workspace tersimpan di Firestore per akun.
-// File video tetap lokal di perangkat dan tidak pernah diunggah dari modul ini.
+// PROJECTS.JS - Project, Workspace, dan Video Processing v1.2 V-Forge
+// Metadata proyek, setelan, dan catatan ekspor tersimpan di Firestore per akun.
+// File sumber maupun hasil video tetap lokal dan tidak diunggah oleh modul ini.
 // ===============================================
 
 const PROJECT_STATUS = Object.freeze({
@@ -97,11 +97,25 @@ function normalizeProjectRecord(id, data = {}) {
         sourceWidth: Number.isFinite(data.sourceWidth) ? Math.max(0, data.sourceWidth) : 0,
         sourceHeight: Number.isFinite(data.sourceHeight) ? Math.max(0, data.sourceHeight) : 0,
         aspectRatio: ['original', '9:16', '16:9', '1:1'].includes(data.aspectRatio) ? data.aspectRatio : 'original',
-        outputResolution: ['720p', '1080p', 'source'].includes(data.outputResolution) ? data.outputResolution : '1080p',
-        outputFrameRate: ['30', '60', 'source'].includes(String(data.outputFrameRate)) ? String(data.outputFrameRate) : '30',
+        outputResolution: ['720p', '1080p', '2160p', 'source'].includes(data.outputResolution) ? data.outputResolution : '1080p',
+        outputFrameRate: ['30', '60', '120', 'source'].includes(String(data.outputFrameRate)) ? String(data.outputFrameRate) : '30',
         audioEnabled: data.audioEnabled !== false,
+        audioQuality: ['standard', 'hires-lossless'].includes(data.audioQuality) ? data.audioQuality : 'standard',
         status,
         progress: Number.isFinite(data.progress) ? Math.max(0, Math.min(100, data.progress)) : 0,
+        lastExportFileName: String(data.lastExportFileName || '').slice(0, 180),
+        lastExportFileSize: Number.isFinite(data.lastExportFileSize) ? Math.max(0, data.lastExportFileSize) : 0,
+        lastExportMimeType: String(data.lastExportMimeType || '').slice(0, 100),
+        lastExportWidth: Number.isFinite(data.lastExportWidth) ? Math.max(0, data.lastExportWidth) : 0,
+        lastExportHeight: Number.isFinite(data.lastExportHeight) ? Math.max(0, data.lastExportHeight) : 0,
+        lastExportFrameRate: String(data.lastExportFrameRate || '').slice(0, 20),
+        lastExportAudioEnabled: data.lastExportAudioEnabled !== false,
+        lastExportAudioQuality: ['standard', 'hires-lossless'].includes(data.lastExportAudioQuality) ? data.lastExportAudioQuality : 'standard',
+        lastExportLosslessAudioFileName: String(data.lastExportLosslessAudioFileName || '').slice(0, 180),
+        lastExportLosslessAudioFileSize: Number.isFinite(data.lastExportLosslessAudioFileSize) ? Math.max(0, data.lastExportLosslessAudioFileSize) : 0,
+        lastExportLosslessAudioSampleRate: Number.isFinite(data.lastExportLosslessAudioSampleRate) ? Math.max(0, data.lastExportLosslessAudioSampleRate) : 0,
+        lastExportLosslessAudioBitDepth: Number.isFinite(data.lastExportLosslessAudioBitDepth) ? Math.max(0, data.lastExportLosslessAudioBitDepth) : 0,
+        lastExportedAt: data.lastExportedAt || null,
         createdAt: data.createdAt || null,
         updatedAt: data.updatedAt || data.createdAt || null,
         schemaVersion: Number.isFinite(data.schemaVersion) ? data.schemaVersion : 1
@@ -405,6 +419,10 @@ function getProjectRecord(projectId) {
     return projectRecords.find((item) => item.id === projectId) || null;
 }
 
+function canOpenProjectInWorkspace(project) {
+    return Boolean(project && ['draft', 'completed', 'failed'].includes(project.status));
+}
+
 async function saveWorkspaceProject({ projectId = null, file, name, metadata = {}, settings = {} }) {
     const user = auth?.currentUser;
     if (!user || !db) throw new Error('workspace/no-session');
@@ -418,7 +436,7 @@ async function saveWorkspaceProject({ projectId = null, file, name, metadata = {
     if (!collection || typeof collection.doc !== 'function') throw new Error('workspace/database-unavailable');
 
     const existing = projectId ? getProjectRecord(projectId) : null;
-    if (projectId && (!existing || existing.ownerId !== user.uid || existing.status !== 'draft')) {
+    if (projectId && (!existing || existing.ownerId !== user.uid || !canOpenProjectInWorkspace(existing))) {
         throw new Error('workspace/project-unavailable');
     }
 
@@ -433,12 +451,13 @@ async function saveWorkspaceProject({ projectId = null, file, name, metadata = {
         sourceWidth: Math.max(0, Math.round(Number(metadata.width) || 0)),
         sourceHeight: Math.max(0, Math.round(Number(metadata.height) || 0)),
         aspectRatio: ['original', '9:16', '16:9', '1:1'].includes(settings.aspectRatio) ? settings.aspectRatio : 'original',
-        outputResolution: ['720p', '1080p', 'source'].includes(settings.outputResolution) ? settings.outputResolution : '1080p',
-        outputFrameRate: ['30', '60', 'source'].includes(String(settings.frameRate)) ? String(settings.frameRate) : '30',
+        outputResolution: ['720p', '1080p', '2160p', 'source'].includes(settings.outputResolution) ? settings.outputResolution : '1080p',
+        outputFrameRate: ['30', '60', '120', 'source'].includes(String(settings.frameRate)) ? String(settings.frameRate) : '30',
         audioEnabled: settings.audioEnabled !== false,
+        audioQuality: ['standard', 'hires-lossless'].includes(settings.audioQuality) ? settings.audioQuality : 'standard',
         status: 'draft',
         progress: 0,
-        schemaVersion: 2,
+        schemaVersion: 4,
         updatedAt: serverTimestamp()
     };
 
@@ -449,10 +468,46 @@ async function saveWorkspaceProject({ projectId = null, file, name, metadata = {
     return reference.id || projectId;
 }
 
+async function markWorkspaceProjectExported(projectId, result = {}) {
+    const user = auth?.currentUser;
+    if (!user || !db || !projectId) return false;
+    if (isOffline()) return false;
+
+    const existing = getProjectRecord(projectId);
+    if (existing && existing.ownerId && existing.ownerId !== user.uid) {
+        throw new Error('workspace/project-unavailable');
+    }
+
+    const collection = getProjectsCollection(user.uid);
+    if (!collection || typeof collection.doc !== 'function') return false;
+
+    await collection.doc(projectId).set({
+        ownerId: user.uid,
+        status: 'completed',
+        progress: 100,
+        lastExportFileName: String(result.fileName || '').slice(0, 180),
+        lastExportFileSize: Math.max(0, Math.round(Number(result.fileSize) || 0)),
+        lastExportMimeType: String(result.mimeType || '').slice(0, 100),
+        lastExportWidth: Math.max(0, Math.round(Number(result.width) || 0)),
+        lastExportHeight: Math.max(0, Math.round(Number(result.height) || 0)),
+        lastExportFrameRate: String(result.frameRate || '').slice(0, 20),
+        lastExportAudioEnabled: result.audioEnabled !== false,
+        lastExportAudioQuality: ['standard', 'hires-lossless'].includes(result.audioQuality) ? result.audioQuality : 'standard',
+        lastExportLosslessAudioFileName: String(result.losslessAudioFileName || '').slice(0, 180),
+        lastExportLosslessAudioFileSize: Math.max(0, Math.round(Number(result.losslessAudioFileSize) || 0)),
+        lastExportLosslessAudioSampleRate: Math.max(0, Math.round(Number(result.losslessAudioSampleRate) || 0)),
+        lastExportLosslessAudioBitDepth: Math.max(0, Math.round(Number(result.losslessAudioBitDepth) || 0)),
+        lastExportedAt: serverTimestamp(),
+        schemaVersion: 4,
+        updatedAt: serverTimestamp()
+    }, { merge: true });
+    return true;
+}
+
 function continueProjectInWorkspace() {
     const project = getProjectRecord(selectedProjectId);
-    if (!project || project.status !== 'draft') {
-        safeShowToast('Hanya draft yang bisa dilanjutkan di workspace.', 'info');
+    if (!canOpenProjectInWorkspace(project)) {
+        safeShowToast('Proyek ini belum bisa dibuka kembali di workspace.', 'info');
         return;
     }
     const projectId = project.id;
@@ -477,8 +532,13 @@ function openProjectDetails(projectId) {
     const duration = document.getElementById('project-detail-duration');
     const resolution = document.getElementById('project-detail-resolution');
     const output = document.getElementById('project-detail-output');
+    const lastExport = document.getElementById('project-detail-export');
     const created = document.getElementById('project-detail-created');
     const continueButton = document.getElementById('project-continue-button');
+    const continueLabel = document.getElementById('project-continue-label');
+    const continueIcon = continueButton?.querySelector('.material-icons-round');
+    const nextStepTitle = document.getElementById('project-next-step-title');
+    const nextStepText = document.getElementById('project-next-step-text');
     const detailActions = continueButton?.parentElement;
     if (title) title.textContent = project.name;
     if (statusElement) {
@@ -495,12 +555,32 @@ function openProjectDetails(projectId) {
         else {
             const ratio = project.aspectRatio === 'original' ? 'Asli' : project.aspectRatio;
             const fps = project.outputFrameRate === 'source' ? 'FPS asli' : `${project.outputFrameRate} FPS`;
-            output.textContent = `${ratio} • ${project.outputResolution} • ${fps} • ${project.audioEnabled ? 'Audio' : 'Mute'}`;
+            const audio = !project.audioEnabled
+                ? 'Mute'
+                : (project.audioQuality === 'hires-lossless' ? 'Hi-Res Lossless + WAV' : 'Audio');
+            output.textContent = `${ratio} • ${project.outputResolution} • ${fps} • ${audio}`;
+        }
+    }
+    if (lastExport) {
+        if (!project.lastExportFileName) lastExport.textContent = 'Belum diekspor';
+        else {
+            const exportSize = formatProjectFileSize(project.lastExportFileSize);
+            const lossless = project.lastExportLosslessAudioFileName
+                ? ` • WAV ${formatProjectFileSize(project.lastExportLosslessAudioFileSize)}`
+                : '';
+            lastExport.textContent = `${project.lastExportFileName} • ${exportSize}${lossless}`;
         }
     }
     if (created) created.textContent = formatProjectDate(project.createdAt, true);
-    if (continueButton) continueButton.hidden = project.status !== 'draft';
-    if (detailActions) detailActions.classList.toggle('single', project.status !== 'draft');
+    const canContinue = canOpenProjectInWorkspace(project);
+    if (continueButton) continueButton.hidden = !canContinue;
+    if (continueLabel) continueLabel.textContent = project.status === 'completed' ? 'Proses ulang' : (project.status === 'failed' ? 'Coba lagi' : 'Lanjutkan');
+    if (continueIcon) continueIcon.textContent = project.status === 'completed' ? 'replay' : 'movie_edit';
+    if (detailActions) detailActions.classList.toggle('single', !canContinue);
+    if (nextStepTitle) nextStepTitle.textContent = project.status === 'completed' ? 'Hasil tersimpan di perangkatmu' : 'Video tetap aman di perangkat';
+    if (nextStepText) nextStepText.textContent = project.status === 'completed'
+        ? 'Firestore hanya menyimpan catatan ekspor. File hasil tidak disimpan di cloud; pilih ulang sumber untuk memproses lagi.'
+        : 'Firestore hanya menyimpan metadata dan setelan. Setelah aplikasi ditutup, pilih ulang file yang sama untuk melanjutkan workspace.';
 
     const modal = document.getElementById('project-detail-modal');
     if (modal) {

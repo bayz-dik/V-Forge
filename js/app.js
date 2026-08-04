@@ -10,9 +10,9 @@
         let notifSourcePage = 'page-home';
 
         let notificationList = [
-            { title: "VIP Pro Activated!", desc: 'All Pro features are now unlocked.', time: "Just now", icon: "verified", color: "#34C759" },
+            { title: "Premium Output", desc: '4K, 120 FPS, dan Hi-Res Lossless tersedia untuk akun Premium.', time: "Just now", icon: "workspace_premium", color: "#8A2BE2" },
             { title: "Video Exported Successfully", desc: 'Your project is ready.', time: "1h", icon: "movie_filter", color: "#6366F1" },
-            { title: "Exclusive Tools Inside", desc: "Unlock 4K exporting and Pro transitions today!", time: "1h", icon: "local_offer", color: "#FF8C00" }
+            { title: "Exclusive Tools Inside", desc: "Unlock AI Color and Pro transitions today!", time: "1h", icon: "local_offer", color: "#FF8C00" }
         ];
 
         // FUNGSI NOTIFIKASI (TOAST & PAGE)
@@ -117,27 +117,70 @@
         } 
         
         function closeSubscription() { 
-            goToPage(subSourcePage, 3); 
+            const navIndex = ['page-profile', 'page-settings'].includes(subSourcePage) ? 3 : -1;
+            goToPage(subSourcePage, navIndex); 
+        }
+
+        const PREMIUM_VIDEO_FEATURES = Object.freeze({
+            outputResolution: Object.freeze({ value: '2160p', label: '4K Ultra HD' }),
+            frameRate: Object.freeze({ value: '120', label: '120 FPS' }),
+            audioQuality: Object.freeze({ value: 'hires-lossless', label: 'Hi-Res Lossless' })
+        });
+
+        function hasPremiumAccess() {
+            return isPremium === true;
+        }
+
+        function getPremiumVideoFeatureForChoice(key, value) {
+            const feature = PREMIUM_VIDEO_FEATURES[key];
+            return feature && String(value) === feature.value ? feature.label : '';
+        }
+
+        function getPremiumVideoFeature(settings = {}, metadata = {}) {
+            const sourceWidth = Math.max(0, Number(metadata.width) || 0);
+            const sourceHeight = Math.max(0, Number(metadata.height) || 0);
+            const sourceIs4K = settings.outputResolution === 'source'
+                && Math.max(sourceWidth, sourceHeight) >= 3840
+                && Math.min(sourceWidth, sourceHeight) >= 2160;
+            return (sourceIs4K ? '4K Ultra HD' : '')
+                || getPremiumVideoFeatureForChoice('outputResolution', settings.outputResolution)
+                || getPremiumVideoFeatureForChoice('frameRate', settings.frameRate)
+                || (settings.audioEnabled !== false
+                    ? getPremiumVideoFeatureForChoice('audioQuality', settings.audioQuality)
+                    : '');
+        }
+
+        function showPremiumRequired(featureLabel = 'Fitur ini', options = {}) {
+            showToast(`${featureLabel} hanya tersedia untuk akun Premium.`, 'info');
+            if (options.openSubscription === true) {
+                const sourcePage = options.sourcePage || currentPage || 'page-video-workspace';
+                setTimeout(() => openSubscription(sourcePage), 180);
+            }
+            return false;
+        }
+
+        function handlePremiumFeatureCard(featureLabel) {
+            if (hasPremiumAccess()) {
+                showToast(`${featureLabel} aktif di akun Premium.`, 'check');
+                return;
+            }
+            showPremiumRequired(featureLabel, { openSubscription: true, sourcePage: currentPage });
+        }
+
+        function requestPremiumUpgrade() {
+            showToast('Checkout Premium belum terhubung. Akses hanya aktif setelah subscription terverifikasi.', 'info');
+        }
+
+        function manageSubscription() {
+            showToast('Pengelolaan subscription akan tersedia setelah sistem pembayaran terhubung.', 'info');
         }
 
         function upgradeToPro() {
-            if(!isPremium) {
-                isPremium = true; 
-                renderPremiumUI(); 
-                if (typeof syncUserDataToFirestore === 'function') syncUserDataToFirestore();
-                showToast('Payment Successful! You are now PRO. 🎉', 'check');
-                addNotification("VIP Pro Activated!", "All Pro features are now unlocked.", "verified", "#8A2BE2");
-            }
+            requestPremiumUpgrade();
         }
 
         function cancelSubscription() {
-            if(isPremium) {
-                isPremium = false; 
-                renderPremiumUI(); 
-                if (typeof syncUserDataToFirestore === 'function') syncUserDataToFirestore();
-                showToast('Subscription Cancelled.', 'info');
-                addNotification("VIP Pro Cancelled.", "Account reverted to free tier.", "remove_circle_outline", "#EF4444");
-            }
+            manageSubscription();
         }
 
         function renderPremiumUI() {
@@ -169,10 +212,9 @@
                 if(subHero) { subHero.innerHTML = `<div class="sub-hero-icon" style="background: linear-gradient(135deg, #B8860B, #FFD700); color: white; box-shadow: 0 4px 15px rgba(255,215,0,0.3);"><span class="material-icons-round">workspace_premium</span></div><h3 style="color: var(--text-main);">You are a PRO!</h3><p style="color: var(--text-sub);">Thank you for supporting V-Forge.</p>`; }
                 if(subProDetails) { subProDetails.style.display = 'block'; }
 
-                // UPDATE EDITOR CARDS TO PRO (Ungu)
-                if(cRes) { cRes.classList.add('pro-active'); tRes.innerHTML = "4K<br>Unlocked"; }
-                if(cFps) { cFps.classList.add('pro-active'); tFps.innerHTML = "120 FPS<br>Unlocked"; }
-                if(cAud) { cAud.classList.add('pro-active'); tAud.innerHTML = "Hi-Res Audio<br>Unlocked"; }
+                if(cRes) { cRes.classList.add('pro-active'); cRes.classList.remove('premium-locked'); cRes.onclick = () => handlePremiumFeatureCard('4K Ultra HD'); tRes.innerHTML = "Hingga 4K<br>Ultra HD"; }
+                if(cFps) { cFps.classList.add('pro-active'); cFps.classList.remove('premium-locked'); cFps.onclick = () => handlePremiumFeatureCard('120 FPS'); tFps.innerHTML = "Hingga<br>120 FPS"; }
+                if(cAud) { cAud.classList.add('pro-active'); cAud.classList.remove('premium-locked'); cAud.onclick = () => handlePremiumFeatureCard('Hi-Res Lossless'); tAud.innerHTML = "Hi-Res Lossless<br>WAV 24-bit"; }
 
             } else {
                 // UI GRATIS (Warna Abu-abu)
@@ -185,14 +227,15 @@
                 if(vipBtn) { vipBtn.innerText = 'Subscribe Now'; }
                 if(vipStatus) { vipStatus.innerText = 'You are not subscribed yet'; }
                 if(subPage) { subPage.classList.remove('pro'); subPage.classList.add('free'); }
-                if(subHero) { subHero.innerHTML = `<div class="sub-hero-icon"><span class="material-icons-round">auto_awesome</span></div><h3 style="color: var(--text-main);">Unlock PRO</h3><p style="color: var(--text-sub);">$ 25.86 / month</p><div class="sub-main-btn" onclick="upgradeToPro()"><span class="material-icons-round" style="font-size:18px;">lock_open</span> Upgrade Now</div>`; }
+                if(subHero) { subHero.innerHTML = `<div class="sub-hero-icon"><span class="material-icons-round">auto_awesome</span></div><h3 style="color: var(--text-main);">Unlock Premium</h3><p style="color: var(--text-sub);">4K • 120 FPS • Hi-Res Lossless</p><div class="sub-main-btn" onclick="requestPremiumUpgrade()"><span class="material-icons-round" style="font-size:18px;">workspace_premium</span> Langganan Premium</div><small class="sub-verification-note"><span class="material-icons-round">verified_user</span>Status Premium hanya aktif setelah pembayaran diverifikasi.</small>`; }
                 if(subProDetails) { subProDetails.style.display = 'none'; }
 
-                // UPDATE EDITOR CARDS TO FREE (Abu-abu)
-                if(cRes) { cRes.classList.remove('pro-active'); tRes.innerHTML = "4K Locked<br>(Premium)"; }
-                if(cFps) { cFps.classList.remove('pro-active'); tFps.innerHTML = "120 FPS Locked<br>(Premium)"; }
-                if(cAud) { cAud.classList.remove('pro-active'); tAud.innerHTML = "Hi-Res Locked<br>(Premium)"; }
+                if(cRes) { cRes.classList.remove('pro-active'); cRes.classList.add('premium-locked'); cRes.onclick = () => handlePremiumFeatureCard('4K Ultra HD'); tRes.innerHTML = `4K Ultra HD<br><span class="premium-inline-label"><span class="material-icons-round">lock</span>Premium</span>`; }
+                if(cFps) { cFps.classList.remove('pro-active'); cFps.classList.add('premium-locked'); cFps.onclick = () => handlePremiumFeatureCard('120 FPS'); tFps.innerHTML = `120 FPS<br><span class="premium-inline-label"><span class="material-icons-round">lock</span>Premium</span>`; }
+                if(cAud) { cAud.classList.remove('pro-active'); cAud.classList.add('premium-locked'); cAud.onclick = () => handlePremiumFeatureCard('Hi-Res Lossless'); tAud.innerHTML = `Hi-Res Lossless<br><span class="premium-inline-label"><span class="material-icons-round">lock</span>Premium</span>`; }
             }
+            if (typeof renderWorkspacePremiumAccess === 'function') renderWorkspacePremiumAccess();
+            if (typeof refreshVideoProcessorUI === 'function') refreshVideoProcessorUI();
             updatePointsDisplay(); 
         }
 
@@ -277,9 +320,8 @@
             
             const redeemBtn = document.getElementById('redeem-vip-btn');
             if(redeemBtn) {
-                if (userPoints >= 1000 && !isPremium) { redeemBtn.classList.remove('disabled'); redeemBtn.innerText = 'Redeem Now'; } 
-                else if (isPremium) { redeemBtn.classList.add('disabled'); redeemBtn.innerText = 'Active'; } 
-                else { redeemBtn.classList.add('disabled'); redeemBtn.innerText = '1000 Pts'; }
+                redeemBtn.classList.add('disabled');
+                redeemBtn.innerText = isPremium ? 'Active' : 'Belum tersedia';
             }
         }
 
@@ -307,8 +349,7 @@
 
         function redeemSubscription(cost) {
             if (isPremium) { showToast('You are already a VIP Pro!', 'info'); return; }
-            if (userPoints >= cost) { userPoints -= cost; updatePointsDisplay(); if (typeof syncUserDataToFirestore === 'function') syncUserDataToFirestore(); upgradeToPro(); } 
-            else { showToast(`You need ${cost - userPoints} more points!`, 'info'); }
+            showToast('Penukaran Premium belum tersedia sampai validasi server diaktifkan.', 'info');
         }
 
         function renderEditorHistory() {

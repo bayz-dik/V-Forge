@@ -1,14 +1,15 @@
 // ===============================================
-// WORKSPACE.JS - Video Workspace v1 V-Forge
-// Video dipreview dari Object URL lokal. Hanya metadata dan setelan yang
-// disimpan ke Firestore; byte video tidak dikirim ke jaringan.
+// WORKSPACE.JS - Video Workspace + Video Processing v1.2 V-Forge
+// Video dipreview dari Object URL lokal. Metadata dan catatan ekspor dapat
+// disimpan ke Firestore, tetapi byte video sumber/hasil tidak dikirim.
 // ===============================================
 
 const VIDEO_WORKSPACE_DEFAULTS = Object.freeze({
     aspectRatio: 'original',
     outputResolution: '1080p',
     frameRate: '30',
-    audioEnabled: true
+    audioEnabled: true,
+    audioQuality: 'standard'
 });
 
 let videoWorkspaceRequestedProjectId = null;
@@ -31,6 +32,67 @@ function showWorkspaceError(message = '') {
     if (element) element.textContent = message;
 }
 
+function workspaceHasPremiumAccess() {
+    return typeof hasPremiumAccess === 'function' ? hasPremiumAccess() : false;
+}
+
+function getWorkspacePremiumFeature(settings = videoWorkspaceState.settings) {
+    return typeof getPremiumVideoFeature === 'function'
+        ? getPremiumVideoFeature(settings, videoWorkspaceState.metadata)
+        : '';
+}
+
+function renderWorkspacePremiumAccess() {
+    const premium = workspaceHasPremiumAccess();
+    const panel = document.getElementById('workspace-premium-access');
+    const icon = document.getElementById('workspace-premium-icon');
+    const title = document.getElementById('workspace-premium-title');
+    const description = document.getElementById('workspace-premium-description');
+    const action = document.getElementById('workspace-premium-action');
+    if (panel) {
+        panel.classList.toggle('active', premium);
+        panel.classList.toggle('locked', !premium);
+        panel.setAttribute('role', premium ? 'status' : 'button');
+        panel.setAttribute('tabindex', premium ? '-1' : '0');
+        panel.setAttribute('aria-label', premium
+            ? 'Premium aktif. Fitur output Ultra terbuka.'
+            : 'Buka halaman Premium untuk mengakses output Ultra.');
+    }
+    if (icon) icon.textContent = premium ? 'verified' : 'lock';
+    if (title) title.textContent = premium ? 'Premium aktif' : 'Output Ultra dikunci';
+    if (description) description.textContent = premium
+        ? '4K, 120 FPS, dan Hi-Res Lossless dapat dipilih.'
+        : '4K, 120 FPS, dan Hi-Res Lossless khusus akun Premium.';
+    if (action) {
+        action.hidden = premium;
+        action.textContent = 'Lihat Premium';
+    }
+
+    const premiumOptions = [
+        ['workspace-resolution-select', '2160p', '4K Ultra HD — Premium'],
+        ['workspace-fps-select', '120', '120 FPS — Premium'],
+        ['workspace-audio-quality-select', 'hires-lossless', 'Hi-Res Lossless — WAV 24-bit — Premium']
+    ];
+    premiumOptions.forEach(([selectId, value, lockedLabel]) => {
+        const option = document.querySelector(`#${selectId} option[value="${value}"]`);
+        if (!option) return;
+        option.textContent = premium ? lockedLabel.replace(' — Premium', '') : lockedLabel;
+        option.dataset.premiumLocked = String(!premium);
+    });
+}
+
+function openWorkspacePremiumPage() {
+    if (workspaceHasPremiumAccess()) return;
+    if (typeof openSubscription === 'function') openSubscription('page-video-workspace');
+}
+
+function handleWorkspacePremiumKey(event) {
+    if (event?.key === 'Enter' || event?.key === ' ') {
+        event.preventDefault();
+        openWorkspacePremiumPage();
+    }
+}
+
 function setWorkspacePreviewError(message = '') {
     const element = document.getElementById('workspace-preview-error');
     if (element) element.textContent = message;
@@ -45,7 +107,8 @@ function setWorkspaceSaveLoading(isLoading) {
     videoWorkspaceSaving = isLoading;
     const button = document.getElementById('workspace-save-button');
     if (!button) return;
-    button.disabled = isLoading || !videoWorkspaceState.previewReady;
+    const processorBusy = typeof isVideoProcessingActive === 'function' && isVideoProcessingActive();
+    button.disabled = isLoading || processorBusy || !videoWorkspaceState.previewReady;
     button.classList.toggle('loading', isLoading);
     button.setAttribute('aria-busy', String(isLoading));
     const label = button.querySelector('.workspace-button-label');
@@ -75,8 +138,11 @@ function openVideoPicker(projectId = null) {
 
     if (projectId) {
         const project = typeof getProjectRecord === 'function' ? getProjectRecord(projectId) : null;
-        if (!project || project.status !== 'draft') {
-            safeShowToast('Draft tidak tersedia untuk dilanjutkan.', 'info');
+        const canOpen = typeof canOpenProjectInWorkspace === 'function'
+            ? canOpenProjectInWorkspace(project)
+            : project?.status === 'draft';
+        if (!canOpen) {
+            safeShowToast('Proyek tidak tersedia untuk dibuka di workspace.', 'info');
             return;
         }
     }
@@ -93,6 +159,10 @@ function openVideoPicker(projectId = null) {
 
 function replaceWorkspaceVideo() {
     if (videoWorkspaceSaving) return;
+    if (typeof isVideoProcessingActive === 'function' && isVideoProcessingActive()) {
+        safeShowToast('Batalkan pemrosesan sebelum mengganti video.', 'info');
+        return;
+    }
     openVideoPicker(videoWorkspaceState.projectId);
 }
 
@@ -118,6 +188,7 @@ function handleWorkspaceFileSelected(input) {
 
 function openVideoWorkspace(file, projectId = null) {
     const existing = projectId && typeof getProjectRecord === 'function' ? getProjectRecord(projectId) : null;
+    if (typeof resetVideoProcessor === 'function') resetVideoProcessor({ silent: true });
     releaseWorkspaceObjectUrl();
     resetWorkspaceVideoElement();
 
@@ -128,7 +199,8 @@ function openVideoWorkspace(file, projectId = null) {
         aspectRatio: existing.aspectRatio,
         outputResolution: existing.outputResolution,
         frameRate: existing.outputFrameRate,
-        audioEnabled: existing.audioEnabled
+        audioEnabled: existing.audioEnabled,
+        audioQuality: existing.audioQuality || 'standard'
     } : { ...VIDEO_WORKSPACE_DEFAULTS };
 
     showWorkspaceError('');
@@ -146,6 +218,10 @@ function openVideoWorkspace(file, projectId = null) {
     if (fileSize) fileSize.textContent = formatProjectFileSize(file.size);
     setWorkspaceMetadataText();
     renderWorkspaceSettings();
+    const lockedFeature = getWorkspacePremiumFeature();
+    if (lockedFeature && !workspaceHasPremiumAccess()) {
+        showWorkspaceError(`${lockedFeature} pada draft ini terkunci. Aktifkan Premium atau pilih setelan standar.`);
+    }
 
     const video = document.getElementById('workspace-video');
     if (!video || typeof URL.createObjectURL !== 'function') {
@@ -194,6 +270,7 @@ function handleWorkspaceMetadataLoaded() {
     setWorkspaceMetadataText();
     renderWorkspaceSettings();
     setWorkspaceSaveLoading(false);
+    if (typeof refreshVideoProcessorUI === 'function') refreshVideoProcessorUI();
 }
 
 function handleWorkspacePreviewError(customMessage = '') {
@@ -201,22 +278,50 @@ function handleWorkspacePreviewError(customMessage = '') {
     setWorkspaceLoading(false);
     setWorkspacePreviewError(customMessage || 'Video tidak dapat diputar di browser ini. Coba gunakan MP4 (H.264) agar preview kompatibel.');
     setWorkspaceSaveLoading(false);
+    if (typeof refreshVideoProcessorUI === 'function') refreshVideoProcessorUI();
 }
 
 function selectWorkspaceSetting(key, value) {
+    if (typeof isVideoProcessingActive === 'function' && isVideoProcessingActive()) return;
     const allowed = {
         aspectRatio: ['original', '9:16', '16:9', '1:1'],
-        outputResolution: ['720p', '1080p', 'source'],
-        frameRate: ['30', '60', 'source']
+        outputResolution: ['720p', '1080p', '2160p', 'source'],
+        frameRate: ['30', '60', '120', 'source'],
+        audioQuality: ['standard', 'hires-lossless']
     };
     const normalizedValue = String(value);
     if (!allowed[key]?.includes(normalizedValue)) return;
+    let premiumFeature = typeof getPremiumVideoFeatureForChoice === 'function'
+        ? getPremiumVideoFeatureForChoice(key, normalizedValue)
+        : '';
+    if (!premiumFeature && key === 'outputResolution' && normalizedValue === 'source' && typeof getPremiumVideoFeature === 'function') {
+        premiumFeature = getPremiumVideoFeature(
+            { ...videoWorkspaceState.settings, outputResolution: normalizedValue },
+            videoWorkspaceState.metadata
+        );
+    }
+    if (premiumFeature && !workspaceHasPremiumAccess()) {
+        renderWorkspaceSettings();
+        showWorkspaceError(`${premiumFeature} hanya tersedia untuk akun Premium.`);
+        if (typeof showPremiumRequired === 'function') showPremiumRequired(premiumFeature);
+        return;
+    }
+    const changed = videoWorkspaceState.settings[key] !== normalizedValue;
     videoWorkspaceState.settings[key] = normalizedValue;
+    showWorkspaceError('');
+    if (changed && typeof invalidateVideoProcessorResult === 'function') invalidateVideoProcessorResult();
     renderWorkspaceSettings();
 }
 
 function toggleWorkspaceAudio(button) {
-    videoWorkspaceState.settings.audioEnabled = !videoWorkspaceState.settings.audioEnabled;
+    if (typeof isVideoProcessingActive === 'function' && isVideoProcessingActive()) return;
+    const nextEnabled = !videoWorkspaceState.settings.audioEnabled;
+    if (nextEnabled && videoWorkspaceState.settings.audioQuality === 'hires-lossless' && !workspaceHasPremiumAccess()) {
+        videoWorkspaceState.settings.audioQuality = 'standard';
+        showWorkspaceError('Hi-Res Lossless dikembalikan ke Standar karena akun ini belum Premium.');
+    }
+    videoWorkspaceState.settings.audioEnabled = nextEnabled;
+    if (typeof invalidateVideoProcessorResult === 'function') invalidateVideoProcessorResult();
     renderWorkspaceSettings();
     if (button) button.focus({ preventScroll: true });
 }
@@ -231,18 +336,35 @@ function renderWorkspaceSettings() {
 
     const resolutionSelect = document.getElementById('workspace-resolution-select');
     const fpsSelect = document.getElementById('workspace-fps-select');
+    const audioQualitySelect = document.getElementById('workspace-audio-quality-select');
     if (resolutionSelect) resolutionSelect.value = settings.outputResolution;
     if (fpsSelect) fpsSelect.value = settings.frameRate;
+    if (audioQualitySelect) {
+        audioQualitySelect.value = settings.audioQuality;
+        audioQualitySelect.disabled = !settings.audioEnabled;
+    }
 
     const audioButton = document.getElementById('workspace-audio-toggle');
     const audioLabel = document.getElementById('workspace-audio-label');
+    const audioQualityField = document.getElementById('workspace-audio-quality-field');
+    const audioQualityNote = document.getElementById('workspace-audio-quality-note');
     if (audioButton) {
         audioButton.classList.toggle('active', settings.audioEnabled);
         audioButton.setAttribute('aria-pressed', String(settings.audioEnabled));
         const icon = audioButton.querySelector('.material-icons-round');
         if (icon) icon.textContent = settings.audioEnabled ? 'volume_up' : 'volume_off';
     }
-    if (audioLabel) audioLabel.textContent = settings.audioEnabled ? 'Audio akan disertakan' : 'Output akan tanpa audio';
+    if (audioLabel) {
+        if (!settings.audioEnabled) audioLabel.textContent = 'Output akan tanpa audio';
+        else if (settings.audioQuality === 'hires-lossless') audioLabel.textContent = 'Video + audio WAV lossless';
+        else audioLabel.textContent = 'Audio akan disertakan';
+    }
+    if (audioQualityField) audioQualityField.classList.toggle('disabled', !settings.audioEnabled);
+    if (audioQualityNote) {
+        audioQualityNote.textContent = settings.audioQuality === 'hires-lossless'
+            ? 'Menghasilkan audio WAV PCM 24-bit terpisah, hingga 96 kHz sesuai dukungan HP. Audio di dalam video tetap mengikuti encoder browser.'
+            : 'Audio menyatu dengan video mengikuti encoder browser.';
+    }
 
     const frame = document.getElementById('workspace-video-frame');
     if (frame) {
@@ -253,7 +375,13 @@ function renderWorkspaceSettings() {
 
     const headerMode = document.getElementById('workspace-header-mode');
     if (headerMode) headerMode.textContent = videoWorkspaceState.projectId ? 'Perbarui draft' : 'Proyek baru';
+    renderWorkspacePremiumAccess();
     setWorkspaceSaveLoading(videoWorkspaceSaving);
+    if (typeof refreshVideoProcessorUI === 'function') refreshVideoProcessorUI();
+}
+
+function handleWorkspaceNameChanged() {
+    if (typeof refreshVideoProcessorUI === 'function') refreshVideoProcessorUI();
 }
 
 function translateWorkspaceError(error) {
@@ -273,6 +401,7 @@ function translateWorkspaceError(error) {
 async function saveVideoWorkspace(event) {
     event?.preventDefault();
     if (videoWorkspaceSaving) return;
+    if (typeof isVideoProcessingActive === 'function' && isVideoProcessingActive()) return;
 
     showWorkspaceError('');
     const name = String(document.getElementById('workspace-project-name')?.value || '').trim().replace(/\s+/g, ' ');
@@ -286,6 +415,12 @@ async function saveVideoWorkspace(event) {
     }
     if (name.length < 2 || name.length > 80) {
         showWorkspaceError('Nama proyek harus terdiri dari 2–80 karakter.');
+        return;
+    }
+    const premiumFeature = getWorkspacePremiumFeature();
+    if (premiumFeature && !workspaceHasPremiumAccess()) {
+        showWorkspaceError(`${premiumFeature} hanya dapat disimpan oleh akun Premium.`);
+        if (typeof showPremiumRequired === 'function') showPremiumRequired(premiumFeature);
         return;
     }
 
@@ -312,6 +447,11 @@ async function saveVideoWorkspace(event) {
 
 function closeVideoWorkspace(options = {}) {
     if (videoWorkspaceSaving && options.force !== true) return;
+    if (typeof isVideoProcessingActive === 'function' && isVideoProcessingActive() && options.force !== true) {
+        safeShowToast('Batalkan pemrosesan sebelum keluar dari workspace.', 'info');
+        return;
+    }
+    if (typeof resetVideoProcessor === 'function') resetVideoProcessor({ silent: true });
     resetWorkspaceVideoElement();
     releaseWorkspaceObjectUrl();
     videoWorkspaceState = createEmptyVideoWorkspaceState();
@@ -330,6 +470,7 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && currentPage === 'page-video-workspace') closeVideoWorkspace();
 });
 window.addEventListener('pagehide', () => {
+    if (typeof disposeVideoProcessor === 'function') disposeVideoProcessor();
     resetWorkspaceVideoElement();
     releaseWorkspaceObjectUrl();
 });

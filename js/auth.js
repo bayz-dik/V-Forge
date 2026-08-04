@@ -300,6 +300,7 @@ function buildDefaultUserData(user, overrides = {}) {
         email,
         points: 0,
         isPremium: false,
+        subscriptionStatus: 'inactive',
         completedTasks: 0,
         profileSchemaVersion: 1,
         schemaVersion: 1,
@@ -313,7 +314,7 @@ function applyUserDataToApp(data, user, options = {}) {
     const safeData = data || {};
 
     try { userPoints = Number.isFinite(safeData.points) ? safeData.points : 0; } catch (error) {}
-    try { isPremium = safeData.isPremium === true; } catch (error) {}
+    try { isPremium = safeData.isPremium === true && safeData.subscriptionStatus === 'active'; } catch (error) {}
     try { completedTasks = Number.isFinite(safeData.completedTasks) ? safeData.completedTasks : 0; } catch (error) {}
 
     const fallbackName = user?.displayName || normalizeEmail(user?.email).split('@')[0] || 'V-Forge User';
@@ -536,7 +537,8 @@ async function saveProfile(event) {
     }
 }
 
-// Dipakai sementara oleh fitur poin/premium lama. Validasi server akan ditambahkan di tahap backend terkait.
+// Hanya menyinkronkan progres lokal non-entitlement. Status Premium dikelola
+// oleh backend subscription dan tidak pernah ditulis dari aplikasi klien.
 function syncUserDataToFirestore() {
     const user = auth?.currentUser;
     if (!user || !db) return Promise.resolve();
@@ -545,7 +547,6 @@ function syncUserDataToFirestore() {
     try {
         payload = {
             points: userPoints,
-            isPremium,
             completedTasks,
             updatedAt: serverTimestamp()
         };
