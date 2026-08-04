@@ -9,7 +9,11 @@ const VIDEO_WORKSPACE_DEFAULTS = Object.freeze({
     outputResolution: '1080p',
     frameRate: '30',
     audioEnabled: true,
-    audioQuality: 'standard'
+    audioQuality: 'standard',
+    templateId: 'clean-cut',
+    transitionId: 'cross-dissolve',
+    effectId: 'natural',
+    motionIntensity: 48
 });
 
 let videoWorkspaceRequestedProjectId = null;
@@ -195,13 +199,20 @@ function openVideoWorkspace(file, projectId = null) {
     videoWorkspaceState = createEmptyVideoWorkspaceState();
     videoWorkspaceState.projectId = existing?.id || null;
     videoWorkspaceState.file = file;
+    const selectedStudioPreset = !existing && typeof getStudioTemplatePreset === 'function'
+        ? getStudioTemplatePreset()
+        : null;
     videoWorkspaceState.settings = existing ? {
         aspectRatio: existing.aspectRatio,
         outputResolution: existing.outputResolution,
         frameRate: existing.outputFrameRate,
         audioEnabled: existing.audioEnabled,
-        audioQuality: existing.audioQuality || 'standard'
-    } : { ...VIDEO_WORKSPACE_DEFAULTS };
+        audioQuality: existing.audioQuality || 'standard',
+        templateId: existing.templateId || 'clean-cut',
+        transitionId: existing.transitionId || 'cross-dissolve',
+        effectId: existing.effectId || 'natural',
+        motionIntensity: Number.isFinite(existing.motionIntensity) ? existing.motionIntensity : 48
+    } : { ...VIDEO_WORKSPACE_DEFAULTS, ...(selectedStudioPreset || {}) };
 
     showWorkspaceError('');
     setWorkspacePreviewError('');
@@ -378,6 +389,7 @@ function renderWorkspaceSettings() {
     renderWorkspacePremiumAccess();
     setWorkspaceSaveLoading(videoWorkspaceSaving);
     if (typeof refreshVideoProcessorUI === 'function') refreshVideoProcessorUI();
+    if (typeof renderStudioWorkspaceControls === 'function') renderStudioWorkspaceControls();
 }
 
 function handleWorkspaceNameChanged() {

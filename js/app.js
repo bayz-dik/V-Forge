@@ -89,7 +89,8 @@
             pages.forEach(page => page.classList.remove('active'));
             const targetPage = document.getElementById(pageId); 
             if(targetPage) { targetPage.classList.add('active'); window.scrollTo(0, 0); }
-            currentPage = pageId; 
+            currentPage = pageId;
+            try { document.dispatchEvent(new CustomEvent('vforge:pagechange', { detail: { pageId, navIndex } })); } catch (error) {}
             updateNavVisibility();
             if(navIndex !== undefined && navIndex >= 0) { 
                 const navItems = document.querySelectorAll('.nav-item'); 
@@ -236,6 +237,8 @@
             }
             if (typeof renderWorkspacePremiumAccess === 'function') renderWorkspacePremiumAccess();
             if (typeof refreshVideoProcessorUI === 'function') refreshVideoProcessorUI();
+            if (typeof renderStudioTemplateGallery === 'function') renderStudioTemplateGallery();
+            if (typeof renderStudioWorkspaceControls === 'function') renderStudioWorkspaceControls();
             updatePointsDisplay(); 
         }
 

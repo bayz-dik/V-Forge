@@ -101,6 +101,10 @@ function normalizeProjectRecord(id, data = {}) {
         outputFrameRate: ['30', '60', '120', 'source'].includes(String(data.outputFrameRate)) ? String(data.outputFrameRate) : '30',
         audioEnabled: data.audioEnabled !== false,
         audioQuality: ['standard', 'hires-lossless'].includes(data.audioQuality) ? data.audioQuality : 'standard',
+        templateId: String(data.templateId || 'clean-cut').slice(0, 40),
+        transitionId: String(data.transitionId || 'cross-dissolve').slice(0, 40),
+        effectId: String(data.effectId || 'natural').slice(0, 40),
+        motionIntensity: Number.isFinite(data.motionIntensity) ? Math.max(0, Math.min(100, Math.round(data.motionIntensity))) : 48,
         status,
         progress: Number.isFinite(data.progress) ? Math.max(0, Math.min(100, data.progress)) : 0,
         lastExportFileName: String(data.lastExportFileName || '').slice(0, 180),
@@ -214,9 +218,11 @@ function projectListStateMarkup(type) {
 function projectCardMarkup(project) {
     const status = getProjectStatus(project.status);
     const meta = `${formatProjectDate(project.updatedAt)} • ${formatProjectFileSize(project.sourceFileSize)}`;
+    const templateLabel = typeof getStudioTemplateLabel === 'function' ? getStudioTemplateLabel(project.templateId) : 'Clean Cut';
+    const transitionLabel = typeof getStudioTransitionLabel === 'function' ? getStudioTransitionLabel(project.transitionId) : 'Cross Dissolve';
     return `<button type="button" class="project-item project-record" data-project-id="${escapeProjectHtml(project.id)}">
         <span class="project-icon tone-${status.tone}"><span class="material-icons-round">${status.icon}</span></span>
-        <span class="project-details"><span class="project-card-top"><span class="project-title">${escapeProjectHtml(project.name)}</span><span class="project-status-chip tone-${status.tone}">${status.label}</span></span><span class="project-meta">${escapeProjectHtml(meta)}</span><span class="project-source-name">${escapeProjectHtml(project.sourceFileName)}</span></span>
+        <span class="project-details"><span class="project-card-top"><span class="project-title">${escapeProjectHtml(project.name)}</span><span class="project-status-chip tone-${status.tone}">${status.label}</span></span><span class="project-meta">${escapeProjectHtml(meta)}</span><span class="project-style-row"><span><span class="material-icons-round">style</span>${escapeProjectHtml(templateLabel)}</span><span><span class="material-icons-round">swap_calls</span>${escapeProjectHtml(transitionLabel)}</span></span><span class="project-source-name">${escapeProjectHtml(project.sourceFileName)}</span></span>
         <span class="material-icons-round project-chevron">chevron_right</span>
     </button>`;
 }
@@ -262,8 +268,11 @@ function renderProjectLibrary() {
 function editorProjectCardMarkup(project, index) {
     const status = getProjectStatus(project.status);
     const gradients = ['violet', 'blue', 'orange', 'green'];
+    const templateLabel = typeof getStudioTemplateLabel === 'function' ? getStudioTemplateLabel(project.templateId) : 'Clean Cut';
+    const template = typeof VFORGE_STUDIO_TEMPLATES !== 'undefined' ? VFORGE_STUDIO_TEMPLATES[project.templateId] : null;
+    const background = template?.image ? ` style="background-image:linear-gradient(180deg,rgba(7,9,14,.05),rgba(7,9,14,.72)),url('${escapeProjectHtml(template.image)}')"` : '';
     return `<button type="button" class="rc-item" data-project-id="${escapeProjectHtml(project.id)}">
-        <span class="rc-thumb project-thumb tone-${gradients[index % gradients.length]}"><span class="material-icons-round project-thumb-icon">movie_filter</span><span class="rc-status tone-${status.tone}">${status.label}</span></span>
+        <span class="rc-thumb project-thumb tone-${gradients[index % gradients.length]}"${background}><span class="material-icons-round project-thumb-icon">movie_filter</span><span class="rc-status tone-${status.tone}">${status.label}</span><span class="rc-template-chip"><span class="material-icons-round">style</span>${escapeProjectHtml(templateLabel)}</span></span>
         <span class="rc-info"><strong>${escapeProjectHtml(project.name)}</strong><small>${escapeProjectHtml(formatProjectDate(project.updatedAt))}</small></span>
     </button>`;
 }
@@ -455,9 +464,13 @@ async function saveWorkspaceProject({ projectId = null, file, name, metadata = {
         outputFrameRate: ['30', '60', '120', 'source'].includes(String(settings.frameRate)) ? String(settings.frameRate) : '30',
         audioEnabled: settings.audioEnabled !== false,
         audioQuality: ['standard', 'hires-lossless'].includes(settings.audioQuality) ? settings.audioQuality : 'standard',
+        templateId: String(settings.templateId || 'clean-cut').slice(0, 40),
+        transitionId: String(settings.transitionId || 'cross-dissolve').slice(0, 40),
+        effectId: String(settings.effectId || 'natural').slice(0, 40),
+        motionIntensity: Math.max(0, Math.min(100, Math.round(Number(settings.motionIntensity) || 0))),
         status: 'draft',
         progress: 0,
-        schemaVersion: 4,
+        schemaVersion: 5,
         updatedAt: serverTimestamp()
     };
 
@@ -498,7 +511,7 @@ async function markWorkspaceProjectExported(projectId, result = {}) {
         lastExportLosslessAudioSampleRate: Math.max(0, Math.round(Number(result.losslessAudioSampleRate) || 0)),
         lastExportLosslessAudioBitDepth: Math.max(0, Math.round(Number(result.losslessAudioBitDepth) || 0)),
         lastExportedAt: serverTimestamp(),
-        schemaVersion: 4,
+        schemaVersion: 5,
         updatedAt: serverTimestamp()
     }, { merge: true });
     return true;
@@ -558,7 +571,9 @@ function openProjectDetails(projectId) {
             const audio = !project.audioEnabled
                 ? 'Mute'
                 : (project.audioQuality === 'hires-lossless' ? 'Hi-Res Lossless + WAV' : 'Audio');
-            output.textContent = `${ratio} • ${project.outputResolution} • ${fps} • ${audio}`;
+            const template = typeof getStudioTemplateLabel === 'function' ? getStudioTemplateLabel(project.templateId) : 'Clean Cut';
+            const transition = typeof getStudioTransitionLabel === 'function' ? getStudioTransitionLabel(project.transitionId) : 'Cross Dissolve';
+            output.textContent = `${ratio} • ${project.outputResolution} • ${fps} • ${audio} • ${template} • ${transition}`;
         }
     }
     if (lastExport) {

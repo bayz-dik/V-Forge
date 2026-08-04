@@ -34,6 +34,10 @@ function createEmptyVideoProcessorState() {
         frameRate: '30',
         audioEnabled: true,
         audioQuality: 'standard',
+        templateId: 'clean-cut',
+        transitionId: 'cross-dissolve',
+        effectId: 'natural',
+        motionIntensity: 48,
         videoBitsPerSecond: 0,
         frameCallbackId: null,
         frameCallbackMode: '',
@@ -430,15 +434,128 @@ function updateVideoProcessorResultUI() {
     }
 }
 
+function getVideoProcessorStudioFilter(effectId = 'natural') {
+    const filters = {
+        natural: 'none',
+        vibrant: 'saturate(1.24) contrast(1.06) brightness(1.02)',
+        cinematic: 'saturate(.86) contrast(1.12) brightness(.94) sepia(.07)',
+        'soft-film': 'saturate(.78) contrast(.94) brightness(1.07) sepia(.12)',
+        mono: 'grayscale(1) contrast(1.08)',
+        neon: 'saturate(1.48) contrast(1.16) hue-rotate(-8deg) brightness(.96)',
+        'cinematic-pro': 'saturate(.72) contrast(1.2) brightness(.91) sepia(.11)'
+    };
+    return filters[effectId] || filters.natural;
+}
+
+function getVideoProcessorTransitionEdge(video) {
+    const duration = Math.max(.01, Number(video?.duration) || 0);
+    const current = Math.max(0, Number(video?.currentTime) || 0);
+    const edgeDuration = Math.min(.82, Math.max(.28, duration * .08));
+    if (current < edgeDuration) return { active: true, direction: 'in', progress: Math.max(0, Math.min(1, current / edgeDuration)) };
+    if (duration - current < edgeDuration) return { active: true, direction: 'out', progress: Math.max(0, Math.min(1, (duration - current) / edgeDuration)) };
+    return { active: false, direction: 'none', progress: 1 };
+}
+
+function drawVideoProcessorStudioOverlay(context, canvas, video, transitionId, edge) {
+    if (!edge.active || transitionId === 'hard-cut') return;
+    const strength = 1 - edge.progress;
+    context.save();
+    if (transitionId === 'cross-dissolve') {
+        context.globalAlpha = Math.max(0, Math.min(.82, strength * .82));
+        context.fillStyle = '#07090D';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    } else if (transitionId === 'soft-fade') {
+        context.globalAlpha = Math.max(0, Math.min(1, strength));
+        context.fillStyle = '#000000';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    } else if (transitionId === 'film-burn') {
+        const gradient = context.createRadialGradient(
+            canvas.width * (edge.direction === 'in' ? .18 : .82), canvas.height * .68, 0,
+            canvas.width * .48, canvas.height * .55, Math.max(canvas.width, canvas.height) * .76
+        );
+        gradient.addColorStop(0, `rgba(255,247,190,${Math.min(1, strength * 1.3)})`);
+        gradient.addColorStop(.22, `rgba(255,157,58,${Math.min(.95, strength * 1.2)})`);
+        gradient.addColorStop(.52, `rgba(229,44,23,${Math.min(.78, strength)})`);
+        gradient.addColorStop(1, 'rgba(0,0,0,0)');
+        context.globalCompositeOperation = 'screen';
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    } else if (transitionId === 'glitch-split') {
+        context.globalCompositeOperation = 'screen';
+        context.globalAlpha = Math.min(.7, strength * .85);
+        context.fillStyle = 'rgba(0,235,255,.38)';
+        context.fillRect(-canvas.width * strength * .05, canvas.height * .18, canvas.width, canvas.height * .12);
+        context.fillStyle = 'rgba(255,0,145,.34)';
+        context.fillRect(canvas.width * strength * .06, canvas.height * .58, canvas.width, canvas.height * .15);
+    } else if (transitionId === 'liquid-warp') {
+        const gradient = context.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height) * .64);
+        gradient.addColorStop(0, `rgba(151,226,255,${strength * .42})`);
+        gradient.addColorStop(.42, `rgba(99,82,224,${strength * .30})`);
+        gradient.addColorStop(1, 'rgba(0,0,0,0)');
+        context.globalCompositeOperation = 'screen';
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    context.restore();
+}
+
 function drawVideoProcessorFrame() {
     const video = document.getElementById('workspace-video');
     const context = videoProcessorState.context;
     const canvas = videoProcessorState.canvas;
     if (!video || !context || !canvas || video.readyState < 2) return;
     const crop = getVideoProcessorCrop(video.videoWidth, video.videoHeight, canvas.width, canvas.height);
+    const duration = Math.max(.01, Number(video.duration) || 1);
+    const progress = Math.max(0, Math.min(1, Number(video.currentTime) / duration));
+    const intensity = Math.max(0, Math.min(1, Number(videoProcessorState.motionIntensity) / 100));
+    const transitionId = videoProcessorState.transitionId || 'cross-dissolve';
+    const edge = getVideoProcessorTransitionEdge(video);
+
+    let scale = 1;
+    let panX = 0;
+    let panY = 0;
+    const templateId = videoProcessorState.templateId || 'clean-cut';
+    if (templateId === 'minimal-story' || templateId === 'cinematic-drive') {
+        scale += intensity * (.025 + progress * .025);
+        panX = canvas.width * intensity * .008 * Math.sin(progress * Math.PI);
+    } else if (templateId === 'creator-pop') {
+        scale += intensity * (.018 + Math.sin(progress * Math.PI * 4) * .006);
+    } else if (templateId === 'velocity-drive' || templateId === 'neon-rush') {
+        scale += intensity * .026;
+        panX = canvas.width * intensity * .018 * Math.sin(progress * Math.PI * 2);
+        panY = canvas.height * intensity * .006 * Math.cos(progress * Math.PI * 2);
+    }
+
+    if (edge.active && transitionId === 'zoom-punch') scale += (1 - edge.progress) * (.12 + intensity * .06);
+    if (edge.active && transitionId === 'whip-pan') {
+        const direction = edge.direction === 'in' ? -1 : 1;
+        panX += direction * canvas.width * (1 - edge.progress) * .82;
+    }
+    if (edge.active && transitionId === 'liquid-warp') scale += (1 - edge.progress) * .055;
+
+    const destinationWidth = canvas.width * scale;
+    const destinationHeight = canvas.height * scale;
+    const destinationX = (canvas.width - destinationWidth) / 2 + panX;
+    const destinationY = (canvas.height - destinationHeight) / 2 + panY;
+
+    context.save();
     context.fillStyle = '#000000';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    context.drawImage(video, crop.x, crop.y, crop.width, crop.height, 0, 0, canvas.width, canvas.height);
+    if ('filter' in context) context.filter = getVideoProcessorStudioFilter(videoProcessorState.effectId);
+    context.drawImage(video, crop.x, crop.y, crop.width, crop.height, destinationX, destinationY, destinationWidth, destinationHeight);
+    context.restore();
+
+    if (edge.active && transitionId === 'glitch-split') {
+        const strength = 1 - edge.progress;
+        const sliceHeight = Math.max(2, Math.round(canvas.height * .10));
+        const sliceY = Math.round(canvas.height * (.22 + ((Math.floor(video.currentTime * 24) % 4) * .14)));
+        context.save();
+        context.globalAlpha = Math.min(.65, strength * .9);
+        context.drawImage(canvas, 0, sliceY, canvas.width, sliceHeight, canvas.width * strength * .045, sliceY, canvas.width, sliceHeight);
+        context.restore();
+    }
+
+    drawVideoProcessorStudioOverlay(context, canvas, video, transitionId, edge);
 }
 
 function stopVideoProcessorFrameLoop() {
@@ -880,6 +997,10 @@ async function startVideoProcessing() {
     videoProcessorState.frameRate = frameRate;
     videoProcessorState.audioEnabled = videoWorkspaceState.settings.audioEnabled;
     videoProcessorState.audioQuality = videoWorkspaceState.settings.audioQuality || 'standard';
+    videoProcessorState.templateId = videoWorkspaceState.settings.templateId || 'clean-cut';
+    videoProcessorState.transitionId = videoWorkspaceState.settings.transitionId || 'cross-dissolve';
+    videoProcessorState.effectId = videoWorkspaceState.settings.effectId || 'natural';
+    videoProcessorState.motionIntensity = Math.max(0, Math.min(100, Math.round(Number(videoWorkspaceState.settings.motionIntensity) || 0)));
     videoProcessorState.mimeType = capability.mimeType || 'video/webm';
     videoProcessorState.videoBitsPerSecond = getVideoProcessorBitrate(dimensions.width, dimensions.height, frameRate);
     videoProcessorState.previousVideoState = rememberVideoProcessorPlayback(video);
