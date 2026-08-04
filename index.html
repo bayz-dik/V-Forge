@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css?v=4.0.1">
+    <link rel="stylesheet" href="css/style.css?v=5.0.0">
 </head>
 <body class="">
     <!-- LOADING SCREEN - tampil sementara nunggu Firebase cek status login -->
@@ -135,27 +135,14 @@
     <div id="notif-permission-modal" class="permission-modal-wrapper"><div class="permission-sheet"><div class="perm-icon-box" style="background: rgba(255, 140, 0, 0.1); color: var(--accent-gold);"><span class="material-icons-round">notifications_active</span></div><h3>Enable Notifications?</h3><p>V-Forge needs your permission to alert you when rendering is complete.</p><div class="perm-btn-group"><button class="perm-btn deny" onclick="handleNotifPermission(false)">Maybe Later</button><button class="perm-btn allow" onclick="handleNotifPermission(true)" style="background: var(--accent-gold); box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);">Allow</button></div></div></div>
     <div id="toast-alert"><span class="material-icons-round" id="toast-icon" style="color: #34C759; font-size: 20px;">check_circle</span><span id="toast-text">Success!</span></div>
 
-    <!-- PROJECT & HISTORY V1: video hanya dibaca sebagai metadata, belum diunggah -->
-    <div id="project-create-modal" class="project-sheet-backdrop" role="dialog" aria-modal="true" aria-labelledby="project-create-title" aria-hidden="true" onclick="handleProjectSheetBackdrop(event)">
-        <form class="project-sheet" id="project-create-form" onsubmit="createProjectDraft(event)" novalidate>
-            <div class="project-sheet-handle" aria-hidden="true"></div>
-            <div class="project-sheet-header"><div><span class="project-sheet-kicker">Proyek baru</span><h2 id="project-create-title">Simpan sebagai draft</h2></div><button type="button" class="project-sheet-close" onclick="closeProjectCreateSheet()" aria-label="Tutup"><span class="material-icons-round">close</span></button></div>
-            <p class="project-sheet-note"><span class="material-icons-round">info</span><span>Pada tahap ini video belum diunggah. V-Forge hanya menyimpan nama dan informasi file ke akunmu.</span></p>
-            <label class="project-name-field" for="project-name-input"><span>Nama proyek</span><input type="text" id="project-name-input" maxlength="80" autocomplete="off" placeholder="Contoh: Cinematic Merapi"></label>
-            <div class="project-file-summary"><div class="project-file-icon"><span class="material-icons-round">movie</span></div><div><strong id="project-file-name">Video dipilih</strong><span id="project-file-meta">Informasi file</span></div></div>
-            <p class="project-form-error" id="project-create-error" role="alert" aria-live="assertive"></p>
-            <div class="project-sheet-actions"><button type="button" class="project-secondary-btn" onclick="closeProjectCreateSheet()">Batal</button><button type="submit" class="project-primary-btn" id="project-create-submit"><span class="project-button-label">Simpan draft</span></button></div>
-        </form>
-    </div>
-
     <div id="project-detail-modal" class="project-sheet-backdrop" role="dialog" aria-modal="true" aria-labelledby="project-detail-title" aria-hidden="true" onclick="handleProjectDetailBackdrop(event)">
         <section class="project-sheet project-detail-sheet">
             <div class="project-sheet-handle" aria-hidden="true"></div>
             <div class="project-sheet-header"><div><span class="project-sheet-kicker">Detail proyek</span><h2 id="project-detail-title">Nama proyek</h2></div><button type="button" class="project-sheet-close" onclick="closeProjectDetailSheet()" aria-label="Tutup"><span class="material-icons-round">close</span></button></div>
             <div class="project-detail-status"><span class="project-status-chip" id="project-detail-status">Draft</span><span id="project-detail-updated">Baru saja</span></div>
-            <dl class="project-detail-grid"><div><dt>File sumber</dt><dd id="project-detail-file">—</dd></div><div><dt>Ukuran</dt><dd id="project-detail-size">—</dd></div><div><dt>Dibuat</dt><dd id="project-detail-created">—</dd></div><div><dt>Sinkronisasi</dt><dd><span class="material-icons-round">cloud_done</span> Firestore</dd></div></dl>
-            <div class="project-next-step"><span class="material-icons-round">cloud_upload</span><div><strong>Upload video belum aktif</strong><p>Draft ini sudah aman di akunmu. File video akan dihubungkan pada tahap Upload Video berikutnya.</p></div></div>
-            <button type="button" class="project-primary-btn project-full-btn" onclick="closeProjectDetailSheet()">Selesai</button>
+            <dl class="project-detail-grid"><div><dt>File sumber</dt><dd id="project-detail-file">—</dd></div><div><dt>Ukuran</dt><dd id="project-detail-size">—</dd></div><div><dt>Durasi</dt><dd id="project-detail-duration">—</dd></div><div><dt>Resolusi sumber</dt><dd id="project-detail-resolution">—</dd></div><div><dt>Setelan output</dt><dd id="project-detail-output">—</dd></div><div><dt>Dibuat</dt><dd id="project-detail-created">—</dd></div></dl>
+            <div class="project-next-step"><span class="material-icons-round">phonelink</span><div><strong>Video tetap aman di perangkat</strong><p>Firestore hanya menyimpan metadata dan setelan. Setelah aplikasi ditutup, pilih ulang file yang sama untuk melanjutkan workspace.</p></div></div>
+            <div class="project-detail-actions"><button type="button" class="project-secondary-btn" onclick="closeProjectDetailSheet()">Tutup</button><button type="button" class="project-primary-btn" id="project-continue-button" onclick="continueProjectInWorkspace()"><span class="material-icons-round">movie_edit</span>Lanjutkan</button></div>
         </section>
     </div>
 
@@ -197,7 +184,7 @@
         <div class="hero-content-wrapper">
             <div class="editor-title-area">
                 <h2 id="editor-greeting-title">Hey, Bayu</h2>
-                <p>Setelan Pro proyek kamu</p>
+                <p>Pilih video lalu siapkan draft proyekmu</p>
             </div>
 
             <div class="feature-scroll-container">
@@ -218,11 +205,11 @@
                 </div>
             </div>
 
-            <button type="button" class="create-video-btn" onclick="document.getElementById('video-editor-input').click()">
-                <span class="material-icons-round">add_circle</span><span>Buat Draft Proyek</span>
+            <button type="button" class="create-video-btn" onclick="openVideoPicker()">
+                <span class="material-icons-round">video_call</span><span>Pilih Video & Buka Workspace</span>
             </button>
 
-            <input type="file" id="video-editor-input" accept="video/*" onchange="handleProjectFileSelected(this)">
+            <input type="file" id="video-editor-input" accept="video/*,.mp4,.mov,.m4v,.webm,.3gp" onchange="handleWorkspaceFileSelected(this)" hidden>
 
             <div class="history-section-alt">
                 <div class="editor-history-heading"><div><h3>Proyek Terbaru</h3><p>Tersinkron real-time dengan akunmu</p></div><button type="button" onclick="goToPage('page-search', 2)">Lihat semua</button></div>
@@ -231,6 +218,58 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div id="page-video-workspace" class="page video-workspace-page">
+        <header class="workspace-header">
+            <button type="button" class="workspace-icon-button" onclick="closeVideoWorkspace()" aria-label="Kembali"><span class="material-icons-round">arrow_back</span></button>
+            <div><span>Video Workspace</span><strong id="workspace-header-mode">Proyek baru</strong></div>
+            <button type="button" class="workspace-icon-button" onclick="replaceWorkspaceVideo()" aria-label="Ganti video"><span class="material-icons-round">swap_horiz</span></button>
+        </header>
+
+        <main class="workspace-body">
+            <section class="workspace-preview-card" aria-labelledby="workspace-preview-title">
+                <div class="workspace-section-heading"><div><span>Preview lokal</span><h2 id="workspace-preview-title">Tinjau videomu</h2></div><span class="workspace-local-badge"><span class="material-icons-round">smartphone</span>Di HP</span></div>
+                <div class="workspace-video-frame ratio-original" id="workspace-video-frame">
+                    <video id="workspace-video" controls playsinline preload="metadata" controlslist="nodownload noremoteplayback" onloadedmetadata="handleWorkspaceMetadataLoaded()" onerror="handleWorkspacePreviewError()"></video>
+                    <div class="workspace-video-loading" id="workspace-video-loading"><span class="workspace-spinner"></span><p>Membaca video...</p></div>
+                </div>
+                <p class="workspace-preview-error" id="workspace-preview-error" role="alert" aria-live="assertive"></p>
+                <div class="workspace-source-meta">
+                    <div><span class="material-icons-round">movie</span><p><strong id="workspace-file-name">—</strong><small id="workspace-file-type">—</small></p></div>
+                    <button type="button" onclick="replaceWorkspaceVideo()">Ganti</button>
+                </div>
+                <div class="workspace-meta-grid" aria-label="Informasi video">
+                    <div><span>Durasi</span><strong id="workspace-duration">—</strong></div>
+                    <div><span>Resolusi</span><strong id="workspace-resolution">—</strong></div>
+                    <div><span>Ukuran</span><strong id="workspace-file-size">—</strong></div>
+                </div>
+            </section>
+
+            <form id="workspace-form" class="workspace-settings-card" onsubmit="saveVideoWorkspace(event)" novalidate>
+                <div class="workspace-section-heading"><div><span>Draft proyek</span><h2>Pengaturan workspace</h2></div><span class="material-icons-round workspace-heading-icon">tune</span></div>
+
+                <label class="workspace-name-field" for="workspace-project-name"><span>Nama proyek</span><input id="workspace-project-name" type="text" maxlength="80" autocomplete="off" placeholder="Contoh: Cinematic Merapi"></label>
+
+                <fieldset class="workspace-setting-group"><legend>Rasio video</legend><div class="workspace-choice-grid ratio-choices" role="group">
+                    <button type="button" class="workspace-choice active" data-workspace-setting="aspectRatio" data-value="original" onclick="selectWorkspaceSetting('aspectRatio', 'original', this)"><span class="ratio-icon original"></span><strong>Asli</strong></button>
+                    <button type="button" class="workspace-choice" data-workspace-setting="aspectRatio" data-value="9:16" onclick="selectWorkspaceSetting('aspectRatio', '9:16', this)"><span class="ratio-icon portrait"></span><strong>9:16</strong></button>
+                    <button type="button" class="workspace-choice" data-workspace-setting="aspectRatio" data-value="16:9" onclick="selectWorkspaceSetting('aspectRatio', '16:9', this)"><span class="ratio-icon landscape"></span><strong>16:9</strong></button>
+                    <button type="button" class="workspace-choice" data-workspace-setting="aspectRatio" data-value="1:1" onclick="selectWorkspaceSetting('aspectRatio', '1:1', this)"><span class="ratio-icon square"></span><strong>1:1</strong></button>
+                </div></fieldset>
+
+                <div class="workspace-select-grid">
+                    <label><span>Kualitas target</span><select id="workspace-resolution-select" onchange="selectWorkspaceSetting('outputResolution', this.value)"><option value="720p">720p</option><option value="1080p" selected>1080p</option><option value="source">Ikuti sumber</option></select></label>
+                    <label><span>Frame rate</span><select id="workspace-fps-select" onchange="selectWorkspaceSetting('frameRate', this.value)"><option value="30" selected>30 FPS</option><option value="60">60 FPS</option><option value="source">Ikuti sumber</option></select></label>
+                </div>
+
+                <button type="button" class="workspace-audio-toggle active" id="workspace-audio-toggle" aria-pressed="true" onclick="toggleWorkspaceAudio(this)"><span class="material-icons-round">volume_up</span><span><strong>Pertahankan audio</strong><small id="workspace-audio-label">Audio akan disertakan</small></span><span class="workspace-toggle-knob"></span></button>
+
+                <p class="workspace-scope-note"><span class="material-icons-round">info</span><span>Preview diputar langsung dari file di HP. Menyimpan draft hanya mengirim metadata dan setelan ke Firestore—bukan isi videonya.</span></p>
+                <p class="workspace-form-error" id="workspace-form-error" role="alert" aria-live="assertive"></p>
+                <button type="submit" class="workspace-save-button" id="workspace-save-button" disabled><span class="material-icons-round">cloud_done</span><span class="workspace-button-label">Simpan draft</span></button>
+            </form>
+        </main>
     </div>
 
     <div id="page-search" class="page">
@@ -301,9 +340,10 @@
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
-        <script src="js/firebase-config.js?v=4.0.1"></script>
-        <script src="js/app.js?v=4.0.1"></script>
-        <script src="js/projects.js?v=4.0.1"></script>
-        <script src="js/auth.js?v=4.0.1"></script>
+        <script src="js/firebase-config.js?v=5.0.0"></script>
+        <script src="js/app.js?v=5.0.0"></script>
+        <script src="js/projects.js?v=5.0.0"></script>
+        <script src="js/workspace.js?v=5.0.0"></script>
+        <script src="js/auth.js?v=5.0.0"></script>
 </body>
 </html>
