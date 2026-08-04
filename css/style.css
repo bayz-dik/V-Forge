@@ -2490,3 +2490,340 @@ body.studio-onboarding-open { overflow:hidden; }
     .workspace-video-frame video { transition:none !important; }
     .studio-playhead.playing { animation-duration:.01ms !important; }
 }
+
+/* =========================================================
+   V-FORGE MOBILE LAYOUT HOTFIX V7.0.1
+   Memisahkan header, hero, CTA, template, dan project cards
+   agar tidak saling menumpuk pada Chrome/Brave Android.
+   ========================================================= */
+#page-enhancer {
+    padding-top: 0;
+    overflow-x: clip;
+}
+
+#page-enhancer .editor-header-alt {
+    position: sticky;
+    top: 0;
+    left: auto;
+    right: auto;
+    z-index: 120;
+    min-height: 74px;
+    padding: max(12px, env(safe-area-inset-top)) 18px 12px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background: rgba(5,6,10,.76);
+    box-shadow: 0 12px 34px rgba(0,0,0,.24);
+    backdrop-filter: blur(24px) saturate(145%);
+    -webkit-backdrop-filter: blur(24px) saturate(145%);
+}
+
+#page-enhancer .editor-header-alt .header-title {
+    min-width: 0;
+    overflow: hidden;
+    padding: 0 10px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#page-enhancer .hero-banner-container {
+    width: calc(100% - 28px);
+    min-height: 0;
+    height: auto;
+    margin: 14px auto 0;
+    overflow: hidden;
+}
+
+#page-enhancer .hero-glass-shell {
+    min-height: 0;
+    height: auto;
+    padding: 70px 12px 14px;
+}
+
+#page-enhancer .hero-showcase-track {
+    align-items: stretch;
+}
+
+#page-enhancer .hero-slide {
+    min-height: 278px;
+    height: auto;
+    padding: 16px 16px 70px;
+}
+
+#page-enhancer .hero-slide-copy {
+    max-width: 54%;
+}
+
+#page-enhancer .hero-slide-copy h3 {
+    font-size: clamp(17px, 5.1vw, 21px);
+}
+
+#page-enhancer .hero-slide-copy p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}
+
+#page-enhancer .hero-poster-stack {
+    top: 24px;
+    right: 13px;
+    gap: 7px;
+}
+
+#page-enhancer .hero-car-stage {
+    bottom: 58px;
+    height: 118px;
+}
+
+#page-enhancer .hero-slide-stats {
+    bottom: 12px;
+}
+
+#page-enhancer .hero-floating-card {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    z-index: 4;
+    width: auto;
+    margin: 12px 2px 0;
+}
+
+#page-enhancer .image-fade-bottom {
+    display: none;
+}
+
+#page-enhancer .hero-content-wrapper {
+    z-index: 2;
+    margin-top: 18px;
+    padding-bottom: 44px;
+}
+
+#page-enhancer .editor-title-area {
+    margin: 0 16px 18px;
+}
+
+#page-enhancer .feature-scroll-container {
+    padding-top: 0;
+    padding-bottom: 22px;
+}
+
+#page-enhancer .f-card {
+    height: auto;
+    min-height: 142px;
+    min-width: 0;
+}
+
+#page-enhancer .studio-template-section {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 24px;
+    content-visibility: visible;
+    contain-intrinsic-size: auto;
+}
+
+#page-enhancer .studio-template-list {
+    min-height: 132px;
+}
+
+#page-enhancer .create-video-btn {
+    position: relative;
+    z-index: 1;
+    width: calc(100% - 32px);
+    height: auto;
+    min-height: 132px;
+    align-items: center;
+    margin: 0 16px 34px;
+    padding: 18px;
+    overflow: visible;
+}
+
+#page-enhancer .create-video-copy {
+    align-self: stretch;
+    justify-content: center;
+}
+
+#page-enhancer .create-video-copy strong,
+#page-enhancer .create-video-copy small,
+#page-enhancer .create-video-meta,
+#page-enhancer .create-video-preset {
+    position: static;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+#page-enhancer .create-video-preset {
+    margin-top: 3px;
+    line-height: 1.35;
+}
+
+#page-enhancer .history-section-alt {
+    position: relative;
+    z-index: 1;
+    margin-top: 0;
+    padding: 0 16px 30px;
+    clear: both;
+}
+
+#page-enhancer .editor-history-heading {
+    min-height: 58px;
+    margin-bottom: 18px;
+}
+
+#page-enhancer .recent-grid {
+    align-items: start;
+}
+
+#page-enhancer .rc-thumb {
+    isolation: isolate;
+}
+
+#page-enhancer .rc-template-chip {
+    left: 10px;
+    right: auto;
+    bottom: 54px;
+    z-index: 3;
+    max-width: calc(100% - 20px);
+}
+
+#page-enhancer .rc-status {
+    z-index: 2;
+}
+
+@media (max-width: 430px) {
+    #page-enhancer .editor-header-alt {
+        grid-template-columns: 44px minmax(0,1fr) auto;
+    }
+
+    #page-enhancer .hero-banner-container {
+        width: calc(100% - 24px);
+        border-radius: 28px;
+    }
+
+    #page-enhancer .hero-glass-shell {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    #page-enhancer .hero-slide {
+        min-height: 264px;
+        padding: 14px 14px 66px;
+        border-radius: 22px;
+    }
+
+    #page-enhancer .hero-slide-copy {
+        max-width: 57%;
+    }
+
+    #page-enhancer .hero-poster {
+        width: 44px;
+        height: 78px;
+        border-radius: 14px;
+    }
+
+    #page-enhancer .hero-car-stage {
+        left: 8px;
+        right: 8px;
+        bottom: 56px;
+        height: 108px;
+    }
+
+    #page-enhancer .hero-car-body {
+        left: 8px;
+        right: 10px;
+        height: 94px;
+    }
+
+    #page-enhancer .hero-wheel.rear { left: 52px; }
+    #page-enhancer .hero-wheel.front { right: 42px; }
+
+    #page-enhancer .hero-slide-stats {
+        left: 12px;
+        right: 12px;
+        gap: 6px;
+    }
+
+    #page-enhancer .hero-slide-stats div {
+        padding: 8px 5px;
+    }
+
+    #page-enhancer .hero-floating-card {
+        margin-top: 10px;
+        padding: 12px;
+    }
+
+    #page-enhancer .editor-title-area {
+        margin-left: 12px;
+        margin-right: 12px;
+        padding: 18px;
+    }
+
+    #page-enhancer .editor-title-area h2 {
+        font-size: clamp(31px, 9vw, 38px);
+    }
+
+    #page-enhancer .feature-scroll-container {
+        gap: 9px;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    #page-enhancer .f-card {
+        min-height: 136px;
+        padding: 10px 5px;
+    }
+
+    #page-enhancer .studio-template-section {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+
+    #page-enhancer .create-video-btn {
+        width: calc(100% - 24px);
+        grid-template-columns: 54px minmax(0,1fr) 24px;
+        gap: 12px;
+        margin-left: 12px;
+        margin-right: 12px;
+        padding: 16px;
+    }
+
+    #page-enhancer .create-video-icon-shell {
+        width: 54px;
+        height: 54px;
+    }
+
+    #page-enhancer .create-video-copy strong {
+        font-size: clamp(17px, 5.2vw, 20px);
+    }
+
+    #page-enhancer .history-section-alt {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
+@media (max-width: 350px) {
+    #page-enhancer .hero-slide-copy p,
+    #page-enhancer .hero-poster-stack {
+        display: none;
+    }
+
+    #page-enhancer .hero-slide-copy {
+        max-width: 88%;
+    }
+
+    #page-enhancer .create-video-btn {
+        grid-template-columns: 48px minmax(0,1fr) 20px;
+        gap: 9px;
+        padding: 14px;
+    }
+
+    #page-enhancer .create-video-icon-shell {
+        width: 48px;
+        height: 48px;
+    }
+
+    #page-enhancer .create-video-copy small {
+        display: none;
+    }
+}
