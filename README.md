@@ -1,33 +1,47 @@
-# V-Forge — Motion Studio v7.0.0
+# V-Forge — Focus Redesign v8.0.0
 
-Versi ini menambahkan Template Studio, Smart Timeline, preview transisi, efek warna, onboarding premium, project card modern, dan optimasi motion untuk browser Android. Lihat `RELEASE-NOTES-V7.md` untuk detail.
+V-Forge adalah editor video **local-first** berbasis PWA. File video sumber dan hasil ekspor tetap berada di perangkat pengguna. Firebase dipakai untuk akun, status Premium, metadata proyek, preset, efek, transisi, dan catatan ekspor kecil.
 
-# V-Forge — AI Video Studio
+## Perubahan utama v8
 
-Versi: **7.0.1 — Motion Studio Mobile Layout Hotfix**
+- Home baru dengan satu fokus utama: **Proyek Baru**.
+- Riwayat proyek dipindahkan ke Home agar pengguna dapat langsung melanjutkan edit.
+- Template Studio didesain ulang menjadi layar fokus tanpa hero lama yang bertumpuk.
+- Editor memakai toolbar bawah: Media, Edit, Audio, Text, Effects, dan Export.
+- Tampilan preview, timeline, panel efek, pilihan format, audio, dan export dibuat lebih ringkas.
+- Navigasi utama menjadi Home, Projects, tombol Proyek Baru, Templates, dan Profile.
+- Sistem Premium 4K, 120 FPS, dan Hi-Res Lossless tetap memakai entitlement backend yang sudah ada.
+- Service Worker menggunakan cache `vforge-v8-0-0-focus-redesign`.
 
-## Fitur yang sudah terhubung
+## Status fitur editor
 
-- Firebase Authentication: daftar, login, logout, reset password, dan sesi tetap masuk.
-- Profile Sync v1: nama, username, dan tanggal lahir tersimpan real-time di Firestore.
-- Project & History v1: metadata draft proyek tersimpan real-time per akun.
-- Video Workspace v1.2: preview video lokal, rasio, target 720p/1080p/4K, target 30/60/120 FPS, kualitas audio, dan penanda fitur Premium.
-- Video Processing v1.2: crop rasio, perubahan resolusi, FPS, audio opsional, progress, jeda, batal, preview hasil, serta ekspor video nyata di perangkat.
-- Hi-Res Lossless: menghasilkan file audio pendamping WAV PCM 24-bit dengan sample rate hingga 96 kHz sesuai dukungan perangkat.
-- Premium entitlement: 4K, 120 FPS, dan Hi-Res Lossless hanya terbuka untuk subscription yang terverifikasi backend.
-- PWA: dapat dipasang dari browser Android dan berjalan tanpa address bar.
+Berfungsi:
+
+- Pemilihan video lokal.
+- Preview video di perangkat.
+- Template, efek warna, transisi, dan motion intensity.
+- Rasio, target resolusi, FPS, audio, dan Premium lock.
+- Penyimpanan metadata draft ke Firestore.
+- Pemrosesan dan ekspor melalui Canvas, Web Audio, dan MediaRecorder.
+
+Belum diimplementasikan penuh:
+
+- Text layer ditampilkan sebagai **SOON** dan tidak berpura-pura sebagai fitur aktif.
+- Multi-track editing, trim presisi frame, sticker layer, keyframe, dan subtitle otomatis masih menjadi tahap berikutnya.
 
 ## Struktur utama
 
 ```text
 index.html
 css/style.css
-js/firebase-config.js
 js/app.js
+js/auth.js
+js/firebase-config.js
 js/projects.js
 js/workspace.js
 js/processor.js
-js/auth.js
+js/studio.js
+js/v8-ui.js
 assets/images/
 icons/
 manifest.json
@@ -35,33 +49,9 @@ service-worker.js
 firestore.rules.txt
 ```
 
-## Struktur data Firestore
+## Keamanan dan storage
 
-```text
-users/{uid}
-users/{uid}/projects/{projectId}
-```
-
-Setiap dokumen proyek mempunyai status:
-
-```text
-draft → uploading → processing → completed / failed
-```
-
-Video Workspace memakai Object URL lokal milik browser untuk menampilkan preview tanpa mengunggah isi file. Saat draft disimpan, Firestore menerima metadata sumber dan setelan workspace saja. File harus dipilih ulang setelah aplikasi ditutup karena browser tidak mengizinkan aplikasi web menyimpan akses permanen ke video perangkat.
-
-Video Processing memakai Canvas, Web Audio, dan MediaRecorder. Format MP4 dipakai jika encoder browser mendukungnya; jika tidak, aplikasi memakai WebM. Pemrosesan berjalan real-time, maksimal 5 menit untuk mode normal, dan dijeda saat aplikasi masuk ke latar belakang. Mode Premium 4K, 120 FPS, atau Hi-Res Lossless dibatasi 60 detik untuk menjaga memori dan suhu HP.
-
-4K dan 120 FPS merupakan target permintaan ke encoder. Resolusi aktual, frame rate aktual, format, dan kelancaran tetap bergantung pada browser, codec, kemampuan perangkat, sumber video, memori, serta kondisi suhu. Sumber ber-FPS rendah tidak memperoleh gerakan baru hanya dengan memilih 120 FPS.
-
-Mode Hi-Res Lossless membuat WAV PCM 24-bit terpisah. Audio di dalam video MP4/WebM tetap memakai codec encoder browser dengan target bitrate tinggi. Konversi ke WAV tidak dapat memulihkan detail yang sudah hilang dari audio sumber terkompresi. Setelah ekspor berhasil, tekan **Simpan video** dan—jika mode lossless dipilih—**Simpan WAV** sebelum menutup workspace.
-
-Firestore hanya menyimpan catatan ekspor. File sumber dan hasil tidak diunggah ke cloud, sehingga Firebase Storage dan paket berbayar tidak diperlukan. Upload cloud tetap belum dijalankan pada versi ini.
-
-## Keamanan
-
-Publikasikan isi `firestore.rules.txt` melalui Firebase Console. Aturan tersebut memastikan akun hanya dapat membuka profil dan subkoleksi proyek miliknya sendiri, menolak perubahan field subscription dari aplikasi klien, serta menolak metadata output Ultra dari akun Free.
-
-Status Premium efektif hanya jika dokumen user berisi `isPremium: true` dan `subscriptionStatus: "active"`. Kedua field tersebut harus diubah oleh backend pembayaran melalui Firebase Admin SDK. Tombol subscription pada versi ini tidak mengubah entitlement karena checkout/webhook pembayaran belum dihubungkan.
-
-Lihat `UPLOAD-VIDEO-PROCESSING-V1.md` dan `TEST-VIDEO-PROCESSING-V1.md` untuk langkah pemasangan dan pengujian dari HP Android.
+- Jangan mengubah Premium dari sisi klien.
+- `isPremium` dan `subscriptionStatus` harus dikelola backend/Admin SDK.
+- Terapkan `firestore.rules.txt` melalui Firebase Console.
+- Video sumber dan hasil ekspor tidak dikirim ke Firestore atau Firebase Storage oleh versi ini.
