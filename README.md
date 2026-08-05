@@ -1,3 +1,5 @@
+# V-Forge v9.0.2 — Full-Frame Mobile Preview
+
 # V-Forge — Mobile Video Studio v9.0.1
 
 V-Forge adalah editor video local-first berbasis PWA. Video sumber dan hasil ekspor tetap berada di HP. Firebase Spark digunakan untuk Authentication, profil, dan metadata proyek Firestore.
