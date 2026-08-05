@@ -1,5 +1,5 @@
 // ============================================================
-// V-FORGE v9.1.1 — EDITOR UX & INTERACTIVE TIMELINE
+// V-FORGE v9.1.2 — EDITOR UX & INTERACTIVE TIMELINE
 // Local-only prototype: custom playback, Fit/Fill, scrubbing,
 // trim handles, split, duplicate, delete, timeline zoom, undo/redo.
 // Video bytes stay on-device; this file does not upload media.
@@ -8,7 +8,7 @@
 (function () {
   'use strict';
 
-  const VERSION = '9.1.1';
+  const VERSION = '9.1.2';
   const MIN_CLIP_SECONDS = 0.25;
   const MIN_PX_PER_SECOND = 22;
   const MAX_PX_PER_SECOND = 110;
@@ -168,10 +168,10 @@
   }
 
   function injectStylesheet() {
-    if (document.querySelector('link[data-vforge-v91]')) return;
+    if (document.querySelector('link[data-vforge-v91], link[href*="v91-editor.css"]')) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'css/v91-editor.css?v=9.1.1';
+    link.href = 'css/v91-editor.css?v=9.1.2';
     link.dataset.vforgeV91 = VERSION;
     document.head.appendChild(link);
   }
