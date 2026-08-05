@@ -1,18 +1,18 @@
 // V-Forge Service Worker
 // Ganti angka versi ini tiap kali ada update besar, biar cache lama dibuang otomatis
-const CACHE_VERSION = 'vforge-v8-2-1-scroll-reliability';
+const CACHE_VERSION = 'vforge-v8-3-0-mission-theme-editor';
 
 const ASSETS_TO_CACHE = [
   './index.html',
-  './css/style.css?v=8.2.1',
-  './js/firebase-config.js?v=8.2.1',
-  './js/app.js?v=8.2.1',
-  './js/projects.js?v=8.2.1',
-  './js/workspace.js?v=8.2.1',
-  './js/processor.js?v=8.2.1',
-  './js/auth.js?v=8.2.1',
-  './js/studio.js?v=8.2.1',
-  './js/v8-ui.js?v=8.2.1',
+  './css/style.css?v=8.3.0',
+  './js/firebase-config.js?v=8.3.0',
+  './js/app.js?v=8.3.0',
+  './js/projects.js?v=8.3.0',
+  './js/workspace.js?v=8.3.0',
+  './js/processor.js?v=8.3.0',
+  './js/auth.js?v=8.3.0',
+  './js/studio.js?v=8.3.0',
+  './js/v8-ui.js?v=8.3.0',
   './assets/images/vf-car-01.jpg',
   './assets/images/vf-car-02.jpg',
   './assets/images/vf-car-03.jpg',

@@ -1,13 +1,13 @@
 {
-  "name": "V-Forge Mobile Video Studio",
+  "name": "V-Forge Premium Mobile Video Studio",
   "short_name": "V-Forge",
-  "description": "Editor video mobile local-first dengan template, timeline, efek, dan ekspor langsung di perangkat.",
+  "description": "Editor video mobile local-first dengan misi harian Firebase, tema gelap/terang, template, timeline, efek, dan ekspor langsung di perangkat.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#08080B",
-  "theme_color": "#08080B",
+  "background_color": "#07070A",
+  "theme_color": "#07070A",
   "icons": [
     {
       "src": "icons/icon-72.png",

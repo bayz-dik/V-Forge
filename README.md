@@ -1,39 +1,61 @@
-# V-Forge — Mobile Video Studio v8.2.1
+# V-Forge — Premium Mobile Video Studio v8.3.0
 
+V-Forge adalah editor video **local-first** berbasis PWA. Video sumber dan hasil ekspor tetap berada di perangkat pengguna. Firebase dipakai untuk Authentication, sinkronisasi profil, metadata proyek, progres misi, Forge Points, dan entitlement Premium.
 
-## v8.2.1 — Scroll & Navigation Reliability
+## v8.3 — Mission, Theme & Editor Attraction Rebuild
 
-Hotfix ini memperbaiki kartu template yang keluar dari layar, scroll vertikal halaman utama, halaman Templates, Projects, Profile, panel editor, serta bottom sheet pada layar pendek. Navigasi sekarang membersihkan scroll-lock yang tertinggal dan mengembalikan posisi halaman secara aman setelah modal ditutup.
+Perubahan utama:
 
+- Bagian **Proyek Terbaru** di Home dihapus agar tidak menduplikasi halaman Projects.
+- Home sekarang memiliki **Misi Harian** dengan progres dari data proyek Firestore secara real-time.
+- Forge Points dapat ditukar menjadi **Premium 30 hari** setelah mencapai 1.000 poin.
+- Penghitungan poin dan aktivasi Premium dipindahkan ke Firebase Cloud Functions agar tidak dapat dimanipulasi dari browser.
+- Tombol tengah `+` dan tombol **Mulai mengedit** langsung membuka editor dan pemilih video—tanpa bottom sheet ganda.
+- Profile, Settings, Subscription, Notifications, Rewards, Cloud, Templates, dan Projects memakai sistem tema yang sama.
+- Pilihan dark/light tersimpan di perangkat dan diterapkan sebelum UI tampil agar tidak terjadi kilatan warna putih.
+- Editor kosong sekarang mempunyai animasi otomotif V-Forge: gerakan kamera, grid, light sweep, smoke, dan logo motion.
+- Perbaikan scroll vertikal dan horizontal tetap dipertahankan dari v8.2.1.
 
-V-Forge adalah editor video **local-first** berbasis PWA. File video sumber dan hasil ekspor tetap berada di perangkat pengguna. Firebase dipakai untuk akun, status Premium, metadata proyek, preset, efek, transisi, dan catatan ekspor kecil.
+## Struktur navigasi
 
-## Perubahan utama v8
+```text
+Home       : tombol edit utama + misi harian
+Templates  : katalog gaya dan preset
++          : langsung ke editor/pilih video
+Projects   : seluruh draft dan hasil proyek
+Me         : profil, hadiah, pengaturan, subscription
+```
 
-- Home baru dengan satu fokus utama: **Proyek Baru**.
-- Riwayat proyek dipindahkan ke Home agar pengguna dapat langsung melanjutkan edit.
-- Template Studio didesain ulang menjadi layar fokus tanpa hero lama yang bertumpuk.
-- Editor memakai toolbar bawah: Media, Edit, Audio, Text, Effects, dan Export.
-- Tampilan preview, timeline, panel efek, pilihan format, audio, dan export dibuat lebih ringkas.
-- Navigasi utama menjadi Home, Projects, tombol Proyek Baru, Templates, dan Profile.
-- Sistem Premium 4K, 120 FPS, dan Hi-Res Lossless tetap memakai entitlement backend yang sudah ada.
-- Service Worker menggunakan cache `vforge-v8-0-0-focus-redesign`.
+## Status fitur
 
-## Status fitur editor
+### Sudah berfungsi di frontend
 
-Berfungsi:
-
+- Login/register Firebase Authentication.
+- Profil dan metadata proyek real-time melalui Firestore.
 - Pemilihan video lokal.
-- Preview video di perangkat.
-- Template, efek warna, transisi, dan motion intensity.
-- Rasio, target resolusi, FPS, audio, dan Premium lock.
-- Penyimpanan metadata draft ke Firestore.
-- Pemrosesan dan ekspor melalui Canvas, Web Audio, dan MediaRecorder.
+- Preview, rasio, template, transisi, efek, motion intensity.
+- Target resolusi, FPS, audio, Premium lock.
+- Penyimpanan draft dan status proses.
+- Tema dark/light untuk seluruh menu utama.
+- Misi harian membaca progres proyek secara real-time.
+- Editor attraction animation saat belum ada video.
 
-Belum diimplementasikan penuh:
+### Memerlukan deployment Firebase backend
 
-- Text layer ditampilkan sebagai **SOON** dan tidak berpura-pura sebagai fitur aktif.
-- Multi-track editing, trim presisi frame, sticker layer, keyframe, dan subtitle otomatis masih menjadi tahap berikutnya.
+- Poin misi masuk secara aman dan otomatis.
+- Penukaran 1.000 Forge Points menjadi Premium 30 hari.
+- Expired Premium reward otomatis setelah 30 hari.
+
+Backend sudah disediakan di folder `functions/`. Ikuti `FIREBASE-MISSIONS-PREMIUM-V8.3.md`.
+
+### Tahap berikutnya
+
+- Text layer nyata.
+- Overlay multi-layer.
+- Trim presisi frame.
+- Keyframe animation.
+- Sticker/subtitle/AI tools.
+- Native wrapper Android/iOS dan proses store review.
 
 ## Struktur utama
 
@@ -48,20 +70,17 @@ js/workspace.js
 js/processor.js
 js/studio.js
 js/v8-ui.js
-assets/images/
-icons/
+functions/index.js
+functions/package.json
+firebase.json
+firestore.rules.txt
 manifest.json
 service-worker.js
-firestore.rules.txt
 ```
 
-## Keamanan dan storage
+## Keamanan penting
 
-- Jangan mengubah Premium dari sisi klien.
-- `isPremium` dan `subscriptionStatus` harus dikelola backend/Admin SDK.
-- Terapkan `firestore.rules.txt` melalui Firebase Console.
-- Video sumber dan hasil ekspor tidak dikirim ke Firestore atau Firebase Storage oleh versi ini.
-
-
-## v8.2 Native UX
-Home ringkas, Templates dan Projects menjadi halaman tersendiri, tombol tengah membuka create sheet, serta workspace menjadi editor full-screen dengan preview, timeline, dan panel alat kontekstual.
+- Video tidak dimasukkan ke Firestore.
+- Field `points`, `dailyMissionState`, `isPremium`, dan subscription dikunci dari perubahan klien.
+- Hanya Cloud Functions/Admin SDK yang boleh memberi poin dan mengaktifkan Premium.
+- Jangan mengubah Rules agar pengguna bisa menulis `isPremium` sendiri.

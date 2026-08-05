@@ -1,21 +1,104 @@
-// ===============================================
-// FIRESTORE SECURITY RULES - V-Forge
-// ===============================================
-// CARA PASANG:
-// 1. Buka console.firebase.google.com -> project vforge-app
-// 2. Sidebar kiri -> Build -> Firestore Database
-// 3. Tap tab "Rules" (di sebelah tab "Data")
-// 4. Hapus semua isi yang ada, ganti dengan kode di bawah ini
-// 5. Tap "Publish"
-//
-// Aturan ini artinya: setiap user CUMA bisa baca & ubah data miliknya
-// sendiri (dicocokkan lewat User ID), gak bisa intip/ubah data user lain.
-
+// ======================================================
+// FIRESTORE SECURITY RULES — V-Forge v8.3
+// Profile + project ownership + server-managed rewards
+// ======================================================
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedInAs(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function createsFreeAccount() {
+      return request.resource.data.get('isPremium', false) == false
+        && request.resource.data.get('subscriptionStatus', 'inactive') == 'inactive'
+        && request.resource.data.get('points', 0) == 0
+        && request.resource.data.get('completedTasks', 0) == 0
+        && !request.resource.data.keys().hasAny([
+          'subscriptionPlan',
+          'subscriptionExpiresAt',
+          'subscriptionProvider',
+          'subscriptionStartedAt',
+          'subscriptionUpdatedAt',
+          'dailyMissionState',
+          'missionProgress'
+        ]);
+    }
+
+    // Field berikut hanya boleh diubah Firebase Cloud Functions/Admin SDK.
+    // Klien tetap dapat membaca hasilnya secara real-time.
+    function keepsServerManagedFields() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+        'isPremium',
+        'subscriptionStatus',
+        'subscriptionPlan',
+        'subscriptionExpiresAt',
+        'subscriptionProvider',
+        'subscriptionStartedAt',
+        'subscriptionUpdatedAt',
+        'points',
+        'completedTasks',
+        'dailyMissionState',
+        'missionProgress'
+      ]);
+    }
+
+    function hasVerifiedPremium(userId) {
+      let account = get(/databases/$(database)/documents/users/$(userId)).data;
+      return account.get('isPremium', false) == true
+        && account.get('subscriptionStatus', 'inactive') == 'active'
+        && (
+          !account.keys().hasAny(['subscriptionExpiresAt'])
+          || account.subscriptionExpiresAt > request.time
+        );
+    }
+
+    function usesPremiumOutput(data) {
+      return data.get('outputResolution', '1080p') == '2160p'
+        || (
+          data.get('outputResolution', '1080p') == 'source'
+          && (
+            (data.get('sourceWidth', 0) >= 3840 && data.get('sourceHeight', 0) >= 2160)
+            || (data.get('sourceHeight', 0) >= 3840 && data.get('sourceWidth', 0) >= 2160)
+          )
+        )
+        || data.get('outputFrameRate', '30') == '120'
+        || (
+          data.get('audioEnabled', true) == true
+          && data.get('audioQuality', 'standard') == 'hires-lossless'
+        );
+    }
+
+    function outputAllowedFor(userId, data) {
+      return !usesPremiumOutput(data) || hasVerifiedPremium(userId);
+    }
+
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if signedInAs(userId);
+      allow create: if signedInAs(userId) && createsFreeAccount();
+      allow update: if signedInAs(userId) && keepsServerManagedFields();
+      allow delete: if false;
+
+      match /projects/{projectId} {
+        allow read: if signedInAs(userId);
+
+        allow create: if signedInAs(userId)
+          && request.resource.data.ownerId == userId
+          && request.resource.data.status == 'draft'
+          && request.resource.data.name is string
+          && request.resource.data.name.size() >= 2
+          && request.resource.data.name.size() <= 80
+          && outputAllowedFor(userId, request.resource.data);
+
+        allow update: if signedInAs(userId)
+          && resource.data.ownerId == userId
+          && request.resource.data.ownerId == userId
+          && request.resource.data.createdAt == resource.data.createdAt
+          && request.resource.data.status in ['draft', 'uploading', 'processing', 'completed', 'failed']
+          && outputAllowedFor(userId, request.resource.data);
+
+        allow delete: if signedInAs(userId) && resource.data.ownerId == userId;
+      }
     }
   }
 }
