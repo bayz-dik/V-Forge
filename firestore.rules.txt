@@ -1,5 +1,5 @@
 // ======================================================
-// FIRESTORE SECURITY RULES — V-Forge v8.3
+// FIRESTORE SECURITY RULES — V-Forge Sprint V9 (Spark-safe)
 // Profile + project ownership + server-managed rewards
 // ======================================================
 rules_version = '2';
