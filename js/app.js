@@ -1,6 +1,6 @@
 // VARIABLE GLOBAL DEKLARASI DI ATAS BIAR AMAN DAN JALAN 100%
         let isPremium = false;
-        let userPoints = 348;
+        let userPoints = 0;
         let completedTasks = 0;
         let globalExportedVideos = 12;
         let mission1State = 'todo'; 
@@ -10,9 +10,8 @@
         let notifSourcePage = 'page-home';
 
         let notificationList = [
-            { title: "Premium Output", desc: '4K, 120 FPS, dan Hi-Res Lossless tersedia untuk akun Premium.', time: "Just now", icon: "workspace_premium", color: "#8A2BE2" },
-            { title: "Video Exported Successfully", desc: 'Your project is ready.', time: "1h", icon: "movie_filter", color: "#6366F1" },
-            { title: "Exclusive Tools Inside", desc: "Unlock AI Color and Pro transitions today!", time: "1h", icon: "local_offer", color: "#FF8C00" }
+            { title: "Firebase Spark Aktif", desc: 'Login, profil, dan metadata proyek berjalan pada paket gratis.', time: "Baru saja", icon: "cloud_done", color: "#34C759" },
+            { title: "Editor Local-first", desc: 'Video sumber dan hasil ekspor tetap berada di perangkatmu.', time: "Baru saja", icon: "smartphone", color: "#9B5CFF" }
         ];
 
         // FUNGSI NOTIFIKASI (TOAST & PAGE)
@@ -193,7 +192,7 @@
         }
 
         function requestPremiumUpgrade() {
-            showToast('Checkout Premium belum terhubung. Akses hanya aktif setelah subscription terverifikasi.', 'info');
+            showToast('Premium belum diaktifkan pada paket Firebase Spark. Progres beta tetap dapat digunakan.', 'info');
         }
 
         function manageSubscription() {
@@ -249,10 +248,10 @@
                     editorBadge.innerHTML = '<div class="free-icon-wrap" style="background: rgba(255,255,255,0.2); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center;"><span class="material-icons-round" style="font-size:12px;">star</span></div><span>Free</span>'; 
                 }
                 if(vipBanner) { vipBanner.className = 'vip-banner free'; }
-                if(vipBtn) { vipBtn.innerText = 'Subscribe Now'; }
-                if(vipStatus) { vipStatus.innerText = 'You are not subscribed yet'; }
+                if(vipBtn) { vipBtn.innerText = 'Segera Hadir'; }
+                if(vipStatus) { vipStatus.innerText = 'Mode Free • Firebase Spark'; }
                 if(subPage) { subPage.classList.remove('pro'); subPage.classList.add('free'); }
-                if(subHero) { subHero.innerHTML = `<div class="sub-hero-icon"><span class="material-icons-round">auto_awesome</span></div><h3 style="color: var(--text-main);">Unlock Premium</h3><p style="color: var(--text-sub);">4K • 120 FPS • Hi-Res Lossless</p><div class="sub-main-btn" onclick="requestPremiumUpgrade()"><span class="material-icons-round" style="font-size:18px;">workspace_premium</span> Langganan Premium</div><small class="sub-verification-note"><span class="material-icons-round">verified_user</span>Status Premium hanya aktif setelah pembayaran diverifikasi.</small>`; }
+                if(subHero) { subHero.innerHTML = `<div class="sub-hero-icon"><span class="material-icons-round">auto_awesome</span></div><span class="v9-sub-kicker">V-FORGE FREE</span><h3 style="color: var(--text-main);">Premium sedang disiapkan</h3><p style="color: var(--text-sub);">4K • 120 FPS • Hi-Res Lossless</p><div class="sub-main-btn" onclick="requestPremiumUpgrade()"><span class="material-icons-round" style="font-size:18px;">lock_clock</span> Roadmap Premium</div><small class="sub-verification-note"><span class="material-icons-round">verified_user</span>Paket Spark tetap aman. Entitlement tidak pernah diaktifkan dari browser.</small>`; }
                 if(subProDetails) { subProDetails.style.display = 'none'; }
 
                 if(cRes) { cRes.classList.remove('pro-active'); cRes.classList.add('premium-locked'); cRes.onclick = () => handlePremiumFeatureCard('4K Ultra HD'); tRes.innerHTML = `4K Ultra HD<br><span class="premium-inline-label"><span class="material-icons-round">lock</span>Premium</span>`; }

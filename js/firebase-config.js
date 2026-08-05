@@ -16,9 +16,8 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Firebase Cloud Functions dipakai untuk hadiah misi dan aktivasi Premium
-// secara aman dari backend. Jika Functions belum dideploy, variabel ini null
-// dan UI akan memberi penjelasan tanpa mengubah entitlement di sisi klien.
-const functions = (typeof firebase.app === 'function' && typeof firebase.app().functions === 'function')
-  ? firebase.app().functions('asia-southeast2')
-  : null;
+// Sprint V9 berjalan di Firebase Spark. Cloud Functions disimpan di folder
+// functions/ untuk tahap berikutnya, tetapi SDK Functions sengaja tidak dimuat
+// agar frontend tidak mencoba memanggil backend yang belum dideploy.
+const functions = null;
+const VFORGE_FIREBASE_PLAN = 'spark';
