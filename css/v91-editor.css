@@ -1,5 +1,5 @@
 /* ============================================================
-   V-FORGE v9.1.1 — EDITOR UX & INTERACTIVE TIMELINE
+   V-FORGE v9.1.2 — EDITOR UX & INTERACTIVE TIMELINE
    Mobile-first custom playback, full-frame preview, trim/split UI.
    ============================================================ */
 
@@ -749,3 +749,272 @@ body.hide-nav #page-video-workspace.active ~ #bottom-navigation,
   }
 }
 
+
+
+/* ============================================================
+   V-FORGE v9.1.2 — RESPONSIVE CANVAS + DESKTOP WORKSPACE
+   Keeps portrait sources readable on phones, prevents editor controls
+   from overwhelming narrow canvases, and replaces the stretched desktop
+   bottom bar with a compact navigation rail.
+   ============================================================ */
+
+/* V9.1.0 reduced the preview back to 43%. Restore preview priority so
+   portrait videos remain useful while the timeline stays reachable. */
+#page-video-workspace .v82-editor-shell {
+  grid-template-rows: minmax(300px, 56%) clamp(148px, 20vh, 184px) minmax(0, 1fr) !important;
+}
+
+/* Reassert the ratio-aware dimensions calculated by v9.0.2. These rules
+   intentionally override older 100% x 100% editor declarations. */
+#page-video-workspace .workspace-video-frame {
+  width: var(--v902-canvas-width, 100%) !important;
+  height: var(--v902-canvas-height, 100%) !important;
+  max-width: calc(100% - 2px) !important;
+  max-height: 100% !important;
+  aspect-ratio: var(--v902-preview-ratio, auto) !important;
+}
+
+/* Portrait sources can be much narrower than 9:16. Keep controls compact
+   instead of allowing Fit/Play buttons to cover the actual picture. */
+@media (max-width: 899px) {
+  #page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] .v91-preview-topbar {
+    right: 5px;
+    left: 5px;
+    justify-content: center;
+  }
+
+  #page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] .v91-preview-badge {
+    display: none !important;
+  }
+
+  #page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] .v91-fit-switch {
+    gap: 2px;
+    padding: 2px;
+    border-radius: 10px;
+  }
+
+  #page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] .v91-fit-switch button {
+    min-width: 32px;
+    width: 32px;
+    min-height: 27px;
+    padding: 0;
+    font-size: 0;
+    border-radius: 8px;
+  }
+
+  #page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] .v91-fit-switch button .material-icons-round {
+    font-size: 15px;
+  }
+
+  #page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] .v91-preview-controls {
+    right: 5px;
+    bottom: 5px;
+    left: 5px;
+    grid-template-columns: 30px minmax(38px, 1fr) 30px;
+    gap: 4px;
+    min-height: 38px;
+    padding: 4px 5px;
+    border-radius: 12px;
+  }
+
+  #page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] .v91-preview-controls .v91-time-label {
+    display: none !important;
+  }
+
+  #page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] .v91-play-button,
+  #page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] .v91-icon-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+  }
+
+  #page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] #v91-seek-range {
+    height: 20px;
+  }
+}
+
+/* Short phones need a balanced compromise: preview remains dominant,
+   timeline remains touchable, and the active tool sheet can still scroll. */
+@media (max-width: 899px) and (max-height: 740px) {
+  #page-video-workspace .v82-editor-shell {
+    grid-template-rows: minmax(250px, 50%) 140px minmax(0, 1fr) !important;
+  }
+}
+
+/* Desktop editor: preview + timeline on the left, inspector on the right.
+   This prevents the preview from consuming the whole page in desktop mode. */
+@media (min-width: 900px) and (min-height: 560px) {
+  #page-video-workspace .v82-editor-shell,
+  #page-video-workspace:fullscreen .v82-editor-shell,
+  #page-video-workspace:-webkit-full-screen .v82-editor-shell,
+  #page-video-workspace.v911-immersive .v82-editor-shell {
+    grid-template-columns: minmax(0, 1fr) clamp(320px, 31vw, 430px) !important;
+    grid-template-rows: minmax(0, 1fr) clamp(170px, 23vh, 220px) !important;
+    column-gap: 1px;
+    background: #07070a;
+  }
+
+  #page-video-workspace .v82-preview-stage,
+  #page-video-workspace:fullscreen .v82-preview-stage,
+  #page-video-workspace:-webkit-full-screen .v82-preview-stage,
+  #page-video-workspace.v911-immersive .v82-preview-stage {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    padding: 14px 18px 9px !important;
+  }
+
+  #page-video-workspace .v82-timeline,
+  #page-video-workspace:fullscreen .v82-timeline,
+  #page-video-workspace:-webkit-full-screen .v82-timeline,
+  #page-video-workspace.v911-immersive .v82-timeline {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    min-height: 0 !important;
+  }
+
+  #page-video-workspace .v82-tool-sheet,
+  #page-video-workspace:fullscreen .v82-tool-sheet,
+  #page-video-workspace:-webkit-full-screen .v82-tool-sheet,
+  #page-video-workspace.v911-immersive .v82-tool-sheet {
+    grid-column: 2 !important;
+    grid-row: 1 / span 2 !important;
+    padding: 15px 18px calc(84px + env(safe-area-inset-bottom)) !important;
+    border-left: 1px solid rgba(255,255,255,.075) !important;
+    background: #101015 !important;
+  }
+
+  #page-video-workspace .v82-tool-sheet > .v82-sheet-handle {
+    display: none !important;
+  }
+
+  #page-video-workspace .workspace-video-frame {
+    max-width: min(100%, 760px) !important;
+    max-height: 100% !important;
+  }
+
+  #page-video-workspace .v82-preview-meta {
+    max-width: 900px;
+    margin-inline: auto !important;
+  }
+
+  #page-video-workspace .v82-editor-dock {
+    right: 50% !important;
+    left: auto !important;
+    width: min(720px, calc(100vw - 36px)) !important;
+    max-width: min(720px, calc(100vw - 36px)) !important;
+    transform: translateX(50%) !important;
+  }
+}
+
+/* Desktop navigation rail. The four destinations keep their order with
+   the create button occupying the central spacer row. */
+@media (min-width: 900px) {
+  body:not(.hide-nav):not(.vf-editor-open):not(.v911-editor-open) #bottom-navigation.v82-bottom-nav-wrapper {
+    position: fixed !important;
+    z-index: 900 !important;
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: 18px !important;
+    display: block !important;
+    width: 86px !important;
+    height: auto !important;
+    padding: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(-50%) !important;
+    pointer-events: auto !important;
+  }
+
+  body:not(.hide-nav):not(.vf-editor-open):not(.v911-editor-open) #bottom-navigation .v82-bottom-nav {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-rows: repeat(5, 64px) !important;
+    gap: 5px !important;
+    width: 86px !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 6px !important;
+    border-radius: 27px !important;
+    background: color-mix(in srgb, var(--v9-surface, #15151b) 94%, transparent) !important;
+    box-shadow: 0 20px 54px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08) !important;
+  }
+
+  #bottom-navigation .v82-bottom-nav .nav-item {
+    width: 74px !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    border-radius: 20px !important;
+  }
+
+  #bottom-navigation .v82-bottom-nav .nav-item:hover {
+    color: var(--v9-text, #fff) !important;
+    background: rgba(255,255,255,.055) !important;
+  }
+
+  #bottom-navigation .v82-bottom-nav .nav-item.active {
+    color: var(--v9-text, #fff) !important;
+    background: linear-gradient(145deg, rgba(198,255,99,.15), rgba(169,116,255,.11)) !important;
+    box-shadow: inset 0 0 0 1px rgba(198,255,99,.12) !important;
+  }
+
+  #bottom-navigation .v82-bottom-nav .nav-icon {
+    font-size: 23px !important;
+  }
+
+  #bottom-navigation .v82-bottom-nav .nav-text {
+    margin-top: 2px;
+    font-size: 8px !important;
+  }
+
+  #bottom-navigation .v82-bottom-nav .nav-spacer {
+    display: block !important;
+    grid-row: 3 !important;
+    width: 100%;
+    height: 64px;
+  }
+
+  body:not(.hide-nav):not(.vf-editor-open):not(.v911-editor-open) #bottom-navigation .center-cta-wrapper {
+    position: absolute !important;
+    z-index: 4;
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: 50% !important;
+    width: 62px !important;
+    height: 62px !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  #bottom-navigation .v82-center-cta {
+    width: 62px !important;
+    height: 62px !important;
+    border-width: 5px !important;
+    border-radius: 21px !important;
+  }
+
+  body:not(.hide-nav):not(.vf-editor-open):not(.v911-editor-open) #page-home.active,
+  body:not(.hide-nav):not(.vf-editor-open):not(.v911-editor-open) #page-enhancer.active,
+  body:not(.hide-nav):not(.vf-editor-open):not(.v911-editor-open) #page-search.active,
+  body:not(.hide-nav):not(.vf-editor-open):not(.v911-editor-open) #page-profile.active {
+    padding-left: 106px !important;
+  }
+}
+
+html[data-theme="light"] #bottom-navigation .v82-bottom-nav {
+  background: rgba(255,255,255,.92) !important;
+  box-shadow: 0 20px 50px rgba(51,39,73,.16), inset 0 1px 0 #fff !important;
+}
+
+@media (min-width: 900px) and (min-height: 560px) {
+  #page-video-workspace .v82-editor-dock,
+  #page-video-workspace:fullscreen .v82-editor-dock,
+  #page-video-workspace:-webkit-full-screen .v82-editor-dock,
+  #page-video-workspace.v911-immersive .v82-editor-dock {
+    right: 16px !important;
+    left: 16px !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+  }
+}
