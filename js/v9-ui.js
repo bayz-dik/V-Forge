@@ -3,7 +3,7 @@
 // Mobile shell, Spark-safe missions, unified themes, editor motion
 // ============================================================
 
-const VFORGE_UI_VERSION = '9.0.1';
+const VFORGE_UI_VERSION = '9.0.2';
 const VFORGE_BACKEND_MODE = 'spark';
 const VFORGE_PREMIUM_REWARD_COST = 1000;
 const V9_MISSIONS = Object.freeze([
@@ -246,7 +246,7 @@ function handleV9PageChange(event){
   document.querySelectorAll('.page.active').forEach(page=>{if(pageId!=='page-video-workspace')page.scrollTop=0;});
   const editorOpen = pageId==='page-video-workspace';
   setV9EditorViewportMode(editorOpen);
-  if(editorOpen){openV82EditorTool('edit');requestAnimationFrame(syncV83EditorAttraction);}
+  if(editorOpen){openV82EditorTool('edit');requestAnimationFrame(()=>{syncV83EditorAttraction();syncV902PreviewCanvas();});}
   else stopV9FeatureRotation();
   if(pageId==='page-home')renderV83Missions();
 }
@@ -260,12 +260,84 @@ window.redeemSubscription = async function(cost=1000){
   return v9OriginalRedeem ? v9OriginalRedeem(cost) : false;
 };
 
+
+
+// v9.0.2 — hitung ukuran canvas preview agar seluruh video selalu terlihat.
+let v902PreviewResizeObserver = null;
+let v902PreviewFrameObserver = null;
+function getV902PreviewRatio() {
+  const settings = (typeof videoWorkspaceState === 'object' && videoWorkspaceState?.settings) ? videoWorkspaceState.settings : {};
+  const metadata = (typeof videoWorkspaceState === 'object' && videoWorkspaceState?.metadata) ? videoWorkspaceState.metadata : {};
+  const selected = settings.aspectRatio || 'original';
+  const map = { '9:16': 9/16, '16:9': 16/9, '1:1': 1 };
+  if (selected !== 'original' && map[selected]) return map[selected];
+  const width = Number(metadata.width) || 0;
+  const height = Number(metadata.height) || 0;
+  if (width > 0 && height > 0) return width / height;
+  const video = document.getElementById('workspace-video');
+  if (video?.videoWidth > 0 && video?.videoHeight > 0) return video.videoWidth / video.videoHeight;
+  return 16/9;
+}
+function syncV902PreviewCanvas() {
+  const page = document.getElementById('page-video-workspace');
+  const stage = page?.querySelector('.v82-preview-stage');
+  const frame = document.getElementById('workspace-video-frame');
+  const video = document.getElementById('workspace-video');
+  const meta = page?.querySelector('.v82-preview-meta');
+  if (!page || !stage || !frame || !video) return;
+  if (!page.classList.contains('active')) return;
+
+  const stageStyle = getComputedStyle(stage);
+  const padX = (parseFloat(stageStyle.paddingLeft)||0) + (parseFloat(stageStyle.paddingRight)||0);
+  const padY = (parseFloat(stageStyle.paddingTop)||0) + (parseFloat(stageStyle.paddingBottom)||0);
+  const gap = parseFloat(stageStyle.rowGap)||0;
+  const metaHeight = meta ? meta.getBoundingClientRect().height : 0;
+  const maxWidth = Math.max(80, stage.clientWidth - padX);
+  const maxHeight = Math.max(80, stage.clientHeight - padY - metaHeight - gap);
+  const hasVideo = Boolean(video.getAttribute('src') || video.currentSrc || (typeof videoWorkspaceState === 'object' && videoWorkspaceState?.file));
+  const ratio = hasVideo ? Math.max(.2, Math.min(5, getV902PreviewRatio())) : 16/9;
+
+  let width = maxWidth;
+  let height = width / ratio;
+  if (height > maxHeight) {
+    height = maxHeight;
+    width = height * ratio;
+  }
+  width = Math.max(36, Math.min(maxWidth, width));
+  height = Math.max(36, Math.min(maxHeight, height));
+
+  frame.style.setProperty('--v902-canvas-width', `${Math.floor(width)}px`);
+  frame.style.setProperty('--v902-canvas-height', `${Math.floor(height)}px`);
+  frame.style.setProperty('--v902-preview-ratio', String(ratio));
+  frame.dataset.previewOrientation = ratio < .9 ? 'portrait' : (ratio > 1.1 ? 'landscape' : 'square');
+  frame.dataset.previewFit = 'contain';
+  video.style.setProperty('object-fit','contain','important');
+  video.style.setProperty('object-position','50% 50%','important');
+}
+function prepareV902PreviewCanvas() {
+  const stage = document.querySelector('#page-video-workspace .v82-preview-stage');
+  const frame = document.getElementById('workspace-video-frame');
+  const video = document.getElementById('workspace-video');
+  if (!stage || !frame || !video) return;
+  if ('ResizeObserver' in window) {
+    v902PreviewResizeObserver?.disconnect();
+    v902PreviewResizeObserver = new ResizeObserver(() => requestAnimationFrame(syncV902PreviewCanvas));
+    v902PreviewResizeObserver.observe(stage);
+  }
+  v902PreviewFrameObserver?.disconnect();
+  v902PreviewFrameObserver = new MutationObserver(() => requestAnimationFrame(syncV902PreviewCanvas));
+  v902PreviewFrameObserver.observe(frame,{attributes:true,attributeFilter:['class']});
+  ['loadedmetadata','loadeddata','durationchange','emptied'].forEach(name => video.addEventListener(name,()=>requestAnimationFrame(syncV902PreviewCanvas)));
+  requestAnimationFrame(syncV902PreviewCanvas);
+}
+
 function prepareV9Ui(){
   document.documentElement.dataset.vforgeUi=VFORGE_UI_VERSION;
   document.documentElement.dataset.firebasePlan=VFORGE_BACKEND_MODE;
   const stored=(()=>{try{return localStorage.getItem('vforge-theme');}catch(_){return null;}})();
   const preferred=stored || (window.matchMedia?.('(prefers-color-scheme: light)').matches?'light':'dark');
   applyVForgeTheme(preferred,{silent:true});
+  prepareV902PreviewCanvas();
   setV82HomeDaypart();observeV82TemplateList();renderV83Missions();clearV9StaleLocks();syncV9EditorViewport();syncV83EditorAttraction();
   const greeting=document.getElementById('editor-greeting-title');
   if(greeting)new MutationObserver(()=>requestAnimationFrame(setV82HomeDaypart)).observe(greeting,{childList:true,characterData:true,subtree:true});
@@ -273,9 +345,9 @@ function prepareV9Ui(){
   if(video){['loadstart','loadedmetadata','emptied','error','abort'].forEach(name=>video.addEventListener(name,syncV83EditorAttraction));new MutationObserver(syncV83EditorAttraction).observe(video,{attributes:true,attributeFilter:['src']});}
   document.addEventListener('vforge:pagechange',handleV9PageChange);
   window.addEventListener('pageshow',()=>{clearV9StaleLocks();renderV83Missions();syncV83EditorAttraction();});
-  window.addEventListener('orientationchange',()=>setTimeout(()=>{clearV9StaleLocks();syncV9EditorViewport();},120));
-  window.addEventListener('resize',syncV9EditorViewport,{passive:true});
-  if(window.visualViewport){window.visualViewport.addEventListener('resize',syncV9EditorViewport,{passive:true});window.visualViewport.addEventListener('scroll',syncV9EditorViewport,{passive:true});}
+  window.addEventListener('orientationchange',()=>setTimeout(()=>{clearV9StaleLocks();syncV9EditorViewport();syncV902PreviewCanvas();},120));
+  window.addEventListener('resize',()=>{syncV9EditorViewport();syncV902PreviewCanvas();},{passive:true});
+  if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{syncV9EditorViewport();syncV902PreviewCanvas();},{passive:true});window.visualViewport.addEventListener('scroll',()=>{syncV9EditorViewport();syncV902PreviewCanvas();},{passive:true});}
   window.addEventListener('online',()=>v9Toast('Koneksi kembali aktif. Firebase akan menyinkronkan metadata.','sync'));
   window.addEventListener('offline',()=>v9Toast('Mode offline aktif. Video lokal tetap dapat diedit.','info'));
 }
