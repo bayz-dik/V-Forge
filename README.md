@@ -1,4 +1,10 @@
-# V-Forge — Mobile Video Studio v8.2.0
+# V-Forge — Mobile Video Studio v8.2.1
+
+
+## v8.2.1 — Scroll & Navigation Reliability
+
+Hotfix ini memperbaiki kartu template yang keluar dari layar, scroll vertikal halaman utama, halaman Templates, Projects, Profile, panel editor, serta bottom sheet pada layar pendek. Navigasi sekarang membersihkan scroll-lock yang tertinggal dan mengembalikan posisi halaman secara aman setelah modal ditutup.
+
 
 V-Forge adalah editor video **local-first** berbasis PWA. File video sumber dan hasil ekspor tetap berada di perangkat pengguna. Firebase dipakai untuk akun, status Premium, metadata proyek, preset, efek, transisi, dan catatan ekspor kecil.
 
