@@ -93,9 +93,10 @@
             try { document.dispatchEvent(new CustomEvent('vforge:pagechange', { detail: { pageId, navIndex } })); } catch (error) {}
             updateNavVisibility();
             if(navIndex !== undefined && navIndex >= 0) { 
-                const navItems = document.querySelectorAll('.nav-item'); 
-                navItems.forEach(item => item.classList.remove('active')); 
-                if(navItems[navIndex]) navItems[navIndex].classList.add('active'); 
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(item => item.classList.remove('active'));
+                const selectedNav = document.querySelector(`.nav-item[data-nav-index="${navIndex}"]`) || navItems[navIndex];
+                if(selectedNav) selectedNav.classList.add('active'); 
             } else if (navIndex === -1) { 
                 const navItems = document.querySelectorAll('.nav-item'); 
                 navItems.forEach(item => item.classList.remove('active')); 
@@ -103,7 +104,7 @@
         }
 
         function updateNavVisibility() {
-            const hiddenPages = ['page-enhancer', 'page-video-workspace', 'page-subscription', 'page-notifications', 'page-settings', 'page-cloud', 'page-edit-profile', 'page-achievements', 'page-login', 'page-register'];
+            const hiddenPages = ['page-video-workspace', 'page-subscription', 'page-notifications', 'page-settings', 'page-cloud', 'page-edit-profile', 'page-achievements', 'page-login', 'page-register'];
             let shouldHide = hiddenPages.includes(currentPage);
             const activeEl = document.activeElement; 
             if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) { shouldHide = true; }
