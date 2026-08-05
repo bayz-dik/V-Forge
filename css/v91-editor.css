@@ -1,5 +1,5 @@
 /* ============================================================
-   V-FORGE v9.1.0 — EDITOR UX & INTERACTIVE TIMELINE
+   V-FORGE v9.1.1 — EDITOR UX & INTERACTIVE TIMELINE
    Mobile-first custom playback, full-frame preview, trim/split UI.
    ============================================================ */
 
@@ -620,3 +620,132 @@ body.v91-editor-ready #page-video-workspace .v91-preview-controls {
 .v91-export-notice > span { display: flex; flex-direction: column; min-width: 0; }
 .v91-export-notice strong { font-size: 9px; }
 .v91-export-notice small { margin-top: 3px; color: var(--v91-muted); font-size: 7px; line-height: 1.45; }
+
+/* ============================================================
+   V-FORGE v9.1.1 — NAVIGATION + IMMERSIVE EDITOR HOTFIX
+   Prevents the global app navigation from leaking into the editor
+   and makes the fullscreen button expand the entire editor workspace.
+   ============================================================ */
+
+/* A translated navigation could remain partly visible in desktop mode.
+   Hide the wrapper completely whenever the editor is active. */
+body.v911-editor-open #bottom-navigation,
+body.vf-editor-open #bottom-navigation,
+body.hide-nav #page-video-workspace.active ~ #bottom-navigation,
+#page-video-workspace.active ~ #bottom-navigation,
+#bottom-navigation[hidden] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: none !important;
+}
+
+/* True immersive editor: the fullscreen target is the whole editor page,
+   not only the video preview. Timeline, tools, header, and dock remain usable. */
+#page-video-workspace:fullscreen,
+#page-video-workspace:-webkit-full-screen,
+#page-video-workspace.v911-immersive {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  background: #050507 !important;
+}
+
+#page-video-workspace:fullscreen .v82-editor-header,
+#page-video-workspace:-webkit-full-screen .v82-editor-header,
+#page-video-workspace.v911-immersive .v82-editor-header {
+  min-height: calc(58px + env(safe-area-inset-top)) !important;
+  padding-top: max(7px, env(safe-area-inset-top)) !important;
+}
+
+#page-video-workspace:fullscreen,
+#page-video-workspace:-webkit-full-screen,
+#page-video-workspace.v911-immersive {
+  grid-template-rows: auto minmax(0, 1fr) auto !important;
+}
+
+#page-video-workspace:fullscreen .v82-editor-shell,
+#page-video-workspace:-webkit-full-screen .v82-editor-shell,
+#page-video-workspace.v911-immersive .v82-editor-shell {
+  width: 100% !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  align-self: stretch !important;
+}
+
+#page-video-workspace:fullscreen .v82-editor-dock,
+#page-video-workspace:-webkit-full-screen .v82-editor-dock,
+#page-video-workspace.v911-immersive .v82-editor-dock {
+  bottom: max(6px, env(safe-area-inset-bottom)) !important;
+}
+
+#page-video-workspace:fullscreen .v91-icon-button,
+#page-video-workspace:-webkit-full-screen .v91-icon-button,
+#page-video-workspace.v911-immersive .v91-icon-button {
+  color: #15180c;
+  background: var(--v91-accent);
+}
+
+/* Desktop mode keeps the editor dock compact instead of stretching like
+   the mobile navigation. */
+@media (min-width: 700px) {
+  #page-video-workspace .v82-editor-dock {
+    right: 50% !important;
+    left: auto !important;
+    width: min(620px, calc(100vw - 32px)) !important;
+    max-width: min(620px, calc(100vw - 32px)) !important;
+    transform: translateX(50%) !important;
+  }
+}
+
+/* Fullscreen portrait uses the available height without browser chrome. */
+@media (orientation: portrait) {
+  #page-video-workspace:fullscreen .v82-editor-shell,
+  #page-video-workspace:-webkit-full-screen .v82-editor-shell,
+  #page-video-workspace.v911-immersive .v82-editor-shell {
+    grid-template-rows: minmax(190px, 44%) clamp(148px, 21vh, 184px) minmax(0, 1fr) !important;
+  }
+}
+
+/* Fullscreen landscape uses the same two-column editor composition as
+   modern mobile editors. */
+@media (orientation: landscape) and (max-height: 620px) {
+  #page-video-workspace:fullscreen .v82-editor-shell,
+  #page-video-workspace:-webkit-full-screen .v82-editor-shell,
+  #page-video-workspace.v911-immersive .v82-editor-shell {
+    grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr) !important;
+    grid-template-rows: minmax(0, 1fr) 132px !important;
+  }
+
+  #page-video-workspace:fullscreen .v82-preview-stage,
+  #page-video-workspace:-webkit-full-screen .v82-preview-stage,
+  #page-video-workspace.v911-immersive .v82-preview-stage {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  #page-video-workspace:fullscreen .v82-timeline,
+  #page-video-workspace:-webkit-full-screen .v82-timeline,
+  #page-video-workspace.v911-immersive .v82-timeline {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  #page-video-workspace:fullscreen .v82-tool-sheet,
+  #page-video-workspace:-webkit-full-screen .v82-tool-sheet,
+  #page-video-workspace.v911-immersive .v82-tool-sheet {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+
