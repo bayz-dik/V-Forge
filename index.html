@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css?v=7.0.1">
+    <link rel="stylesheet" href="css/style.css?v=7.1.0">
 </head>
 <body class="">
     <!-- LOADING SCREEN - tampil sementara nunggu Firebase cek status login -->
@@ -295,7 +295,13 @@
         <div class="hero-content-wrapper">
             <div class="editor-title-area">
                 <h2 id="editor-greeting-title">Hey, Bayu</h2>
-                <p>Pilih video lalu siapkan draft proyekmu</p>
+                <p>Mulai cepat. Video tetap di perangkatmu, cloud hanya menyimpan progres kecil.</p>
+            </div>
+
+            <div class="local-first-strip" role="note" aria-label="Penyimpanan lokal V-Forge">
+                <span class="material-icons-round">shield</span>
+                <span><strong>Local-first</strong><small>Video asli dan hasil ekspor tetap di HP. Cloud hanya menyimpan akun, preset, timeline, dan metadata proyek.</small></span>
+                <span class="local-first-badge">HEMAT CLOUD</span>
             </div>
 
             <div class="feature-scroll-container">
@@ -319,9 +325,9 @@
             <section class="studio-template-section" aria-labelledby="studio-template-title">
                 <div class="studio-section-heading">
                     <div>
-                        <span class="studio-kicker">Template Studio v7</span>
-                        <h3 id="studio-template-title">Mulai dengan gaya profesional</h3>
-                        <p>Pilih preset untuk rasio, FPS, warna, motion, dan transisi sebelum memasukkan video.</p>
+                        <span class="studio-kicker">Template cepat</span>
+                        <h3 id="studio-template-title">Pilih gaya, lalu mulai edit</h3>
+                        <p>Preset ringkas untuk rasio, warna, motion, dan transisi.</p>
                     </div>
                     <button type="button" class="studio-tour-button" onclick="openStudioOnboarding(true)"><span class="material-icons-round">auto_awesome</span>Tour</button>
                 </div>
@@ -336,9 +342,9 @@
             <button type="button" class="create-video-btn" onclick="openVideoPicker()">
                 <span class="create-video-icon-shell"><span class="material-icons-round">video_call</span></span>
                 <span class="create-video-copy">
-                    <strong>Pilih Video & Buka Workspace</strong>
-                    <small>Import video, buat draft otomatis, lalu lanjut edit dengan UI yang lebih modern.</small>
-                    <span class="create-video-meta">Draft otomatis • Sinkron realtime • Siap export</span>
+                    <strong>Proyek Baru</strong>
+                    <small>Pilih video dari HP dan langsung masuk ke workspace.</small>
+                    <span class="create-video-meta">Lokal • Cepat • Tidak upload video</span>
                     <span class="create-video-preset"><span class="material-icons-round">style</span><span id="create-video-template-label">Preset: Clean Cut</span></span>
                 </span>
                 <span class="material-icons-round create-video-arrow">north_east</span>
@@ -580,12 +586,12 @@
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
-        <script src="js/firebase-config.js?v=7.0.1"></script>
-        <script src="js/app.js?v=7.0.1"></script>
-        <script src="js/projects.js?v=7.0.1"></script>
-        <script src="js/workspace.js?v=7.0.1"></script>
-        <script src="js/processor.js?v=7.0.1"></script>
-        <script src="js/auth.js?v=7.0.1"></script>
-        <script src="js/studio.js?v=7.0.1"></script>
+        <script src="js/firebase-config.js?v=7.1.0"></script>
+        <script src="js/app.js?v=7.1.0"></script>
+        <script src="js/projects.js?v=7.1.0"></script>
+        <script src="js/workspace.js?v=7.1.0"></script>
+        <script src="js/processor.js?v=7.1.0"></script>
+        <script src="js/auth.js?v=7.1.0"></script>
+        <script src="js/studio.js?v=7.1.0"></script>
 </body>
 </html>
