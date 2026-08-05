@@ -1,11 +1,11 @@
-// V-Forge Service Worker — v9.1.0
+// V-Forge Service Worker — v9.1.1
 // Editor UX + interactive timeline. Cache version must change on each release.
-const CACHE_VERSION = 'vforge-v9-1-0-editor-ux-timeline';
+const CACHE_VERSION = 'vforge-v9-1-1-nav-fullscreen-hotfix';
 
 const ASSETS_TO_CACHE = [
   './index.html',
   './css/style.css?v=9.0.2',
-  './css/v91-editor.css?v=9.1.0',
+  './css/v91-editor.css?v=9.1.1',
   './js/firebase-config.js?v=9.0.2',
   './js/app.js?v=9.0.2',
   './js/projects.js?v=9.0.2',
@@ -14,7 +14,7 @@ const ASSETS_TO_CACHE = [
   './js/auth.js?v=9.0.2',
   './js/studio.js?v=9.0.2',
   './js/v9-ui.js?v=9.0.2',
-  './js/v91-editor.js?v=9.1.0',
+  './js/v91-editor.js?v=9.1.1',
   './assets/images/vf-car-01.jpg',
   './assets/images/vf-car-02.jpg',
   './assets/images/vf-car-03.jpg',
