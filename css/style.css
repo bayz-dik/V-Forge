@@ -3583,3 +3583,220 @@ body.v82-ui .v82-center-cta .material-icons-round { font-size:28px; font-weight:
 @media (prefers-reduced-motion:reduce) {
     .v82-ui * { scroll-behavior:auto!important; animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
 }
+
+/* ============================================================
+   V-FORGE v8.2.1 — SCROLL + NAVIGATION RELIABILITY HOTFIX
+   ============================================================ */
+html {
+    width: 100%;
+    min-height: 100%;
+    background: var(--v82-bg);
+}
+
+body.v82-ui {
+    width: 100%;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.v82-ui:not(.auth-mode):not(.v82-modal-open):not(.project-sheet-open):not(.studio-onboarding-open) {
+    overflow-y: auto !important;
+}
+
+body.v82-ui .page.active:not(#page-video-workspace):not(#page-login):not(#page-register):not(#page-forgot-password) {
+    height: auto;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: visible;
+    touch-action: pan-y pinch-zoom;
+}
+
+#page-home.v82-home-page,
+#page-enhancer.v82-templates-page,
+#page-search.v82-projects-page,
+#page-profile.v82-profile-page {
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+.v82-home-main,
+.v82-templates-main,
+.v82-projects-main,
+#page-profile .profile-content {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Native horizontal rails: cards remain swipeable on Android/iOS. */
+.v82-home-projects,
+.v82-category-row,
+.v82-project-filters,
+#page-video-workspace .studio-control-scroll {
+    max-width: 100%;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    scrollbar-width: none;
+}
+
+.v82-home-projects::-webkit-scrollbar,
+.v82-category-row::-webkit-scrollbar,
+.v82-project-filters::-webkit-scrollbar,
+#page-video-workspace .studio-control-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.v82-category-row,
+.v82-project-filters {
+    flex-wrap: nowrap;
+}
+
+.v82-category-row > *,
+.v82-project-filters > *,
+#page-video-workspace .studio-control-scroll > * {
+    flex: 0 0 auto;
+}
+
+/* Critical fix: v8.2 inherited grid-auto-flow:column from the old carousel.
+   It placed most template cards outside the screen while body overflow hid them. */
+#page-enhancer .v82-template-grid {
+    display: grid !important;
+    grid-auto-flow: row !important;
+    grid-auto-columns: unset !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: stretch;
+    gap: 11px;
+    width: 100%;
+    margin: 0;
+    padding: 0 0 4px;
+    overflow: visible !important;
+    scroll-snap-type: none;
+}
+
+#page-enhancer .v82-template-grid .studio-template-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 224px;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 9px;
+    padding: 9px;
+    scroll-snap-align: none;
+}
+
+#page-enhancer .v82-template-grid .studio-template-art {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    flex: 0 0 auto;
+}
+
+#page-enhancer .v82-template-grid .studio-template-copy {
+    width: 100%;
+    min-width: 0;
+    padding: 0 2px 2px;
+}
+
+#page-enhancer .v82-template-grid .studio-template-copy strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#page-enhancer .v82-template-grid .studio-template-copy small {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+#page-enhancer .v82-template-grid .studio-template-check {
+    position: absolute;
+    right: 16px;
+    bottom: 14px;
+}
+
+/* Sheets must scroll on short phones, landscape, and when the keyboard is open. */
+.v82-create-sheet-card,
+.permission-sheet {
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)));
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+}
+
+.v82-create-sheet-card {
+    scroll-padding-bottom: calc(18px + env(safe-area-inset-bottom));
+}
+
+/* Editor owns the viewport; only its tool sheet scrolls. */
+#page-video-workspace.v82-editor-page {
+    width: 100%;
+    height: 100dvh;
+    min-height: 0;
+    overscroll-behavior: none;
+}
+
+.v82-editor-shell {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+}
+
+.v82-tool-sheet {
+    max-width: 100%;
+    min-height: 0;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom));
+}
+
+.v82-timeline {
+    touch-action: pan-x;
+}
+
+/* Keep sticky controls from covering the final template row. */
+.v82-templates-main {
+    padding-bottom: calc(36px + var(--v82-nav-height) + env(safe-area-inset-bottom));
+}
+
+.v82-projects-main,
+#page-profile .profile-content {
+    padding-bottom: calc(28px + var(--v82-nav-height) + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 339px) {
+    #page-enhancer .v82-template-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    #page-enhancer .v82-template-grid .studio-template-card {
+        min-height: 210px;
+    }
+}
+
+@media (max-height: 680px) {
+    .v82-editor-shell {
+        grid-template-rows: minmax(0, 38dvh) 112px minmax(0, 1fr);
+    }
+
+    .v82-editor-dock {
+        min-height: 56px;
+    }
+
+    .v82-create-sheet-card {
+        padding-bottom: calc(12px + env(safe-area-inset-bottom));
+    }
+}
