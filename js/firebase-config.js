@@ -1,5 +1,5 @@
-// Konfigurasi Firebase project V-Forge.
-// Nilai ini adalah identitas project publik; keamanan data tetap diatur melalui Firebase Rules.
+// Konfigurasi Firebase project V-Forge
+// Config ini aman untuk publik (bukan rahasia) - keamanan diatur lewat Firestore Security Rules, bukan config ini
 
 const firebaseConfig = {
   apiKey: "AIzaSyCwWZAjEizBHWmMcz8SIGc68DEwizB0tW4",
@@ -10,23 +10,15 @@ const firebaseConfig = {
   appId: "1:822523087326:web:590e8c11aac0b9c2e8f54f"
 };
 
-// Tetap memakai SDK compat supaya project bisa dijalankan tanpa build tool di HP.
-let auth = null;
-let db = null;
-let firebaseInitError = null;
+// Inisialisasi Firebase (pakai versi compat biar gampang dipakai tanpa build tool/import)
+firebase.initializeApp(firebaseConfig);
 
-try {
-  if (typeof firebase === 'undefined') {
-    throw new Error('Firebase SDK tidak berhasil dimuat.');
-  }
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-  if (!firebase.apps || !firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-
-  auth = firebase.auth();
-  db = firebase.firestore();
-} catch (error) {
-  firebaseInitError = error;
-  console.error('Firebase gagal diinisialisasi:', error);
-}
+// Firebase Cloud Functions dipakai untuk hadiah misi dan aktivasi Premium
+// secara aman dari backend. Jika Functions belum dideploy, variabel ini null
+// dan UI akan memberi penjelasan tanpa mengubah entitlement di sisi klien.
+const functions = (typeof firebase.app === 'function' && typeof firebase.app().functions === 'function')
+  ? firebase.app().functions('asia-southeast2')
+  : null;

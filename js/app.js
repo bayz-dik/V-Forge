@@ -340,16 +340,19 @@
         }
 
         function updatePointsDisplay() {
-            const globalP = document.getElementById('global-points-display'); 
+            const globalP = document.getElementById('global-points-display');
             const achP = document.getElementById('ach-points-text');
-            if(globalP) globalP.innerText = userPoints; 
+            if(globalP) globalP.innerText = userPoints;
             if(achP) achP.innerText = userPoints;
-            
+
             const redeemBtn = document.getElementById('redeem-vip-btn');
             if(redeemBtn) {
-                redeemBtn.classList.add('disabled');
-                redeemBtn.innerText = isPremium ? 'Active' : 'Belum tersedia';
+                const ready = !isPremium && userPoints >= 1000;
+                redeemBtn.classList.toggle('disabled', !ready);
+                redeemBtn.innerText = isPremium ? 'Aktif' : (ready ? 'Aktifkan' : `${userPoints}/1000 Pts`);
+                redeemBtn.setAttribute('aria-disabled', String(!ready));
             }
+            if (typeof renderV83Missions === 'function') renderV83Missions();
         }
 
         function handleTaskClick(taskId) {
@@ -374,9 +377,46 @@
             }, 300);
         }
 
-        function redeemSubscription(cost) {
-            if (isPremium) { showToast('You are already a VIP Pro!', 'info'); return; }
-            showToast('Penukaran Premium belum tersedia sampai validasi server diaktifkan.', 'info');
+        async function redeemSubscription(cost = 1000) {
+            if (isPremium) {
+                showToast('Premium sudah aktif di akunmu.', 'info');
+                return;
+            }
+            if (userPoints < cost) {
+                showToast(`Kumpulkan ${cost - userPoints} poin lagi untuk membuka Premium.`, 'info');
+                return;
+            }
+            if (!auth?.currentUser) {
+                goToPage('page-login', -1);
+                return;
+            }
+            if (typeof functions === 'undefined' || !functions) {
+                showToast('Backend hadiah belum dideploy. Ikuti panduan Firebase v8.3 agar aktivasi aman.', 'info');
+                return;
+            }
+
+            const homeButton = document.getElementById('v83-redeem-premium');
+            const rewardButton = document.getElementById('redeem-vip-btn');
+            [homeButton, rewardButton].forEach((button) => { if (button) button.disabled = true; });
+            try {
+                showToast('Memverifikasi Forge Points...', 'sync');
+                const redeem = functions.httpsCallable('redeemPremiumWithPoints');
+                const result = await redeem({ cost });
+                if (result?.data?.ok !== true) throw new Error('Aktivasi belum dikonfirmasi.');
+                showToast('Premium 30 hari berhasil diaktifkan! ✨', 'check');
+                addNotification('Premium Aktif', 'Hadiah 30 hari berhasil dibuka dengan Forge Points.', 'workspace_premium', '#9B5CFF');
+            } catch (error) {
+                console.warn('Aktivasi Premium reward gagal:', error);
+                const code = String(error?.code || '');
+                const message = code.includes('failed-precondition')
+                    ? 'Poin belum cukup atau hadiah sudah aktif.'
+                    : code.includes('unavailable')
+                        ? 'Firebase Functions belum tersedia. Periksa deployment dan koneksi.'
+                        : (error?.message || 'Aktivasi Premium belum berhasil. Coba lagi.');
+                showToast(message, 'info');
+            } finally {
+                updatePointsDisplay();
+            }
         }
 
         function renderEditorHistory() {
@@ -401,10 +441,12 @@
 
         function initRealTime() {
             try {
-                let startDateStr = localStorage.getItem('appStartDate');
-                if (!startDateStr) { const today = new Date(); startDateStr = today.toDateString(); localStorage.setItem('appStartDate', startDateStr); }
-                const start = new Date(startDateStr); const now = new Date(); const diffDays = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1; 
-                const dayDisplay = document.getElementById('day-display'); if (dayDisplay) dayDisplay.innerText = `Day ${diffDays}/66`;
+                const now = new Date();
+                const dateLabel = new Intl.DateTimeFormat('id-ID', {
+                    timeZone: 'Asia/Jakarta', weekday: 'short', day: '2-digit', month: 'short'
+                }).format(now);
+                const dayDisplay = document.getElementById('day-display');
+                if (dayDisplay) dayDisplay.innerText = `Misi • ${dateLabel}`;
             } catch(e){}
             updatePointsDisplay(); renderNotifications(); updateProfileText(); renderEditorHistory();
         }

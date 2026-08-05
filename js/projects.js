@@ -304,6 +304,7 @@ function renderProjectsUI() {
     updateProjectLinkedStats();
     renderProjectLibrary();
     renderProjectEditorHistory();
+    if (typeof renderV83Missions === 'function') renderV83Missions();
 }
 
 function stopProjectsRealtimeSync(options = {}) {

@@ -314,7 +314,16 @@ function applyUserDataToApp(data, user, options = {}) {
     const safeData = data || {};
 
     try { userPoints = Number.isFinite(safeData.points) ? safeData.points : 0; } catch (error) {}
-    try { isPremium = safeData.isPremium === true && safeData.subscriptionStatus === 'active'; } catch (error) {}
+    try {
+        const expiry = safeData.subscriptionExpiresAt;
+        const expiryMs = expiry && typeof expiry.toMillis === 'function'
+            ? expiry.toMillis()
+            : (expiry && Number.isFinite(expiry.seconds) ? expiry.seconds * 1000 : new Date(expiry || 0).getTime());
+        const hasExpiry = Number.isFinite(expiryMs) && expiryMs > 0;
+        isPremium = safeData.isPremium === true
+            && safeData.subscriptionStatus === 'active'
+            && (!hasExpiry || expiryMs > Date.now());
+    } catch (error) { isPremium = false; }
     try { completedTasks = Number.isFinite(safeData.completedTasks) ? safeData.completedTasks : 0; } catch (error) {}
 
     const fallbackName = user?.displayName || normalizeEmail(user?.email).split('@')[0] || 'V-Forge User';
@@ -358,6 +367,7 @@ function applyUserDataToApp(data, user, options = {}) {
 
     if (typeof updatePointsDisplay === 'function') updatePointsDisplay();
     if (typeof renderPremiumUI === 'function') renderPremiumUI();
+    if (typeof renderV83Missions === 'function') renderV83Missions();
 }
 
 // Memuat dokumen user. Jika akun lama belum punya dokumen Firestore, dokumen dibuat otomatis.
@@ -543,19 +553,11 @@ function syncUserDataToFirestore() {
     const user = auth?.currentUser;
     if (!user || !db) return Promise.resolve();
 
-    let payload;
-    try {
-        payload = {
-            points: userPoints,
-            completedTasks,
-            updatedAt: serverTimestamp()
-        };
-    } catch (error) {
-        return Promise.reject(error);
-    }
-
+    // Points, mission claims, completedTasks, and Premium entitlement are
+    // server-managed in v8.3. The client only refreshes the profile timestamp.
+    const payload = { updatedAt: serverTimestamp() };
     return db.collection('users').doc(user.uid).set(payload, { merge: true }).catch((error) => {
-        console.warn('Data akun belum tersinkron:', error);
+        console.warn('Status akun belum tersinkron:', error);
         throw error;
     });
 }
@@ -814,6 +816,7 @@ async function openAuthenticatedSession(user, alreadyHasSyncWarning = false) {
 
     if (typeof initRealTime === 'function') initRealTime();
     if (typeof renderPremiumUI === 'function') renderPremiumUI();
+    if (typeof syncV83MissionBackend === 'function') syncV83MissionBackend();
 
     if (syncWarning) {
         setTimeout(() => safeShowToast('Akun masuk, tetapi sinkronisasi profil sedang tertunda.', 'info'), 250);

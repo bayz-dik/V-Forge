@@ -18,7 +18,19 @@ const VIDEO_WORKSPACE_DEFAULTS = Object.freeze({
 
 let videoWorkspaceRequestedProjectId = null;
 let videoWorkspaceSaving = false;
+let videoWorkspaceReturnPage = 'page-home';
 let videoWorkspaceState = createEmptyVideoWorkspaceState();
+
+
+function setVideoWorkspaceReturnPage(pageId) {
+    const allowed = ['page-home', 'page-enhancer', 'page-search', 'page-profile'];
+    videoWorkspaceReturnPage = allowed.includes(pageId) ? pageId : 'page-home';
+}
+
+function getVideoWorkspaceReturnNavIndex() {
+    const map = { 'page-home': 0, 'page-search': 1, 'page-enhancer': 2, 'page-profile': 3 };
+    return map[videoWorkspaceReturnPage] ?? 0;
+}
 
 function createEmptyVideoWorkspaceState() {
     return {
@@ -132,9 +144,13 @@ function resetWorkspaceVideoElement() {
     try { video.pause(); } catch (error) {}
     video.removeAttribute('src');
     try { video.load(); } catch (error) {}
+    if (typeof syncV83EditorAttraction === 'function') syncV83EditorAttraction();
 }
 
 function openVideoPicker(projectId = null) {
+    if (typeof currentPage === 'string' && currentPage !== 'page-video-workspace') {
+        setVideoWorkspaceReturnPage(currentPage);
+    }
     if (!auth?.currentUser) {
         if (typeof goToPage === 'function') goToPage('page-login', -1);
         return;
@@ -244,6 +260,7 @@ function openVideoWorkspace(file, projectId = null) {
     try {
         videoWorkspaceState.objectUrl = URL.createObjectURL(file);
         video.src = videoWorkspaceState.objectUrl;
+        if (typeof syncV83EditorAttraction === 'function') syncV83EditorAttraction();
     } catch (error) {
         handleWorkspacePreviewError('Preview lokal gagal dibuat. Coba pilih ulang videonya atau gunakan Chrome terbaru.');
         if (typeof goToPage === 'function') goToPage('page-video-workspace', -1);
@@ -274,6 +291,7 @@ function handleWorkspaceMetadataLoaded() {
 
     videoWorkspaceState.metadata = { durationMs, width, height };
     videoWorkspaceState.previewReady = true;
+    if (typeof syncV83EditorAttraction === 'function') syncV83EditorAttraction();
     const frame = document.getElementById('workspace-video-frame');
     if (frame) frame.style.setProperty('--workspace-source-ratio', `${width} / ${height}`);
     setWorkspaceLoading(false);
@@ -475,7 +493,10 @@ function closeVideoWorkspace(options = {}) {
     setWorkspaceLoading(false);
     setWorkspaceMetadataText();
     renderWorkspaceSettings();
-    if (options.navigate !== false && typeof goToPage === 'function') goToPage('page-enhancer', -1);
+    if (typeof syncV83EditorAttraction === 'function') syncV83EditorAttraction();
+    if (options.navigate !== false && typeof goToPage === 'function') {
+        goToPage(videoWorkspaceReturnPage, getVideoWorkspaceReturnNavIndex());
+    }
 }
 
 document.addEventListener('keydown', (event) => {
