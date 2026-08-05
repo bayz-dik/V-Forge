@@ -1,12 +1,12 @@
 // ============================================================
-// STUDIO.JS — V-Forge Motion Studio v7
+// STUDIO.JS — V-Forge Motion Studio v8
 // Template presets, transition preview, color effects, timeline UI,
 // onboarding, undo/redo, dan optimasi animasi mobile.
 // ============================================================
 
-const VFORGE_STUDIO_VERSION = '7.0.0';
-const VFORGE_STUDIO_STORAGE_KEY = 'vforge-studio-template-v7';
-const VFORGE_STUDIO_ONBOARDING_KEY = 'vforge-studio-onboarding-v7';
+const VFORGE_STUDIO_VERSION = '8.0.0';
+const VFORGE_STUDIO_STORAGE_KEY = 'vforge-studio-template-v8';
+const VFORGE_STUDIO_ONBOARDING_KEY = 'vforge-studio-onboarding-v8';
 
 const VFORGE_STUDIO_TEMPLATES = Object.freeze({
     'clean-cut': Object.freeze({
@@ -118,9 +118,9 @@ const VFORGE_STUDIO_EFFECTS = Object.freeze({
 
 const VFORGE_ONBOARDING_STEPS = Object.freeze([
     Object.freeze({
-        kicker: 'Motion-first editor',
-        title: 'Edit lebih cepat, tampil lebih premium',
-        description: 'Mulai dari template, pilih transisi, lalu proses video langsung di HP tanpa mengunggah file sumber.',
+        kicker: 'Focus-first editor',
+        title: 'Lebih fokus, lebih cepat dimengerti',
+        description: 'V8 memusatkan alur pada Proyek Baru, preview, timeline, toolbar, dan export—tanpa dashboard yang terasa penuh.',
         icon: 'movie_filter'
     }),
     Object.freeze({
@@ -555,7 +555,7 @@ function initStudioPerformanceControls() {
     });
 }
 
-function initStudioV7() {
+function initStudioV8() {
     renderStudioTemplateGallery();
     renderStudioWorkspaceControls();
     initStudioPerformanceControls();
@@ -574,5 +574,5 @@ function initStudioV7() {
     if (typeof currentPage !== 'undefined') handleStudioPageChange(currentPage);
 }
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initStudioV7, { once: true });
-else initStudioV7();
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initStudioV8, { once: true });
+else initStudioV8();

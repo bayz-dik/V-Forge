@@ -292,7 +292,7 @@ function renderProjectEditorHistory() {
     }
 
     if (projectRecords.length === 0) {
-        container.innerHTML = '<div class="editor-project-empty"><span class="material-icons-round">video_call</span><strong>Belum ada draft</strong><p>Tekan “Pilih Video & Buka Workspace” untuk memulai.</p></div>';
+        container.innerHTML = '<div class="editor-project-empty"><span class="material-icons-round">video_call</span><strong>Belum ada draft</strong><p>Tekan “Proyek Baru” untuk memilih video dari HP.</p></div>';
         return;
     }
 
