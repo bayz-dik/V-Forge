@@ -1,6 +1,17 @@
-# V-Forge — Mobile Video Studio Sprint V9
+# V-Forge — Mobile Video Studio v9.0.1
 
 V-Forge adalah editor video local-first berbasis PWA. Video sumber dan hasil ekspor tetap berada di HP. Firebase Spark digunakan untuk Authentication, profil, dan metadata proyek Firestore.
+
+
+## Hotfix v9.0.1 — Mobile Editor
+
+- Editor tidak lagi melebar keluar viewport HP.
+- Header, preview, timeline, panel alat, dan dock memakai layout grid penuh yang stabil.
+- Dock alat tidak lagi menutupi tombol dan form editor.
+- Timeline tetap dapat digeser horizontal tanpa membuat halaman ikut melebar.
+- Panel Edit, Audio, Text, Overlay, Effects, Adjust, dan Export dapat digulir vertikal.
+- Tinggi editor mengikuti `visualViewport`, termasuk ketika keyboard Android terbuka.
+- Landscape menggunakan komposisi dua panel agar preview dan alat tetap terbaca.
 
 ## Sprint V9
 
