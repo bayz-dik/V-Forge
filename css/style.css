@@ -4961,3 +4961,161 @@ body.v9-ui.vf-editor-open {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* ============================================================
+   V-FORGE v9.0.2 — FULL-FRAME MOBILE PREVIEW
+   Seluruh frame video selalu terlihat seperti editor mobile modern.
+   ============================================================ */
+:root {
+  --v902-preview-gap: 8px;
+}
+
+#page-video-workspace .v82-editor-shell {
+  grid-template-rows: minmax(250px, 52%) clamp(92px, 13vh, 108px) minmax(0, 1fr) !important;
+}
+
+#page-video-workspace .v82-preview-stage {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: minmax(0, 1fr) auto !important;
+  place-items: stretch center !important;
+  gap: var(--v902-preview-gap) !important;
+  padding: 8px 10px 7px !important;
+  overflow: hidden !important;
+  contain: layout paint;
+}
+
+#page-video-workspace .workspace-video-frame {
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: center !important;
+  width: var(--v902-canvas-width, 100%) !important;
+  height: var(--v902-canvas-height, 100%) !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  aspect-ratio: var(--v902-preview-ratio, auto) !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255,255,255,.09) !important;
+  border-radius: 14px !important;
+  background:
+    linear-gradient(45deg, rgba(255,255,255,.018) 25%, transparent 25%, transparent 75%, rgba(255,255,255,.018) 75%),
+    linear-gradient(45deg, rgba(255,255,255,.018) 25%, #020204 25%, #020204 75%, rgba(255,255,255,.018) 75%);
+  background-position: 0 0, 8px 8px;
+  background-size: 16px 16px;
+  box-shadow: 0 16px 40px rgba(0,0,0,.34) !important;
+  transition: width .22s cubic-bezier(.2,.8,.2,1), height .22s cubic-bezier(.2,.8,.2,1), border-radius .2s ease !important;
+}
+
+#page-video-workspace .workspace-video-frame video,
+#page-video-workspace .workspace-video-frame:not(.ratio-original) video,
+#page-video-workspace .workspace-video-frame.ratio-original video,
+#page-video-workspace .workspace-video-frame.ratio-portrait video,
+#page-video-workspace .workspace-video-frame.ratio-landscape video,
+#page-video-workspace .workspace-video-frame.ratio-square video {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: 50% 50% !important;
+  background: #000 !important;
+  transform: none;
+}
+
+#page-video-workspace .workspace-video-frame[data-preview-orientation="portrait"] {
+  border-radius: 12px !important;
+}
+
+#page-video-workspace .v82-preview-meta {
+  position: static !important;
+  grid-row: 2 !important;
+  align-self: end !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  gap: 7px !important;
+  pointer-events: auto !important;
+}
+
+#page-video-workspace .v82-preview-meta > button {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 36px !important;
+  border-color: rgba(255,255,255,.085) !important;
+  background: rgba(18,18,23,.94) !important;
+}
+
+#page-video-workspace .v82-preview-meta > div {
+  display: flex !important;
+  min-width: 0 !important;
+  gap: 5px !important;
+}
+
+#page-video-workspace .v82-preview-meta > div > span {
+  min-width: 54px !important;
+  max-width: 76px !important;
+  border-color: rgba(255,255,255,.085) !important;
+  background: rgba(18,18,23,.94) !important;
+}
+
+#page-video-workspace .workspace-preview-error {
+  top: 12px !important;
+  z-index: 20 !important;
+}
+
+#page-video-workspace .v83-editor-attract {
+  position: absolute !important;
+  inset: 0 !important;
+}
+
+#page-video-workspace .v82-timeline {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+@media (max-width: 430px) {
+  #page-video-workspace .v82-editor-shell {
+    grid-template-rows: minmax(270px, 53%) 98px minmax(0, 1fr) !important;
+  }
+  #page-video-workspace .v82-preview-meta > div > span:nth-child(3) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 360px), (max-height: 680px) {
+  #page-video-workspace .v82-editor-shell {
+    grid-template-rows: minmax(225px, 49%) 92px minmax(0, 1fr) !important;
+  }
+  #page-video-workspace .v82-preview-stage {
+    padding: 6px 8px !important;
+    gap: 5px !important;
+  }
+  #page-video-workspace .v82-preview-meta > div > span:nth-child(2),
+  #page-video-workspace .v82-preview-meta > div > span:nth-child(3) {
+    display: none !important;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 520px) {
+  #page-video-workspace .v82-editor-shell {
+    grid-template-rows: minmax(0, 1fr) 88px !important;
+  }
+  #page-video-workspace .v82-preview-stage {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+  #page-video-workspace .v82-preview-meta {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+  #page-video-workspace .v82-preview-meta > div {
+    display: none !important;
+  }
+}
