@@ -3,7 +3,7 @@
 // Mobile shell, Spark-safe missions, unified themes, editor motion
 // ============================================================
 
-const VFORGE_UI_VERSION = '9.0.0';
+const VFORGE_UI_VERSION = '9.0.1';
 const VFORGE_BACKEND_MODE = 'spark';
 const VFORGE_PREMIUM_REWARD_COST = 1000;
 const V9_MISSIONS = Object.freeze([
@@ -24,6 +24,21 @@ let v82TemplateObserver = null;
 let v9LaunchBusy = false;
 let v9FeatureIndex = 0;
 let v9FeatureTimer = null;
+
+let v9EditorViewportFrame = 0;
+function syncV9EditorViewport() {
+  if (v9EditorViewportFrame) cancelAnimationFrame(v9EditorViewportFrame);
+  v9EditorViewportFrame = requestAnimationFrame(() => {
+    v9EditorViewportFrame = 0;
+    const viewport = window.visualViewport;
+    const height = Math.max(320, Math.round(viewport?.height || window.innerHeight || document.documentElement.clientHeight));
+    document.documentElement.style.setProperty('--vf-editor-height', `${height}px`);
+  });
+}
+function setV9EditorViewportMode(active) {
+  document.body?.classList.toggle('vf-editor-open', Boolean(active));
+  if (active) syncV9EditorViewport();
+}
 
 function v9Toast(message, type='info') {
   if (typeof safeShowToast === 'function') safeShowToast(message, type);
@@ -229,7 +244,9 @@ function handleV9PageChange(event){
   const pageId=event.detail?.pageId||'';
   clearV9StaleLocks();
   document.querySelectorAll('.page.active').forEach(page=>{if(pageId!=='page-video-workspace')page.scrollTop=0;});
-  if(pageId==='page-video-workspace'){openV82EditorTool('edit');requestAnimationFrame(syncV83EditorAttraction);}
+  const editorOpen = pageId==='page-video-workspace';
+  setV9EditorViewportMode(editorOpen);
+  if(editorOpen){openV82EditorTool('edit');requestAnimationFrame(syncV83EditorAttraction);}
   else stopV9FeatureRotation();
   if(pageId==='page-home')renderV83Missions();
 }
@@ -249,14 +266,16 @@ function prepareV9Ui(){
   const stored=(()=>{try{return localStorage.getItem('vforge-theme');}catch(_){return null;}})();
   const preferred=stored || (window.matchMedia?.('(prefers-color-scheme: light)').matches?'light':'dark');
   applyVForgeTheme(preferred,{silent:true});
-  setV82HomeDaypart();observeV82TemplateList();renderV83Missions();clearV9StaleLocks();syncV83EditorAttraction();
+  setV82HomeDaypart();observeV82TemplateList();renderV83Missions();clearV9StaleLocks();syncV9EditorViewport();syncV83EditorAttraction();
   const greeting=document.getElementById('editor-greeting-title');
   if(greeting)new MutationObserver(()=>requestAnimationFrame(setV82HomeDaypart)).observe(greeting,{childList:true,characterData:true,subtree:true});
   const video=document.getElementById('workspace-video');
   if(video){['loadstart','loadedmetadata','emptied','error','abort'].forEach(name=>video.addEventListener(name,syncV83EditorAttraction));new MutationObserver(syncV83EditorAttraction).observe(video,{attributes:true,attributeFilter:['src']});}
   document.addEventListener('vforge:pagechange',handleV9PageChange);
   window.addEventListener('pageshow',()=>{clearV9StaleLocks();renderV83Missions();syncV83EditorAttraction();});
-  window.addEventListener('orientationchange',()=>setTimeout(clearV9StaleLocks,120));
+  window.addEventListener('orientationchange',()=>setTimeout(()=>{clearV9StaleLocks();syncV9EditorViewport();},120));
+  window.addEventListener('resize',syncV9EditorViewport,{passive:true});
+  if(window.visualViewport){window.visualViewport.addEventListener('resize',syncV9EditorViewport,{passive:true});window.visualViewport.addEventListener('scroll',syncV9EditorViewport,{passive:true});}
   window.addEventListener('online',()=>v9Toast('Koneksi kembali aktif. Firebase akan menyinkronkan metadata.','sync'));
   window.addEventListener('offline',()=>v9Toast('Mode offline aktif. Video lokal tetap dapat diedit.','info'));
 }
