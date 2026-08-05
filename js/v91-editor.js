@@ -1,5 +1,5 @@
 // ============================================================
-// V-FORGE v9.1.0 — EDITOR UX & INTERACTIVE TIMELINE
+// V-FORGE v9.1.1 — EDITOR UX & INTERACTIVE TIMELINE
 // Local-only prototype: custom playback, Fit/Fill, scrubbing,
 // trim handles, split, duplicate, delete, timeline zoom, undo/redo.
 // Video bytes stay on-device; this file does not upload media.
@@ -8,7 +8,7 @@
 (function () {
   'use strict';
 
-  const VERSION = '9.1.0';
+  const VERSION = '9.1.1';
   const MIN_CLIP_SECONDS = 0.25;
   const MIN_PX_PER_SECOND = 22;
   const MAX_PX_PER_SECOND = 110;
@@ -171,7 +171,7 @@
     if (document.querySelector('link[data-vforge-v91]')) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'css/v91-editor.css?v=9.1.0';
+    link.href = 'css/v91-editor.css?v=9.1.1';
     link.dataset.vforgeV91 = VERSION;
     document.head.appendChild(link);
   }
@@ -337,15 +337,69 @@
     if (promise?.catch) promise.catch(() => toast('Video belum dapat diputar. Sentuh preview lalu coba lagi.', 'info'));
   }
 
+  function getFullscreenElement() {
+    return document.fullscreenElement || document.webkitFullscreenElement || null;
+  }
+
+  function syncEditorNavigation() {
+    const page = byId('page-video-workspace');
+    const nav = byId('bottom-navigation');
+    const editorOpen = Boolean(page?.classList.contains('active'));
+    document.body?.classList.toggle('v911-editor-open', editorOpen);
+    if (nav) {
+      nav.hidden = editorOpen;
+      nav.setAttribute('aria-hidden', String(editorOpen));
+    }
+  }
+
+  function syncFullscreenState() {
+    const page = byId('page-video-workspace');
+    const active = Boolean(page && getFullscreenElement() === page);
+    document.body?.classList.toggle('v911-editor-fullscreen', active);
+    page?.classList.toggle('v911-immersive', active);
+
+    const button = byId('v91-fullscreen-button');
+    const icon = button?.querySelector('.material-icons-round');
+    if (button) {
+      button.setAttribute('aria-label', active ? 'Keluar dari layar penuh editor' : 'Buka editor layar penuh');
+      button.setAttribute('aria-pressed', String(active));
+    }
+    if (icon) icon.textContent = active ? 'fullscreen_exit' : 'fullscreen';
+
+    syncEditorNavigation();
+    requestAnimationFrame(() => {
+      if (typeof window.syncV9EditorViewport === 'function') window.syncV9EditorViewport();
+      if (typeof window.syncV902PreviewCanvas === 'function') window.syncV902PreviewCanvas();
+      applyFitMode();
+      renderPlaybackOnly();
+    });
+  }
+
   async function enterFullscreen() {
-    const frame = byId('workspace-video-frame');
-    if (!frame) return;
+    const page = byId('page-video-workspace');
+    if (!page) return;
+
     try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else if (frame.requestFullscreen) await frame.requestFullscreen();
-      else toast('Mode layar penuh belum didukung browser ini.', 'info');
+      const active = getFullscreenElement();
+      if (active) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (typeof exit === 'function') {
+          const result = exit.call(document);
+          if (result?.then) await result;
+        }
+        return;
+      }
+
+      const request = page.requestFullscreen || page.webkitRequestFullscreen;
+      if (typeof request !== 'function') {
+        toast('Browser ini belum mendukung layar penuh editor. Pasang V-Forge sebagai PWA untuk ruang kerja lebih luas.', 'info');
+        return;
+      }
+
+      const result = request.call(page);
+      if (result?.then) await result;
     } catch (_) {
-      toast('Layar penuh belum dapat dibuka.', 'info');
+      toast('Layar penuh editor belum dapat dibuka. Sentuh tombol sekali lagi atau gunakan PWA.', 'info');
     }
   }
 
@@ -874,9 +928,35 @@
     patchPreviewSizer();
     applyFitMode();
     renderAll();
+    syncEditorNavigation();
+    syncFullscreenState();
+
+    document.addEventListener('fullscreenchange', syncFullscreenState);
+    document.addEventListener('webkitfullscreenchange', syncFullscreenState);
+
+    const editorPage = byId('page-video-workspace');
+    if (editorPage && 'MutationObserver' in window) {
+      new MutationObserver(syncEditorNavigation).observe(editorPage, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
+    }
 
     document.addEventListener('vforge:pagechange', (event) => {
-      if (event.detail?.pageId === 'page-video-workspace') {
+      const pageId = event.detail?.pageId || '';
+      syncEditorNavigation();
+
+      if (pageId !== 'page-video-workspace' && getFullscreenElement() === byId('page-video-workspace')) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (typeof exit === 'function') {
+          try {
+            const result = exit.call(document);
+            if (result?.catch) result.catch(() => {});
+          } catch (_) {}
+        }
+      }
+
+      if (pageId === 'page-video-workspace') {
         requestAnimationFrame(() => {
           createPreviewControls();
           createTimeline();
@@ -885,6 +965,7 @@
           bindVideo();
           applyFitMode();
           renderAll();
+          syncEditorNavigation();
         });
       }
     });
@@ -908,6 +989,8 @@
     resetTimeline,
     setFitMode,
     setTimelineZoom,
+    enterFullscreen,
+    syncEditorNavigation,
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', prepare, { once: true });
