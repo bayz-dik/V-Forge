@@ -1,18 +1,18 @@
 // V-Forge Service Worker
 // Ganti angka versi ini tiap kali ada update besar, biar cache lama dibuang otomatis
-const CACHE_VERSION = 'vforge-v8-0-0-focus-redesign';
+const CACHE_VERSION = 'vforge-v8-2-0-native-navigation';
 
 const ASSETS_TO_CACHE = [
   './index.html',
-  './css/style.css?v=8.0.0',
-  './js/firebase-config.js?v=8.0.0',
-  './js/app.js?v=8.0.0',
-  './js/projects.js?v=8.0.0',
-  './js/workspace.js?v=8.0.0',
-  './js/processor.js?v=8.0.0',
-  './js/auth.js?v=8.0.0',
-  './js/studio.js?v=8.0.0',
-  './js/v8-ui.js?v=8.0.0',
+  './css/style.css?v=8.2.0',
+  './js/firebase-config.js?v=8.2.0',
+  './js/app.js?v=8.2.0',
+  './js/projects.js?v=8.2.0',
+  './js/workspace.js?v=8.2.0',
+  './js/processor.js?v=8.2.0',
+  './js/auth.js?v=8.2.0',
+  './js/studio.js?v=8.2.0',
+  './js/v8-ui.js?v=8.2.0',
   './assets/images/vf-car-01.jpg',
   './assets/images/vf-car-02.jpg',
   './assets/images/vf-car-03.jpg',

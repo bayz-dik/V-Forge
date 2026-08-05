@@ -1,4 +1,4 @@
-# V-Forge — Focus Redesign v8.0.0
+# V-Forge — Mobile Video Studio v8.2.0
 
 V-Forge adalah editor video **local-first** berbasis PWA. File video sumber dan hasil ekspor tetap berada di perangkat pengguna. Firebase dipakai untuk akun, status Premium, metadata proyek, preset, efek, transisi, dan catatan ekspor kecil.
 
@@ -55,3 +55,7 @@ firestore.rules.txt
 - `isPremium` dan `subscriptionStatus` harus dikelola backend/Admin SDK.
 - Terapkan `firestore.rules.txt` melalui Firebase Console.
 - Video sumber dan hasil ekspor tidak dikirim ke Firestore atau Firebase Storage oleh versi ini.
+
+
+## v8.2 Native UX
+Home ringkas, Templates dan Projects menjadi halaman tersendiri, tombol tengah membuka create sheet, serta workspace menjadi editor full-screen dengan preview, timeline, dan panel alat kontekstual.
