@@ -85,22 +85,45 @@
 
         // FUNGSI NAVIGASI
         function goToPage(pageId, navIndex) {
-            const pages = document.querySelectorAll('.page'); 
-            pages.forEach(page => page.classList.remove('active'));
-            const targetPage = document.getElementById(pageId); 
-            if(targetPage) { targetPage.classList.add('active'); window.scrollTo(0, 0); }
-            currentPage = pageId;
-            try { document.dispatchEvent(new CustomEvent('vforge:pagechange', { detail: { pageId, navIndex } })); } catch (error) {}
-            updateNavVisibility();
-            if(navIndex !== undefined && navIndex >= 0) { 
-                const navItems = document.querySelectorAll('.nav-item');
-                navItems.forEach(item => item.classList.remove('active'));
-                const selectedNav = document.querySelector(`.nav-item[data-nav-index="${navIndex}"]`) || navItems[navIndex];
-                if(selectedNav) selectedNav.classList.add('active'); 
-            } else if (navIndex === -1) { 
-                const navItems = document.querySelectorAll('.nav-item'); 
-                navItems.forEach(item => item.classList.remove('active')); 
+            const targetPage = document.getElementById(pageId);
+            if (!targetPage) {
+                console.warn(`Halaman tidak ditemukan: ${pageId}`);
+                return false;
             }
+
+            const activeElement = document.activeElement;
+            if (activeElement && typeof activeElement.blur === 'function') activeElement.blur();
+
+            document.querySelectorAll('.page').forEach((page) => page.classList.remove('active'));
+            targetPage.classList.add('active');
+            currentPage = pageId;
+
+            const resetPageScroll = () => {
+                window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+                const rootScroller = document.scrollingElement;
+                if (rootScroller) rootScroller.scrollTop = 0;
+                if (targetPage !== rootScroller) targetPage.scrollTop = 0;
+            };
+            resetPageScroll();
+            window.requestAnimationFrame(resetPageScroll);
+
+            try {
+                document.dispatchEvent(new CustomEvent('vforge:pagechange', { detail: { pageId, navIndex } }));
+            } catch (error) {
+                console.warn('Event perpindahan halaman gagal dikirim:', error);
+            }
+
+            updateNavVisibility();
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach((item) => {
+                const active = navIndex !== undefined
+                    && navIndex >= 0
+                    && (item.dataset.navIndex === String(navIndex));
+                item.classList.toggle('active', active);
+                if (active) item.setAttribute('aria-current', 'page');
+                else item.removeAttribute('aria-current');
+            });
+            return true;
         }
 
         function updateNavVisibility() {
