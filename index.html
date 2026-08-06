@@ -20,20 +20,22 @@
 <link href="css/style.css?v=9.0.2" rel="stylesheet"/>
 <link data-vforge-v91="9.1.2" href="css/v91-editor.css?v=9.1.2" rel="stylesheet"/>
 <link data-vforge-layout-safe="9.1.3a" href="css/v913-layout.css?v=9.1.3a" rel="stylesheet"/>
-<style id="vforge-v923-style">
+<style id="vforge-v924-style">
 /* ============================================================
-   V-FORGE V9.2.3 — FULLSCREEN MOTION WORKSHOP
-   Isolated from the editor preview/timeline layout.
+   V-FORGE V9.2.4
+   Mobile editor visibility + clean Premium showcase.
    ============================================================ */
 
 #page-video-workspace {
-  --vf923-lime: #caff62;
-  --vf923-purple: #a86cff;
-  --vf923-cyan: #64e8ff;
-  --vf923-black: #060608;
+  --vf924-lime: #caff62;
+  --vf924-purple: #a86cff;
+  --vf924-cyan: #65e8ff;
+  --vf924-editor-bg: #08080d;
 }
 
-#vf923-workshop-overlay {
+/* ---------- Fullscreen Premium showcase ---------- */
+
+#vf924-workshop {
   position: fixed;
   inset: 0;
   z-index: 12000;
@@ -41,113 +43,105 @@
   grid-template-rows: auto minmax(0, 1fr) auto;
   width: 100%;
   height: 100dvh;
-  min-height: 100%;
   overflow: hidden;
   color: #fff;
   background:
-    radial-gradient(circle at 78% 10%, rgba(168,108,255,.20), transparent 34%),
-    radial-gradient(circle at 18% 76%, rgba(100,232,255,.09), transparent 36%),
+    radial-gradient(circle at 82% 7%, rgba(168,108,255,.18), transparent 34%),
     #07070b;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translate3d(0, 10px, 0);
+  transform: translate3d(0,10px,0);
   transition:
     opacity .28s ease,
     visibility .28s ease,
-    transform .42s cubic-bezier(.2,.8,.2,1);
+    transform .40s cubic-bezier(.2,.8,.2,1);
 }
 
-#vf923-workshop-overlay.open {
+#vf924-workshop.open {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: translate3d(0,0,0);
 }
 
-#vf923-workshop-overlay[aria-hidden="false"] {
-  display: grid;
-}
-
-.vf923-overlay-header {
+.vf924-workshop-header {
   position: relative;
-  z-index: 30;
+  z-index: 40;
   display: grid;
   grid-template-columns: 42px minmax(0,1fr) auto;
   align-items: center;
   gap: 10px;
-  min-height: 66px;
+  min-height: 68px;
   padding:
     max(10px, env(safe-area-inset-top))
     14px
-    9px;
+    10px;
   border-bottom: 1px solid rgba(255,255,255,.08);
-  background: rgba(8,8,12,.73);
-  -webkit-backdrop-filter: blur(24px) saturate(175%);
-  backdrop-filter: blur(24px) saturate(175%);
+  background: rgba(8,8,13,.78);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  backdrop-filter: blur(24px) saturate(170%);
 }
 
-.vf923-back {
+.vf924-back {
   display: grid;
   place-items: center;
   width: 40px;
   height: 40px;
   padding: 0;
-  border: 1px solid rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.11);
   border-radius: 14px;
   color: #fff;
   background: rgba(255,255,255,.055);
 }
 
-.vf923-back .material-icons-round {
+.vf924-back .material-icons-round {
   font-size: 21px;
 }
 
-.vf923-overlay-title {
+.vf924-heading {
   min-width: 0;
   display: grid;
-  gap: 1px;
+  gap: 2px;
 }
 
-.vf923-overlay-title span {
-  color: var(--vf923-lime);
+.vf924-heading span {
+  color: var(--vf924-lime);
   font-size: 7px;
   font-weight: 900;
   letter-spacing: .18em;
 }
 
-.vf923-overlay-title strong {
+.vf924-heading strong {
   overflow: hidden;
-  font-size: 15px;
-  line-height: 1.15;
+  font-size: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.vf923-live-chip {
+.vf924-live {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 7px 9px;
   border: 1px solid rgba(255,255,255,.10);
   border-radius: 999px;
-  color: rgba(255,255,255,.75);
+  color: rgba(255,255,255,.72);
   font-size: 7px;
   font-weight: 900;
-  letter-spacing: .11em;
+  letter-spacing: .08em;
   background: rgba(255,255,255,.045);
 }
 
-.vf923-live-chip i {
+.vf924-live i {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--vf923-lime);
-  box-shadow: 0 0 13px rgba(202,255,98,.75);
-  animation: vf923-pulse 1.4s ease-in-out infinite;
+  background: var(--vf924-lime);
+  box-shadow: 0 0 12px rgba(202,255,98,.66);
 }
 
-.vf923-carousel {
+.vf924-carousel {
   position: relative;
   min-height: 0;
   overflow: hidden;
@@ -155,166 +149,79 @@
   background: #050507;
 }
 
-.vf923-track {
+.vf924-track {
   position: absolute;
   inset: 0 auto 0 0;
   display: flex;
-  width: 400%;
+  width: 300%;
   height: 100%;
   transform: translate3d(0,0,0);
-  transition: transform .78s cubic-bezier(.2,.78,.18,1);
+  transition: transform .72s cubic-bezier(.2,.78,.18,1);
   will-change: transform;
 }
 
-.vf923-slide {
+.vf924-slide {
   position: relative;
-  flex: 0 0 25%;
-  width: 25%;
+  flex: 0 0 33.333333%;
+  width: 33.333333%;
   height: 100%;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 70% 20%, rgba(168,108,255,.18), transparent 34%),
-    #08080b;
+  background: #07070b;
 }
 
-.vf923-slide > img {
+.vf924-backdrop {
   position: absolute;
-  inset: -3%;
-  width: 106%;
-  height: 106%;
-  object-fit: cover;
-  object-position: center;
-  filter: saturate(1.14) contrast(1.06) brightness(.88);
-  transform: scale(1.03) translate3d(-.6%,0,0);
-  animation: vf923-image-drift 5s ease-in-out infinite alternate;
+  inset: -28px;
+  background-image: var(--vf924-image);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  filter: blur(24px) brightness(.42) saturate(1.15);
+  transform: scale(1.10);
 }
 
-.vf923-image-shade {
+.vf924-media {
+  position: absolute;
+  inset: 9px 0 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.vf924-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: saturate(1.05) contrast(1.03) brightness(.91);
+  transform: scale(1.01);
+  animation: vf924-image-breathe 7s ease-in-out infinite alternate;
+}
+
+.vf924-shade {
   position: absolute;
   inset: 0;
-  z-index: 2;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, rgba(3,3,7,.76), transparent 57%),
-    linear-gradient(180deg, rgba(0,0,0,.02), transparent 42%, rgba(3,3,7,.82) 100%);
-}
-
-.vf923-speed-lines {
-  position: absolute;
   z-index: 3;
-  inset: 14% -18% 22% 8%;
   pointer-events: none;
-  opacity: .30;
-  transform: skewX(-18deg);
-  background: repeating-linear-gradient(
-    180deg,
-    transparent 0 16px,
-    rgba(255,255,255,.23) 17px 18px,
-    transparent 19px 32px
-  );
-  mask-image: linear-gradient(90deg, transparent, #000 27%, transparent 92%);
-  animation: vf923-speed-lines 1.15s linear infinite;
-}
-
-.vf923-smoke {
-  position: absolute;
-  z-index: 4;
-  left: 4%;
-  bottom: 7%;
-  width: 160px;
-  height: 75px;
-  pointer-events: none;
-}
-
-.vf923-smoke i {
-  position: absolute;
-  left: 42px;
-  bottom: 8px;
-  width: 38px;
-  height: 25px;
-  border-radius: 50%;
-  opacity: 0;
-  background: radial-gradient(circle, rgba(255,255,255,.48), rgba(255,255,255,.10) 57%, transparent 75%);
-  filter: blur(5px);
-  animation: vf923-smoke 2.45s ease-out infinite;
-}
-
-.vf923-smoke i:nth-child(2) { animation-delay: .72s; }
-.vf923-smoke i:nth-child(3) { animation-delay: 1.35s; }
-
-.vf923-wheel-glow {
-  position: absolute;
-  z-index: 4;
-  bottom: 8%;
-  width: clamp(44px, 13vw, 68px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  opacity: .48;
-  pointer-events: none;
-  border: 2px solid rgba(202,255,98,.78);
-  box-shadow:
-    0 0 0 4px rgba(0,0,0,.40),
-    0 0 23px rgba(202,255,98,.32);
   background:
-    conic-gradient(
-      from 0deg,
-      transparent 0 14deg,
-      rgba(255,255,255,.75) 15deg 20deg,
-      transparent 21deg 45deg
-    );
-  animation: vf923-wheel 680ms linear infinite;
+    linear-gradient(180deg, rgba(0,0,0,.04), transparent 40%, rgba(4,4,8,.88) 100%),
+    linear-gradient(90deg, rgba(4,4,8,.28), transparent 52%);
 }
 
-.vf923-wheel-glow.rear { left: 17%; }
-.vf923-wheel-glow.front { right: 15%; }
-
-.vf923-slide-copy {
+.vf924-brand {
   position: absolute;
   z-index: 8;
-  left: 19px;
-  right: 82px;
-  bottom: 24px;
-  display: grid;
-  gap: 5px;
-  text-align: left;
-}
-
-.vf923-slide-copy > span {
-  color: var(--vf923-lime);
-  font-size: 7px;
-  font-weight: 900;
-  letter-spacing: .20em;
-}
-
-.vf923-slide-copy h2 {
-  margin: 0;
-  font-size: clamp(23px, 8vw, 42px);
-  line-height: .91;
-  letter-spacing: -.055em;
-  text-wrap: balance;
-  text-shadow: 0 8px 28px rgba(0,0,0,.58);
-}
-
-.vf923-slide-copy p {
-  display: none;
-  margin: 0;
-  max-width: 360px;
-  color: rgba(255,255,255,.68);
-  font-size: 10px;
-  line-height: 1.45;
-}
-
-.vf923-brand-lockup {
-  position: absolute;
-  z-index: 12;
-  top: 14px;
-  left: 14px;
+  top: 17px;
+  left: 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
 }
 
-.vf923-brand-mark {
+.vf924-logo {
   display: grid;
   place-items: center;
   width: 38px;
@@ -322,34 +229,69 @@
   flex: 0 0 38px;
   border-radius: 13px;
   color: #0b0b0e;
-  background: linear-gradient(145deg, #e9ffc1, var(--vf923-lime));
-  box-shadow: 0 10px 25px rgba(202,255,98,.18);
+  background: linear-gradient(145deg, #ebffc6, var(--vf924-lime));
+  box-shadow: 0 10px 25px rgba(202,255,98,.16);
 }
 
-.vf923-brand-mark svg {
+.vf924-logo svg {
   width: 23px;
   height: 23px;
   stroke: currentColor;
 }
 
-.vf923-brand-lockup > span:last-child {
+.vf924-brand > span:last-child {
   display: grid;
   gap: 1px;
 }
 
-.vf923-brand-lockup strong {
+.vf924-brand strong {
   font-size: 10px;
-  letter-spacing: .16em;
+  letter-spacing: .14em;
 }
 
-.vf923-brand-lockup small {
+.vf924-brand small {
   color: rgba(255,255,255,.58);
   font-size: 7px;
+  letter-spacing: .08em;
 }
 
-.vf923-arrow {
+.vf924-copy {
   position: absolute;
-  z-index: 14;
+  z-index: 8;
+  left: 20px;
+  right: 76px;
+  bottom: 24px;
+  display: grid;
+  gap: 5px;
+  text-align: left;
+}
+
+.vf924-copy > span {
+  color: var(--vf924-lime);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+.vf924-copy h2 {
+  margin: 0;
+  font-size: clamp(27px, 9vw, 44px);
+  line-height: .92;
+  letter-spacing: -.055em;
+  text-shadow: 0 8px 28px rgba(0,0,0,.55);
+}
+
+.vf924-copy p {
+  margin: 0;
+  max-width: 400px;
+  color: rgba(255,255,255,.68);
+  font-size: 9px;
+  line-height: 1.42;
+}
+
+.vf924-arrow {
+  position: absolute;
+  z-index: 15;
   top: 50%;
   display: grid;
   place-items: center;
@@ -358,131 +300,134 @@
   padding: 0;
   border: 1px solid rgba(255,255,255,.11);
   color: #fff;
-  background: rgba(8,8,12,.43);
+  background: rgba(8,8,12,.44);
   -webkit-backdrop-filter: blur(13px);
   backdrop-filter: blur(13px);
   transform: translateY(-50%);
 }
 
-.vf923-arrow.previous {
+.vf924-arrow.previous {
   left: 7px;
   border-radius: 7px 15px 15px 7px;
 }
 
-.vf923-arrow.next {
+.vf924-arrow.next {
   right: 7px;
   border-radius: 15px 7px 7px 15px;
 }
 
-.vf923-arrow .material-icons-round {
+.vf924-arrow .material-icons-round {
   font-size: 21px;
 }
 
-.vf923-dots {
+.vf924-dots {
   position: absolute;
-  z-index: 14;
+  z-index: 15;
   right: 18px;
-  bottom: 25px;
+  bottom: 27px;
   display: flex;
-  gap: 5px;
+  gap: 6px;
 }
 
-.vf923-dots button {
-  width: 5px;
-  height: 5px;
+.vf924-dots button {
+  width: 6px;
+  height: 6px;
   padding: 0;
   border: 0;
   border-radius: 999px;
   background: rgba(255,255,255,.34);
-  transition: width .28s ease, background .28s ease;
+  transition: width .25s ease, background .25s ease;
 }
 
-.vf923-dots button.active {
-  width: 20px;
-  background: var(--vf923-lime);
+.vf924-dots button.active {
+  width: 22px;
+  background: var(--vf924-lime);
 }
 
-.vf923-action-panel {
+.vf924-action {
   position: relative;
-  z-index: 30;
+  z-index: 40;
   display: grid;
   gap: 11px;
+  max-height: 43dvh;
   padding:
     16px
     15px
     max(16px, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border-top: 1px solid rgba(255,255,255,.10);
   background:
-    radial-gradient(circle at 86% 0%, rgba(168,108,255,.17), transparent 43%),
-    linear-gradient(145deg, rgba(24,24,33,.88), rgba(9,9,14,.97));
-  box-shadow: 0 -20px 55px rgba(0,0,0,.35);
+    radial-gradient(circle at 86% 0%, rgba(168,108,255,.16), transparent 43%),
+    linear-gradient(145deg, rgba(24,24,33,.91), rgba(9,9,14,.98));
+  box-shadow: 0 -20px 55px rgba(0,0,0,.34);
   -webkit-backdrop-filter: blur(26px) saturate(175%);
   backdrop-filter: blur(26px) saturate(175%);
 }
 
-.vf923-action-heading {
+.vf924-action-copy {
   display: grid;
   gap: 5px;
 }
 
-.vf923-action-heading > span {
+.vf924-action-copy > span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--vf923-lime);
+  color: var(--vf924-lime);
   font-size: 7px;
   font-weight: 900;
-  letter-spacing: .17em;
+  letter-spacing: .16em;
 }
 
-.vf923-action-heading > span .material-icons-round {
+.vf924-action-copy > span .material-icons-round {
   font-size: 13px;
 }
 
-.vf923-action-heading h1 {
+.vf924-action-copy h1 {
   margin: 0;
   font-size: clamp(24px, 7vw, 34px);
   line-height: .94;
   letter-spacing: -.05em;
 }
 
-.vf923-action-heading p {
+.vf924-action-copy p {
   margin: 0;
-  color: rgba(255,255,255,.60);
+  color: rgba(255,255,255,.61);
   font-size: 9px;
   line-height: 1.45;
 }
 
-.vf923-benefits {
+.vf924-feature-pills {
   display: flex;
   gap: 6px;
   overflow-x: auto;
   scrollbar-width: none;
 }
 
-.vf923-benefits::-webkit-scrollbar {
+.vf924-feature-pills::-webkit-scrollbar {
   display: none;
 }
 
-.vf923-benefits > span {
+.vf924-feature-pills > span {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   flex: 0 0 auto;
-  padding: 7px 8px;
+  padding: 7px 9px;
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 999px;
-  color: rgba(255,255,255,.74);
+  color: rgba(255,255,255,.75);
   font-size: 7px;
   background: rgba(255,255,255,.04);
 }
 
-.vf923-benefits .material-icons-round {
-  color: var(--vf923-cyan);
+.vf924-feature-pills .material-icons-round {
+  color: var(--vf924-cyan);
   font-size: 12px;
 }
 
-.vf923-primary-action {
+.vf924-primary {
   position: relative;
   display: grid;
   grid-template-columns: 43px minmax(0,1fr) 28px;
@@ -496,11 +441,11 @@
   border-radius: 19px;
   color: #0b0b0d;
   text-align: left;
-  background: linear-gradient(135deg, #eaffc1, var(--vf923-lime) 57%, #9ce640);
-  box-shadow: 0 17px 38px rgba(202,255,98,.20);
+  background: linear-gradient(135deg, #ecffc7, var(--vf924-lime) 57%, #9ce640);
+  box-shadow: 0 17px 38px rgba(202,255,98,.19);
 }
 
-.vf923-primary-action::after {
+.vf924-primary::after {
   content: "";
   position: absolute;
   top: -70%;
@@ -508,11 +453,11 @@
   left: -30%;
   width: 18%;
   transform: rotate(18deg);
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.76), transparent);
-  animation: vf923-shine 3.6s ease-in-out infinite;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.74), transparent);
+  animation: vf924-shine 4.2s ease-in-out infinite;
 }
 
-.vf923-primary-icon {
+.vf924-primary-icon {
   display: grid;
   place-items: center;
   width: 43px;
@@ -522,25 +467,24 @@
   background: #111116;
 }
 
-.vf923-primary-icon .material-icons-round {
+.vf924-primary-icon .material-icons-round {
   font-size: 21px;
 }
 
-.vf923-primary-action > span:nth-child(2) {
+.vf924-primary > span:nth-child(2) {
   min-width: 0;
   display: grid;
   gap: 2px;
 }
 
-.vf923-primary-action strong {
+.vf924-primary strong {
   overflow: hidden;
   font-size: 11px;
-  line-height: 1.1;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.vf923-primary-action small {
+.vf924-primary small {
   overflow: hidden;
   color: rgba(10,10,12,.62);
   font-size: 7px;
@@ -549,161 +493,294 @@
   white-space: nowrap;
 }
 
-.vf923-primary-action > .material-icons-round {
+.vf924-primary > .material-icons-round {
   justify-self: end;
   font-size: 21px;
 }
 
-/* Editor glass remains visible after the landing closes. */
-#page-video-workspace .v82-editor-header,
-#page-video-workspace .v91-preview-topbar,
-#page-video-workspace .v91-preview-controls,
-#page-video-workspace .v82-tool-sheet,
-#page-video-workspace .v82-editor-dock {
-  -webkit-backdrop-filter: blur(26px) saturate(180%) !important;
-  backdrop-filter: blur(26px) saturate(180%) !important;
+/* ---------- Mobile editor visibility and scrolling ---------- */
+
+@media (max-width: 899px) {
+  #page-video-workspace .v82-editor-shell {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    grid-template-rows: auto auto auto !important;
+    align-content: start !important;
+    width: 100% !important;
+    height: calc(var(--vf-editor-height, 100dvh) - 76px) !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    padding: 0 0 calc(104px + env(safe-area-inset-bottom)) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-y: contain;
+    scroll-padding-top: 245px;
+    scroll-padding-bottom: 110px;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    background:
+      radial-gradient(circle at 14% 15%, rgba(101,232,255,.08), transparent 31%),
+      radial-gradient(circle at 85% 12%, rgba(168,108,255,.12), transparent 36%),
+      var(--vf924-editor-bg) !important;
+  }
+
+  #page-video-workspace .v82-preview-stage {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 70 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    height: clamp(420px, 59dvh, 590px) !important;
+    min-height: 420px !important;
+    max-height: 590px !important;
+    padding: 9px 11px 8px !important;
+    overflow: hidden !important;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    background:
+      radial-gradient(circle at 76% 18%, rgba(168,108,255,.12), transparent 38%),
+      rgba(8,8,13,.97) !important;
+    box-shadow: 0 16px 36px rgba(0,0,0,.28);
+    transition:
+      height .30s cubic-bezier(.2,.8,.2,1),
+      min-height .30s cubic-bezier(.2,.8,.2,1);
+  }
+
+  #page-video-workspace.v924-preview-compact .v82-preview-stage {
+    height: clamp(232px, 34dvh, 310px) !important;
+    min-height: 232px !important;
+    max-height: 310px !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,.42);
+  }
+
+  #page-video-workspace.v924-preview-compact .v82-preview-stage::after {
+    content: "LIVE PREVIEW";
+    position: absolute;
+    z-index: 30;
+    top: 9px;
+    left: 50%;
+    padding: 4px 7px;
+    border: 1px solid rgba(202,255,98,.18);
+    border-radius: 999px;
+    color: var(--vf924-lime);
+    background: rgba(7,7,11,.70);
+    font-size: 6px;
+    font-weight: 900;
+    letter-spacing: .13em;
+    pointer-events: none;
+    transform: translateX(-50%);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  #page-video-workspace .v913-preview-layout {
+    height: 100% !important;
+    min-height: 0 !important;
+    grid-template-rows: auto minmax(0,1fr) auto auto !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .workspace-video-frame {
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .workspace-video-frame video {
+    object-position: 50% 50% !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v913-preview-layout {
+    gap: 5px !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v913-preview-layout .v91-preview-topbar {
+    min-height: 31px !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v91-fit-switch button {
+    min-width: 42px !important;
+    min-height: 27px !important;
+    padding-inline: 7px !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v913-preview-zoom {
+    grid-template-columns: 27px 43px 27px !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v913-preview-zoom button {
+    height: 27px !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v913-preview-layout .v91-preview-controls {
+    min-height: 39px !important;
+    padding: 4px 7px !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v913-preview-layout .v82-preview-meta {
+    display: none !important;
+  }
+
+  #page-video-workspace .v82-timeline {
+    position: relative !important;
+    inset: auto !important;
+    z-index: 20 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    height: 150px !important;
+    min-height: 150px !important;
+    max-height: 150px !important;
+    margin: 0 !important;
+    transform: none !important;
+    overflow: hidden !important;
+    background: #08080c !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v82-timeline {
+    height: 124px !important;
+    min-height: 124px !important;
+    max-height: 124px !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v91-timeline-canvas {
+    grid-template-rows: 18px 54px 25px !important;
+  }
+
+  #page-video-workspace .v82-tool-sheet {
+    position: relative !important;
+    inset: auto !important;
+    z-index: 10 !important;
+    grid-row: 3 !important;
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 420px !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 12px 14px calc(126px + env(safe-area-inset-bottom)) !important;
+    overflow: visible !important;
+    transform: none !important;
+    border-radius: 24px 24px 0 0 !important;
+    background:
+      linear-gradient(180deg, rgba(24,24,34,.96), rgba(9,9,14,.99)) !important;
+    box-shadow:
+      0 -15px 38px rgba(0,0,0,.34),
+      inset 0 1px 0 rgba(255,255,255,.06) !important;
+    scroll-margin-top: 244px;
+    touch-action: pan-y;
+  }
+
+  #page-video-workspace .v82-tool-sheet > .v82-sheet-handle {
+    position: sticky !important;
+    top: 7px !important;
+    z-index: 30 !important;
+    margin-bottom: 12px !important;
+  }
+
+  #page-video-workspace .v82-tool-panel,
+  #page-video-workspace .v82-tool-panel.active {
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    touch-action: pan-y;
+  }
+
+  #page-video-workspace .v82-tool-panel.active > :last-child {
+    margin-bottom: 20px !important;
+  }
+
+  #page-video-workspace .v82-editor-dock {
+    z-index: 110 !important;
+  }
 }
 
-#page-video-workspace .v82-editor-header {
-  background: rgba(12,12,18,.74) !important;
-  border-bottom-color: rgba(255,255,255,.09) !important;
+/* Very small screens keep enough room for both preview and tools. */
+@media (max-width: 390px) and (max-height: 760px) {
+  #page-video-workspace .v82-preview-stage {
+    height: 405px !important;
+    min-height: 405px !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v82-preview-stage {
+    height: 220px !important;
+    min-height: 220px !important;
+  }
+
+  #page-video-workspace .v82-timeline {
+    height: 138px !important;
+    min-height: 138px !important;
+    max-height: 138px !important;
+  }
+
+  #page-video-workspace.v924-preview-compact .v82-timeline {
+    height: 116px !important;
+    min-height: 116px !important;
+    max-height: 116px !important;
+  }
 }
 
-#page-video-workspace .v91-preview-topbar,
-#page-video-workspace .v91-preview-controls {
-  background: rgba(16,16,24,.67) !important;
-  border-color: rgba(255,255,255,.11) !important;
-}
-
-#page-video-workspace .v82-tool-sheet {
-  background:
-    linear-gradient(180deg, rgba(27,27,38,.69), rgba(10,10,16,.84)) !important;
-  border-color: rgba(255,255,255,.11) !important;
-}
-
-#page-video-workspace .v82-editor-dock {
-  background: rgba(13,13,19,.76) !important;
-  border-top-color: rgba(255,255,255,.12) !important;
-}
-
+/* Desktop keeps the same fullscreen promo without cropping the image. */
 @media (min-width: 720px) {
-  #vf923-workshop-overlay {
+  #vf924-workshop {
     grid-template-columns: minmax(0,1.35fr) minmax(320px,.65fr);
     grid-template-rows: auto minmax(0,1fr);
   }
 
-  .vf923-overlay-header {
+  .vf924-workshop-header {
     grid-column: 1 / -1;
   }
 
-  .vf923-carousel {
+  .vf924-carousel {
     grid-column: 1;
     grid-row: 2;
   }
 
-  .vf923-action-panel {
+  .vf924-action {
     grid-column: 2;
     grid-row: 2;
     align-content: center;
+    max-height: none;
     padding: 28px;
     border-top: 0;
     border-left: 1px solid rgba(255,255,255,.10);
   }
 
-  .vf923-slide-copy {
+  .vf924-copy {
     left: 30px;
     right: 110px;
-    bottom: 34px;
-  }
-
-  .vf923-slide-copy p {
-    display: block;
-  }
-
-  .vf923-dots {
-    right: 25px;
     bottom: 35px;
   }
 }
 
-@media (max-height: 700px) and (max-width: 719px) {
-  #vf923-workshop-overlay {
-    grid-template-rows: auto minmax(250px,1fr) auto;
-  }
-
-  .vf923-action-panel {
-    gap: 8px;
-    padding-top: 12px;
-  }
-
-  .vf923-action-heading p {
-    display: none;
-  }
-
-  .vf923-action-heading h1 {
-    font-size: 23px;
-  }
-
-  .vf923-benefits > span:nth-child(3) {
-    display: none;
-  }
-
-  .vf923-primary-action {
-    min-height: 56px;
-  }
+body.vf924-workshop-open {
+  overflow: hidden !important;
+  overscroll-behavior: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #vf923-workshop-overlay,
-  .vf923-track,
-  .vf923-dots button {
+  #vf924-workshop,
+  .vf924-track,
+  .vf924-dots button,
+  #page-video-workspace .v82-preview-stage {
     transition: none !important;
   }
 
-  .vf923-slide > img,
-  .vf923-speed-lines,
-  .vf923-smoke i,
-  .vf923-wheel-glow,
-  .vf923-primary-action::after,
-  .vf923-live-chip i {
+  .vf924-media img,
+  .vf924-primary::after {
     animation: none !important;
   }
 }
 
-@keyframes vf923-image-drift {
-  from { transform: scale(1.03) translate3d(-.6%,0,0); }
-  to { transform: scale(1.09) translate3d(.8%,-.45%,0); }
+@keyframes vf924-image-breathe {
+  from { transform: scale(1.005); }
+  to { transform: scale(1.035); }
 }
 
-@keyframes vf923-speed-lines {
-  to { background-position-y: 32px; }
-}
-
-@keyframes vf923-smoke {
-  0% { transform: translate3d(0,0,0) scale(.7); opacity: 0; }
-  22% { opacity: .70; }
-  100% { transform: translate3d(-86px,-38px,0) scale(2.35); opacity: 0; }
-}
-
-@keyframes vf923-wheel {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes vf923-shine {
-  0%, 58% { left: -30%; opacity: 0; }
-  68% { opacity: .82; }
-  84%, 100% { left: 120%; opacity: 0; }
-}
-
-@keyframes vf923-pulse {
-  0%,100% { opacity: .55; transform: scale(.82); }
-  50% { opacity: 1; transform: scale(1); }
-}
-</style>
-<style id="vforge-v923-body-lock">
-body.vf923-overlay-open {
-  overflow: hidden !important;
-  overscroll-behavior: none;
+@keyframes vf924-shine {
+  0%, 62% { left: -30%; opacity: 0; }
+  70% { opacity: .82; }
+  86%, 100% { left: 120%; opacity: 0; }
 }
 </style>
 </head>
@@ -921,118 +998,121 @@ body.vf923-overlay-open {
 <div class="v82-editor-title"><span id="workspace-header-mode">Proyek baru</span><strong>V-Forge Editor</strong></div>
 <button class="v82-export-top" onclick="openV82EditorTool('export')" type="button">Export</button>
 </header>
-<section aria-hidden="true" aria-label="V-Forge Motion Workshop" class="vf923-workshop-overlay" id="vf923-workshop-overlay">
-<header class="vf923-overlay-header">
-<button aria-label="Kembali ke Beranda" class="vf923-back" id="vf923-workshop-back" type="button">
+<section aria-hidden="true" aria-label="V-Forge Premium Showcase" class="vf924-workshop" id="vf924-workshop">
+<header class="vf924-workshop-header">
+<button aria-label="Kembali" class="vf924-back" id="vf924-back" type="button">
 <span class="material-icons-round">arrow_back</span>
 </button>
-<div class="vf923-overlay-title">
+<div class="vf924-heading">
 <span>V-FORGE MOTION LAB</span>
-<strong>Motion Workshop</strong>
+<strong>Premium Showcase</strong>
 </div>
-<span class="vf923-live-chip"><i></i>LIVE</span>
+<span class="vf924-live"><i></i>FEATURED</span>
 </header>
 
-<div aria-label="Showcase mobil V-Forge" aria-roledescription="carousel" class="vf923-carousel" id="vf923-carousel" role="region">
-<div class="vf923-track" id="vf923-track">
-<article aria-label="Slide 1 dari 4" class="vf923-slide active" data-vf923-slide="0">
-<img alt="Mobil performa merah dalam studio sinematik" decoding="async" fetchpriority="high" src="assets/images/vf-car-01.jpg"/>
-<div class="vf923-image-shade"></div>
-<div class="vf923-speed-lines"></div>
-<div class="vf923-smoke"><i></i><i></i><i></i></div>
-<div class="vf923-wheel-glow rear"></div>
-<div class="vf923-wheel-glow front"></div>
-<div class="vf923-slide-copy">
-<span>VELOCITY SERIES 01</span>
-<h2>Cut faster.<br/>Move harder.</h2>
-<p>Motion agresif untuk footage otomotif dan konten berenergi tinggi.</p>
-</div>
-</article>
+<div aria-label="Showcase fitur Premium V-Forge" aria-roledescription="carousel" class="vf924-carousel" id="vf924-carousel" role="region">
+<div class="vf924-track" id="vf924-track">
 
-<article aria-label="Slide 2 dari 4" class="vf923-slide" data-vf923-slide="1">
-<img alt="Mobil performa dalam pencahayaan ungu neon" decoding="async" loading="lazy" src="assets/images/vf-car-02.jpg"/>
-<div class="vf923-image-shade"></div>
-<div class="vf923-speed-lines"></div>
-<div class="vf923-smoke"><i></i><i></i><i></i></div>
-<div class="vf923-wheel-glow rear"></div>
-<div class="vf923-wheel-glow front"></div>
-<div class="vf923-slide-copy">
-<span>NEON DRIVE 02</span>
-<h2>Night color.<br/>Studio control.</h2>
-<p>Warna neon, kontras dramatis, dan transisi yang terasa premium.</p>
+<article aria-label="Slide 1 dari 3" class="vf924-slide active" data-vf924-slide="0" style="--vf924-image:url('assets/images/vf-car-01.jpg')">
+<div class="vf924-backdrop"></div>
+<div class="vf924-media">
+<img alt="Promosi V-Forge Premium 4K Ultra HD" decoding="async" fetchpriority="high" src="assets/images/vf-car-01.jpg"/>
 </div>
-</article>
-
-<article aria-label="Slide 3 dari 4" class="vf923-slide" data-vf923-slide="2">
-<img alt="Mobil performa dengan energi cahaya biru" decoding="async" loading="lazy" src="assets/images/vf-car-03.jpg"/>
-<div class="vf923-image-shade"></div>
-<div class="vf923-speed-lines"></div>
-<div class="vf923-smoke"><i></i><i></i><i></i></div>
-<div class="vf923-wheel-glow rear"></div>
-<div class="vf923-wheel-glow front"></div>
-<div class="vf923-slide-copy">
-<span>TURBO MOTION 03</span>
-<h2>Frame by frame.<br/>Energy alive.</h2>
-<p>Preview, timeline, trim, dan motion effect berada dalam satu workshop.</p>
-</div>
-</article>
-
-<article aria-label="Slide 4 dari 4" class="vf923-slide" data-vf923-slide="3">
-<img alt="Mobil performa dengan pencahayaan hangat" decoding="async" loading="lazy" src="assets/images/vf-car-04.jpg"/>
-<div class="vf923-image-shade"></div>
-<div class="vf923-speed-lines"></div>
-<div class="vf923-smoke"><i></i><i></i><i></i></div>
-<div class="vf923-wheel-glow rear"></div>
-<div class="vf923-wheel-glow front"></div>
-<div class="vf923-slide-copy">
-<span>FORGE RACING 04</span>
-<h2>Your footage.<br/>Your signature.</h2>
-<p>Video tetap diproses secara lokal di perangkatmu.</p>
-</div>
-</article>
-</div>
-
-<div class="vf923-brand-lockup">
-<span class="vf923-brand-mark">
+<div class="vf924-shade"></div>
+<div class="vf924-brand">
+<span class="vf924-logo">
 <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
 <path d="M4 4 L12 19 L20 4"></path>
 <path d="M4 4 H14"></path>
 <path d="M8 11.5 H16"></path>
 </svg>
 </span>
-<span><strong>V-FORGE</strong><small>Automotive Motion Studio</small></span>
+<span><strong>V-FORGE PREMIUM</strong><small>OUTPUT ULTRA</small></span>
+</div>
+<div class="vf924-copy">
+<span>PREMIUM FEATURE 01</span>
+<h2>4K Ultra HD</h2>
+<p>Target output detail tinggi untuk perangkat dan sumber video yang mendukung.</p>
+</div>
+</article>
+
+<article aria-label="Slide 2 dari 3" class="vf924-slide" data-vf924-slide="1" style="--vf924-image:url('assets/images/vf-car-02.jpg')">
+<div class="vf924-backdrop"></div>
+<div class="vf924-media">
+<img alt="Promosi V-Forge Premium 120 FPS" decoding="async" loading="lazy" src="assets/images/vf-car-02.jpg"/>
+</div>
+<div class="vf924-shade"></div>
+<div class="vf924-brand">
+<span class="vf924-logo">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
+<path d="M4 4 L12 19 L20 4"></path>
+<path d="M4 4 H14"></path>
+<path d="M8 11.5 H16"></path>
+</svg>
+</span>
+<span><strong>V-FORGE PREMIUM</strong><small>MOTION PRO</small></span>
+</div>
+<div class="vf924-copy">
+<span>PREMIUM FEATURE 02</span>
+<h2>120 FPS Motion</h2>
+<p>Gerakan lebih halus untuk footage frame-rate tinggi pada perangkat yang kompatibel.</p>
+</div>
+</article>
+
+<article aria-label="Slide 3 dari 3" class="vf924-slide" data-vf924-slide="2" style="--vf924-image:url('assets/images/vf-car-03.jpg')">
+<div class="vf924-backdrop"></div>
+<div class="vf924-media">
+<img alt="Promosi V-Forge Premium Hi-Res Lossless" decoding="async" loading="lazy" src="assets/images/vf-car-03.jpg"/>
+</div>
+<div class="vf924-shade"></div>
+<div class="vf924-brand">
+<span class="vf924-logo">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
+<path d="M4 4 L12 19 L20 4"></path>
+<path d="M4 4 H14"></path>
+<path d="M8 11.5 H16"></path>
+</svg>
+</span>
+<span><strong>V-FORGE PREMIUM</strong><small>AUDIO MASTER</small></span>
+</div>
+<div class="vf924-copy">
+<span>PREMIUM FEATURE 03</span>
+<h2>Hi-Res Lossless</h2>
+<p>Ekspor audio WAV terpisah untuk kualitas suara yang lebih bersih dan fleksibel.</p>
+</div>
+</article>
+
 </div>
 
-<button aria-label="Slide sebelumnya" class="vf923-arrow previous" id="vf923-previous" type="button">
+<button aria-label="Promo sebelumnya" class="vf924-arrow previous" id="vf924-previous" type="button">
 <span class="material-icons-round">chevron_left</span>
 </button>
-<button aria-label="Slide berikutnya" class="vf923-arrow next" id="vf923-next" type="button">
+<button aria-label="Promo berikutnya" class="vf924-arrow next" id="vf924-next" type="button">
 <span class="material-icons-round">chevron_right</span>
 </button>
 
-<div aria-label="Pilih slide" class="vf923-dots" role="group">
-<button aria-label="Slide 1" aria-pressed="true" class="active" data-vf923-dot="0" type="button"></button>
-<button aria-label="Slide 2" aria-pressed="false" data-vf923-dot="1" type="button"></button>
-<button aria-label="Slide 3" aria-pressed="false" data-vf923-dot="2" type="button"></button>
-<button aria-label="Slide 4" aria-pressed="false" data-vf923-dot="3" type="button"></button>
+<div aria-label="Pilih promo" class="vf924-dots" role="group">
+<button aria-label="Promo 1" aria-pressed="true" class="active" data-vf924-dot="0" type="button"></button>
+<button aria-label="Promo 2" aria-pressed="false" data-vf924-dot="1" type="button"></button>
+<button aria-label="Promo 3" aria-pressed="false" data-vf924-dot="2" type="button"></button>
 </div>
 </div>
 
-<section class="vf923-action-panel">
-<div class="vf923-action-heading">
-<span><span class="material-icons-round">auto_awesome</span>MOTION-FIRST EDITOR</span>
-<h1>Pilih video.<br/>Mulai berkarya.</h1>
-<p>Masuk ke editor setelah media dipilih. Landing ini tidak lagi bertabrakan dengan preview, timeline, atau panel alat.</p>
+<section class="vf924-action">
+<div class="vf924-action-copy">
+<span><span class="material-icons-round">workspace_premium</span>PREMIUM CREATIVE TOOLS</span>
+<h1>Pilih video.<br/>Lihat hasilnya langsung.</h1>
+<p>Masuk ke editor dengan preview yang tetap terlihat saat memakai Edit, Audio, Text, Overlay, Effects, dan Adjust.</p>
 </div>
 
-<div class="vf923-benefits">
-<span><span class="material-icons-round">fit_screen</span>Full-frame preview</span>
-<span><span class="material-icons-round">content_cut</span>Timeline interaktif</span>
-<span><span class="material-icons-round">lock</span>Video tetap di HP</span>
+<div class="vf924-feature-pills">
+<span><span class="material-icons-round">fit_screen</span>Live preview</span>
+<span><span class="material-icons-round">swipe_vertical</span>Panel dapat digulir</span>
+<span><span class="material-icons-round">lock</span>Video tetap lokal</span>
 </div>
 
-<button class="vf923-primary-action" id="vf923-select-video" type="button">
-<span class="vf923-primary-icon"><span class="material-icons-round">video_library</span></span>
+<button class="vf924-primary" id="vf924-select-video" type="button">
+<span class="vf924-primary-icon"><span class="material-icons-round">video_library</span></span>
 <span><strong>Pilih Video &amp; Buka Editor</strong><small>MP4, MOV, WebM • proses lokal</small></span>
 <span class="material-icons-round">arrow_forward</span>
 </button>
@@ -1668,35 +1748,42 @@ body.vf923-overlay-open {
   }
 })();
 </script>
-<script id="vforge-v923-script">
+<script id="vforge-v924-script">
 (function () {
   'use strict';
 
   try {
-    const VERSION = '9.2.3';
-    const overlay = document.getElementById('vf923-workshop-overlay');
-    const track = document.getElementById('vf923-track');
-    const carousel = document.getElementById('vf923-carousel');
-    const slides = Array.from(document.querySelectorAll('[data-vf923-slide]'));
-    const dots = Array.from(document.querySelectorAll('[data-vf923-dot]'));
-    const previous = document.getElementById('vf923-previous');
-    const next = document.getElementById('vf923-next');
-    const selectButton = document.getElementById('vf923-select-video');
-    const backButton = document.getElementById('vf923-workshop-back');
-    const editorPage = document.getElementById('page-video-workspace');
+    const VERSION = '9.2.4';
+    const workshop = document.getElementById('vf924-workshop');
+    const carousel = document.getElementById('vf924-carousel');
+    const track = document.getElementById('vf924-track');
+    const slides = Array.from(document.querySelectorAll('[data-vf924-slide]'));
+    const dots = Array.from(document.querySelectorAll('[data-vf924-dot]'));
+    const previous = document.getElementById('vf924-previous');
+    const next = document.getElementById('vf924-next');
+    const selectVideo = document.getElementById('vf924-select-video');
+    const back = document.getElementById('vf924-back');
+
+    const page = document.getElementById('page-video-workspace');
+    const shell = page?.querySelector('.v82-editor-shell');
+    const preview = page?.querySelector('.v82-preview-stage');
+    const timeline = document.getElementById('studio-mini-timeline');
+    const toolSheet = document.getElementById('workspace-form');
     const frame = document.getElementById('workspace-video-frame');
     const video = document.getElementById('workspace-video');
+
     const reduceMotion =
       window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
 
-    if (!overlay || !track || !slides.length) return;
+    if (!workshop || !track || slides.length !== 3) return;
 
     let index = 0;
     let timer = null;
     let pointerStartX = null;
     let pickerPending = false;
-    let fileWasSelected = false;
-    let openBusy = false;
+    let selectedFile = false;
+    let workshopOpening = false;
+    let scrollFrame = 0;
 
     const originalOpenVideoPicker =
       typeof window.openVideoPicker === 'function'
@@ -1708,13 +1795,19 @@ body.vf923-overlay-open {
         ? window.handleWorkspaceFileSelected
         : null;
 
-    function isOpen() {
-      return overlay.classList.contains('open');
+    const originalOpenV82EditorTool =
+      typeof window.openV82EditorTool === 'function'
+        ? window.openV82EditorTool
+        : null;
+
+    function workshopIsOpen() {
+      return workshop.classList.contains('open');
     }
 
     function render(nextIndex, userInitiated = false) {
-      index = (Number(nextIndex) + slides.length) % slides.length;
-      track.style.transform = `translate3d(-${index * 25}%, 0, 0)`;
+      index = (Number(nextIndex) + 3) % 3;
+      track.style.transform =
+        `translate3d(-${index * 33.333333}%, 0, 0)`;
 
       slides.forEach((slide, slideIndex) => {
         const active = slideIndex === index;
@@ -1728,35 +1821,36 @@ body.vf923-overlay-open {
         dot.setAttribute('aria-pressed', String(active));
       });
 
-      if (userInitiated) restart();
+      if (userInitiated) restartCarousel();
     }
 
-    function stop() {
+    function stopCarousel() {
       if (timer) window.clearInterval(timer);
       timer = null;
     }
 
-    function start() {
-      stop();
+    function startCarousel() {
+      stopCarousel();
+
       if (
         reduceMotion ||
         document.hidden ||
-        !isOpen()
+        !workshopIsOpen()
       ) {
         return;
       }
 
       timer = window.setInterval(() => {
         render(index + 1, false);
-      }, 4600);
+      }, 5200);
     }
 
-    function restart() {
-      stop();
-      window.setTimeout(start, 140);
+    function restartCarousel() {
+      stopCarousel();
+      window.setTimeout(startCarousel, 160);
     }
 
-    function releaseObjectUrlAndVideo() {
+    function clearWorkspaceVideo() {
       try {
         if (typeof resetVideoProcessor === 'function') {
           resetVideoProcessor({ silent: true });
@@ -1786,7 +1880,7 @@ body.vf923-overlay-open {
 
       frame?.classList.remove('has-video');
 
-      const resetText = {
+      const placeholders = {
         'workspace-file-name': 'Belum ada video',
         'workspace-file-type': 'Pilih dari perangkat',
         'workspace-file-size': '—',
@@ -1794,7 +1888,7 @@ body.vf923-overlay-open {
         'workspace-resolution': '—'
       };
 
-      Object.entries(resetText).forEach(([id, value]) => {
+      Object.entries(placeholders).forEach(([id, value]) => {
         const element = document.getElementById(id);
         if (element) element.textContent = value;
       });
@@ -1804,36 +1898,35 @@ body.vf923-overlay-open {
       } catch (_) {}
     }
 
-    function showOverlay(options = {}) {
-      if (openBusy) return;
-      openBusy = true;
+    function showWorkshop(options = {}) {
+      if (workshopOpening) return;
+      workshopOpening = true;
 
-      if (options.reset !== false) {
-        releaseObjectUrlAndVideo();
-      }
+      if (options.reset !== false) clearWorkspaceVideo();
 
       pickerPending = false;
-      fileWasSelected = false;
+      selectedFile = false;
 
-      overlay.classList.add('open');
-      overlay.setAttribute('aria-hidden', 'false');
-      document.body?.classList.add('vf923-overlay-open');
+      workshop.classList.add('open');
+      workshop.setAttribute('aria-hidden', 'false');
+      document.body?.classList.add('vf924-workshop-open');
+
       render(0, false);
-      start();
+      startCarousel();
 
       window.setTimeout(() => {
-        openBusy = false;
+        workshopOpening = false;
       }, 320);
     }
 
-    function hideOverlay() {
-      stop();
-      overlay.classList.remove('open');
-      overlay.setAttribute('aria-hidden', 'true');
-      document.body?.classList.remove('vf923-overlay-open');
+    function hideWorkshop() {
+      stopCarousel();
+      workshop.classList.remove('open');
+      workshop.setAttribute('aria-hidden', 'true');
+      document.body?.classList.remove('vf924-workshop-open');
     }
 
-    function getReturnPage() {
+    function returnPage() {
       try {
         if (
           typeof videoWorkspaceReturnPage === 'string' &&
@@ -1846,11 +1939,11 @@ body.vf923-overlay-open {
       return 'page-home';
     }
 
-    function returnFromOverlay() {
-      hideOverlay();
+    function closeWorkshop() {
+      hideWorkshop();
 
-      const target = getReturnPage();
-      const indexMap = {
+      const target = returnPage();
+      const navMap = {
         'page-home': 0,
         'page-search': 1,
         'page-enhancer': 2,
@@ -1858,7 +1951,7 @@ body.vf923-overlay-open {
       };
 
       if (typeof goToPage === 'function') {
-        goToPage(target, indexMap[target] ?? 0);
+        goToPage(target, navMap[target] ?? 0);
       }
     }
 
@@ -1875,33 +1968,81 @@ body.vf923-overlay-open {
         }
       } catch (_) {}
 
-      releaseObjectUrlAndVideo();
+      clearWorkspaceVideo();
 
       if (typeof goToPage === 'function') {
         goToPage('page-video-workspace', -1);
       }
 
       window.requestAnimationFrame(() => {
-        showOverlay({ reset: false });
+        showWorkshop({ reset: false });
       });
     }
 
-    function openPickerFromWorkshop() {
+    function openPicker() {
       if (!originalOpenVideoPicker) return;
 
       pickerPending = true;
-      fileWasSelected = false;
-      hideOverlay();
+      selectedFile = false;
+      hideWorkshop();
 
       window.setTimeout(() => {
         try {
           originalOpenVideoPicker(null);
         } catch (error) {
           pickerPending = false;
-          showOverlay({ reset: false });
-          throw error;
+          showWorkshop({ reset: false });
+          console.error('[V-Forge] Pemilih video gagal dibuka:', error);
         }
       }, 80);
+    }
+
+    function currentTool() {
+      return page?.dataset.editorTool || 'edit';
+    }
+
+    function syncCompactPreview(options = {}) {
+      if (!page || !shell) return;
+
+      const shouldCompact =
+        shell.scrollTop > 36 ||
+        currentTool() !== 'edit' ||
+        options.force === true;
+
+      page.classList.toggle('v924-preview-compact', shouldCompact);
+    }
+
+    function scrollToolsIntoView(behavior = 'smooth') {
+      if (!shell || !toolSheet || !preview) return;
+
+      page?.classList.add('v924-preview-compact');
+
+      window.requestAnimationFrame(() => {
+        const previewHeight = preview.getBoundingClientRect().height;
+        const timelineHeight = timeline?.getBoundingClientRect().height || 0;
+        const target =
+          Math.max(
+            0,
+            toolSheet.offsetTop -
+            previewHeight -
+            Math.min(28, timelineHeight * 0.18)
+          );
+
+        shell.scrollTo({
+          top: target,
+          left: 0,
+          behavior: reduceMotion ? 'auto' : behavior
+        });
+      });
+    }
+
+    function handleEditorScroll() {
+      if (scrollFrame) return;
+
+      scrollFrame = window.requestAnimationFrame(() => {
+        scrollFrame = 0;
+        syncCompactPreview();
+      });
     }
 
     previous?.addEventListener('click', () => {
@@ -1914,13 +2055,13 @@ body.vf923-overlay-open {
 
     dots.forEach((dot) => {
       dot.addEventListener('click', () => {
-        render(Number(dot.dataset.vf923Dot) || 0, true);
+        render(Number(dot.dataset.vf924Dot) || 0, true);
       });
     });
 
     carousel?.addEventListener('pointerdown', (event) => {
       pointerStartX = event.clientX;
-      stop();
+      stopCarousel();
     });
 
     carousel?.addEventListener('pointerup', (event) => {
@@ -1933,60 +2074,96 @@ body.vf923-overlay-open {
       }
 
       pointerStartX = null;
-      restart();
+      restartCarousel();
     });
 
     carousel?.addEventListener('pointercancel', () => {
       pointerStartX = null;
-      restart();
+      restartCarousel();
     });
 
-    selectButton?.addEventListener('click', openPickerFromWorkshop);
-    backButton?.addEventListener('click', returnFromOverlay);
+    selectVideo?.addEventListener('click', openPicker);
+    back?.addEventListener('click', closeWorkshop);
+    shell?.addEventListener('scroll', handleEditorScroll, { passive: true });
 
     if (originalHandleWorkspaceFileSelected) {
       window.handleWorkspaceFileSelected = function (input) {
         const file = input?.files?.[0];
 
         if (file) {
-          fileWasSelected = true;
+          selectedFile = true;
           pickerPending = false;
-          hideOverlay();
+          hideWorkshop();
+
+          window.requestAnimationFrame(() => {
+            shell?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+            page?.classList.remove('v924-preview-compact');
+          });
         }
 
         return originalHandleWorkspaceFileSelected.apply(this, arguments);
       };
     }
 
+    if (originalOpenV82EditorTool) {
+      window.openV82EditorTool = function (tool, button) {
+        const result =
+          originalOpenV82EditorTool.apply(this, arguments);
+
+        page?.setAttribute('data-v924-active-tool', tool || 'edit');
+
+        window.requestAnimationFrame(() => {
+          syncCompactPreview({ force: true });
+          scrollToolsIntoView('smooth');
+        });
+
+        return result;
+      };
+    }
+
     /*
-     * Android returns focus after closing the picker. Restore the workshop
-     * only when no file was selected.
+     * Android restores focus after the system picker closes.
+     * Reopen the showcase only when the picker was cancelled.
      */
     window.addEventListener('focus', () => {
       window.setTimeout(() => {
-        if (pickerPending && !fileWasSelected) {
+        if (pickerPending && !selectedFile) {
           pickerPending = false;
-          showOverlay({ reset: false });
+          showWorkshop({ reset: false });
         }
       }, 420);
     });
 
     video?.addEventListener('loadedmetadata', () => {
-      fileWasSelected = true;
+      selectedFile = true;
       pickerPending = false;
-      hideOverlay();
+      hideWorkshop();
+
+      window.requestAnimationFrame(() => {
+        shell?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        page?.classList.remove('v924-preview-compact');
+      });
     });
 
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) stop();
-      else start();
+      if (document.hidden) stopCarousel();
+      else startCarousel();
     });
 
     document.addEventListener('vforge:pagechange', (event) => {
       if (event.detail?.pageId !== 'page-video-workspace') {
-        hideOverlay();
+        hideWorkshop();
+        page?.classList.remove('v924-preview-compact');
+      } else {
+        window.requestAnimationFrame(() => syncCompactPreview());
       }
     });
+
+    window.addEventListener(
+      'resize',
+      () => window.requestAnimationFrame(() => syncCompactPreview()),
+      { passive: true }
+    );
 
     window.startV83NewProject = openMotionWorkshop;
     window.openV82CreateSheet = openMotionWorkshop;
@@ -1999,27 +2176,29 @@ body.vf923-overlay-open {
       '#page-home .v82-create-copy p'
     );
 
-    if (homeButton) homeButton.textContent = 'Buka Motion Workshop';
+    if (homeButton) homeButton.textContent = 'Buka Premium Showcase';
 
     if (homeDescription) {
       homeDescription.textContent =
-        'Lihat showcase mobil V-Forge, lalu pilih video untuk masuk ke editor.';
+        'Lihat tiga fitur unggulan V-Forge, lalu pilih video untuk masuk ke editor.';
     }
 
     render(0, false);
+    syncCompactPreview();
 
-    document.documentElement.dataset.vforgeV923 = VERSION;
+    document.documentElement.dataset.vforgeV924 = VERSION;
 
-    window.VForgeWorkshop923 = {
+    window.VForgeWorkshop924 = {
       version: VERSION,
       open: openMotionWorkshop,
-      show: () => showOverlay({ reset: false }),
-      hide: hideOverlay,
+      show: () => showWorkshop({ reset: false }),
+      hide: hideWorkshop,
       next: () => render(index + 1, true),
-      previous: () => render(index - 1, true)
+      previous: () => render(index - 1, true),
+      scrollToTools: scrollToolsIntoView
     };
   } catch (error) {
-    console.error('[V-Forge] V9.2.3 gagal dimulai:', error);
+    console.error('[V-Forge] V9.2.4 gagal dimulai:', error);
   }
 })();
 </script>
