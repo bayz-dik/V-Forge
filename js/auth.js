@@ -797,12 +797,7 @@ async function openAuthenticatedSession(user, alreadyHasSyncWarning = false) {
     let syncWarning = alreadyHasSyncWarning;
 
     try {
-        // Batas waktu maksimal 8 detik. Kalau Firestore lambat/nyangkut,
-        // jangan bikin loading screen nyangkut selamanya — lanjut pakai data fallback.
-        await Promise.race([
-            loadUserDataFromFirestore(user.uid),
-            new Promise((_, reject) => setTimeout(() => reject(new Error('Sinkronisasi Firestore timeout (8s)')), 8000))
-        ]);
+        await loadUserDataFromFirestore(user.uid);
     } catch (error) {
         syncWarning = true;
         applyUserDataToApp(buildDefaultUserData(user), user);
@@ -894,21 +889,3 @@ function initializeAuthentication() {
 }
 
 initializeAuthentication();
-
-// --- JARING PENGAMAN GLOBAL ---
-// Kalau karena alasan apapun loading screen masih nyangkut setelah 12 detik
-// (misal Firebase Auth sendiri gak pernah "notice" status login karena
-// masalah storage/privacy di browser), paksa tutup dan arahkan ke Login
-// biar app gak nyangkut selamanya di layar "Menyiapkan V-Forge...".
-setTimeout(() => {
-    const loadingScreen = document.getElementById('auth-loading-screen');
-    const stillStuck = loadingScreen && !loadingScreen.classList.contains('hidden');
-    if (stillStuck) {
-        console.warn('Loading screen macet >12s, memaksa fallback ke halaman login.');
-        hideAuthLoadingScreen();
-        if (!auth?.currentUser) {
-            navigateToPage('page-login', -1);
-            showAuthError('login-error', 'Koneksi lambat atau bermasalah. Coba muat ulang aplikasi.');
-        }
-    }
-}, 12000);
