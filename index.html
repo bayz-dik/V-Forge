@@ -700,6 +700,92 @@
   }
 }
 </style>
+<style id="vforge-v921-visible-fix-style">
+/* V9.2.1 — make the motion workshop and glass treatment clearly visible. */
+
+#page-video-workspace .v82-editor-shell {
+  background:
+    radial-gradient(circle at 14% 15%, rgba(97,233,255,.11), transparent 30%),
+    radial-gradient(circle at 86% 22%, rgba(169,116,255,.19), transparent 36%),
+    radial-gradient(circle at 48% 94%, rgba(198,255,99,.08), transparent 34%),
+    #08080d !important;
+}
+
+#page-video-workspace .v82-tool-sheet {
+  background:
+    linear-gradient(180deg, rgba(28,28,38,.70), rgba(10,10,16,.82)) !important;
+  border: 1px solid rgba(255,255,255,.11) !important;
+  box-shadow:
+    0 -18px 50px rgba(0,0,0,.42),
+    inset 0 1px 0 rgba(255,255,255,.07) !important;
+}
+
+#page-video-workspace .v82-editor-dock {
+  background: rgba(13,13,19,.76) !important;
+  border-top-color: rgba(255,255,255,.13) !important;
+}
+
+#page-video-workspace .v82-editor-header {
+  background: rgba(12,12,18,.74) !important;
+}
+
+#page-video-workspace .v91-preview-topbar,
+#page-video-workspace .v91-preview-controls {
+  background: rgba(16,16,24,.68) !important;
+}
+
+#page-video-workspace.vf921-workshop-entry .v82-preview-stage {
+  animation: vf921-workshop-enter .55s cubic-bezier(.2,.8,.2,1) both;
+}
+
+#page-video-workspace.vf921-workshop-entry .vf3-workshop {
+  animation: vf921-panel-enter .65s .08s cubic-bezier(.2,.8,.2,1) both;
+}
+
+#page-video-workspace.vf921-workshop-entry .vf3-slide-copy,
+#page-video-workspace.vf921-workshop-entry .vf3-ad-brand {
+  animation: vf921-copy-enter .7s .12s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.vf921-workshop-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 4px;
+  color: rgba(255,255,255,.55);
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.vf921-workshop-hint .material-icons-round {
+  color: var(--vf3-lime);
+  font-size: 12px;
+}
+
+@keyframes vf921-workshop-enter {
+  from { opacity: 0; transform: translate3d(0,12px,0) scale(.985); }
+  to { opacity: 1; transform: translate3d(0,0,0) scale(1); }
+}
+
+@keyframes vf921-panel-enter {
+  from { opacity: 0; transform: translate3d(0,26px,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
+}
+
+@keyframes vf921-copy-enter {
+  from { opacity: 0; transform: translate3d(-16px,0,0); }
+  to { opacity: 1; transform: translate3d(0,0,0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #page-video-workspace.vf921-workshop-entry .v82-preview-stage,
+  #page-video-workspace.vf921-workshop-entry .vf3-workshop,
+  #page-video-workspace.vf921-workshop-entry .vf3-slide-copy,
+  #page-video-workspace.vf921-workshop-entry .vf3-ad-brand {
+    animation: none !important;
+  }
+}
+</style>
 </head>
 <body class="v8-ui v82-ui v83-ui v9-ui" data-backend-mode="spark">
 <!-- LOADING SCREEN - tampil sementara nunggu Firebase cek status login -->
@@ -1718,6 +1804,166 @@
     };
   } catch (error) {
     console.error('[V-Forge] Phase 3A tidak dapat dimulai:', error);
+  }
+})();
+</script>
+<script id="vforge-v921-visible-fix-script">
+(function () {
+  'use strict';
+
+  try {
+    const VERSION = '9.2.1';
+    let opening = false;
+
+    function byId(id) {
+      return document.getElementById(id);
+    }
+
+    function clearWorkspaceForLanding() {
+      try {
+        if (typeof resetVideoProcessor === 'function') {
+          resetVideoProcessor({ silent: true });
+        }
+      } catch (_) {}
+
+      try {
+        if (typeof releaseWorkspaceObjectUrl === 'function') {
+          releaseWorkspaceObjectUrl();
+        }
+      } catch (_) {}
+
+      try {
+        if (typeof createEmptyVideoWorkspaceState === 'function') {
+          videoWorkspaceState = createEmptyVideoWorkspaceState();
+        }
+      } catch (_) {}
+
+      try {
+        const video = byId('workspace-video');
+        if (video) {
+          try { video.pause(); } catch (_) {}
+          video.removeAttribute('src');
+          try { video.load(); } catch (_) {}
+        }
+      } catch (_) {}
+
+      const frame = byId('workspace-video-frame');
+      if (frame) frame.classList.remove('has-video');
+
+      const fileName = byId('workspace-file-name');
+      const fileType = byId('workspace-file-type');
+      const fileSize = byId('workspace-file-size');
+      const duration = byId('workspace-duration');
+      const resolution = byId('workspace-resolution');
+
+      if (fileName) fileName.textContent = 'Belum ada video';
+      if (fileType) fileType.textContent = 'Pilih dari perangkat';
+      if (fileSize) fileSize.textContent = '—';
+      if (duration) duration.textContent = '—';
+      if (resolution) resolution.textContent = '—';
+
+      try {
+        if (typeof syncV83EditorAttraction === 'function') {
+          syncV83EditorAttraction();
+        }
+      } catch (_) {}
+    }
+
+    function openMotionWorkshopLanding() {
+      if (opening) return;
+      opening = true;
+
+      const source =
+        typeof currentPage === 'string' &&
+        currentPage !== 'page-video-workspace'
+          ? currentPage
+          : 'page-home';
+
+      try {
+        if (typeof setVideoWorkspaceReturnPage === 'function') {
+          setVideoWorkspaceReturnPage(source);
+        }
+
+        clearWorkspaceForLanding();
+
+        if (typeof goToPage === 'function') {
+          goToPage('page-video-workspace', -1);
+        }
+
+        const page = byId('page-video-workspace');
+        if (page) {
+          page.classList.remove('vf921-workshop-entry');
+          void page.offsetWidth;
+          page.classList.add('vf921-workshop-entry');
+        }
+
+        window.setTimeout(() => {
+          try {
+            byId('vf3-carousel')?.scrollIntoView({
+              block: 'center',
+              behavior: 'smooth'
+            });
+          } catch (_) {}
+        }, 100);
+      } finally {
+        window.setTimeout(() => {
+          opening = false;
+        }, 500);
+      }
+    }
+
+    /*
+     * Important UX correction:
+     * The old function immediately opened Android's file picker,
+     * hiding the animation. Replace it with a workshop landing first.
+     * The green button inside the workshop remains responsible for
+     * calling openVideoPicker().
+     */
+    window.startV83NewProject = openMotionWorkshopLanding;
+    window.openV82CreateSheet = openMotionWorkshopLanding;
+    window.startV82BlankProject = openMotionWorkshopLanding;
+
+    function updateVisibleCopy() {
+      const homeButton = document.querySelector(
+        '#page-home .v82-create-button strong'
+      );
+      const homeDescription = document.querySelector(
+        '#page-home .v82-create-copy p'
+      );
+
+      if (homeButton) homeButton.textContent = 'Buka Motion Workshop';
+      if (homeDescription) {
+        homeDescription.textContent =
+          'Masuk ke showcase mobil V-Forge, lalu pilih video langsung dari workshop.';
+      }
+
+      const workshop = document.querySelector('.vf3-workshop');
+      if (workshop && !workshop.querySelector('.vf921-workshop-hint')) {
+        const hint = document.createElement('span');
+        hint.className = 'vf921-workshop-hint';
+        hint.innerHTML =
+          '<span class="material-icons-round">touch_app</span>' +
+          'Iklan tampil dulu — pemilih video dibuka setelah tombol hijau ditekan.';
+        const button = workshop.querySelector('.vf3-open-workshop');
+        if (button) button.insertAdjacentElement('afterend', hint);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', updateVisibleCopy, {
+        once: true
+      });
+    } else {
+      updateVisibleCopy();
+    }
+
+    document.documentElement.dataset.vforgeVisibleWorkshop = VERSION;
+    window.VForgeVisibleWorkshop921 = {
+      version: VERSION,
+      open: openMotionWorkshopLanding
+    };
+  } catch (error) {
+    console.error('[V-Forge] V9.2.1 visible workshop fix gagal:', error);
   }
 })();
 </script>
