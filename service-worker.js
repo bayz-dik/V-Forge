@@ -1,11 +1,12 @@
-// V-Forge Service Worker — v9.1.2
-// Editor UX + interactive timeline. Cache version must change on each release.
-const CACHE_VERSION = 'vforge-v9-1-2-responsive-editor-desktop';
+// V-Forge Service Worker — v9.1.3
+// Mobile workspace, preview zoom, desktop page layout and timeline zoom hotfix.
+const CACHE_VERSION = 'vforge-v9-1-3-layout-preview-zoom';
 
 const ASSETS_TO_CACHE = [
   './index.html',
   './css/style.css?v=9.0.2',
   './css/v91-editor.css?v=9.1.2',
+  './css/v913-layout.css?v=9.1.3',
   './js/firebase-config.js?v=9.0.2',
   './js/app.js?v=9.0.2',
   './js/projects.js?v=9.0.2',
@@ -15,6 +16,7 @@ const ASSETS_TO_CACHE = [
   './js/studio.js?v=9.0.2',
   './js/v9-ui.js?v=9.0.2',
   './js/v91-editor.js?v=9.1.2',
+  './js/v913-layout.js?v=9.1.3',
   './assets/images/vf-car-01.jpg',
   './assets/images/vf-car-02.jpg',
   './assets/images/vf-car-03.jpg',
