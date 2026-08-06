@@ -20,91 +20,134 @@
 <link href="css/style.css?v=9.0.2" rel="stylesheet"/>
 <link data-vforge-v91="9.1.2" href="css/v91-editor.css?v=9.1.2" rel="stylesheet"/>
 <link data-vforge-layout-safe="9.1.3a" href="css/v913-layout.css?v=9.1.3a" rel="stylesheet"/>
-<style id="vforge-phase3a-style">
+<style id="vforge-v923-style">
 /* ============================================================
-   V-FORGE v9.2.0 PHASE 3A
-   Motion car ad + premium workshop card + iOS editor glass.
-   UI-only module. Does not touch Firebase/Auth/Service Worker.
+   V-FORGE V9.2.3 — FULLSCREEN MOTION WORKSHOP
+   Isolated from the editor preview/timeline layout.
    ============================================================ */
 
 #page-video-workspace {
-  --vf3-lime: #c8ff63;
-  --vf3-purple: #a974ff;
-  --vf3-cyan: #61e9ff;
-  --vf3-glass: rgba(16, 16, 23, .64);
-  --vf3-glass-strong: rgba(12, 12, 18, .82);
-  --vf3-line: rgba(255, 255, 255, .12);
+  --vf923-lime: #caff62;
+  --vf923-purple: #a86cff;
+  --vf923-cyan: #64e8ff;
+  --vf923-black: #060608;
 }
 
-#page-video-workspace .v82-editor-header,
-#page-video-workspace .v91-preview-topbar,
-#page-video-workspace .v91-preview-controls,
-#page-video-workspace .v82-tool-sheet,
-#page-video-workspace .v82-editor-dock {
+#vf923-workshop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100%;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(circle at 78% 10%, rgba(168,108,255,.20), transparent 34%),
+    radial-gradient(circle at 18% 76%, rgba(100,232,255,.09), transparent 36%),
+    #07070b;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(0, 10px, 0);
+  transition:
+    opacity .28s ease,
+    visibility .28s ease,
+    transform .42s cubic-bezier(.2,.8,.2,1);
+}
+
+#vf923-workshop-overlay.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0,0,0);
+}
+
+#vf923-workshop-overlay[aria-hidden="false"] {
+  display: grid;
+}
+
+.vf923-overlay-header {
+  position: relative;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: 42px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 66px;
+  padding:
+    max(10px, env(safe-area-inset-top))
+    14px
+    9px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(8,8,12,.73);
   -webkit-backdrop-filter: blur(24px) saturate(175%);
   backdrop-filter: blur(24px) saturate(175%);
 }
 
-#page-video-workspace .v82-editor-header {
-  background: linear-gradient(180deg, rgba(17, 17, 24, .88), rgba(10, 10, 15, .68)) !important;
-  border-bottom: 1px solid rgba(255,255,255,.08) !important;
-  box-shadow: 0 12px 34px rgba(0,0,0,.24);
-}
-
-#page-video-workspace .v91-preview-topbar,
-#page-video-workspace .v91-preview-controls {
-  border: 1px solid rgba(255,255,255,.1) !important;
-  background: linear-gradient(145deg, rgba(28,28,37,.76), rgba(9,9,14,.68)) !important;
-  box-shadow: 0 14px 35px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.06) !important;
-}
-
-#page-video-workspace .v82-tool-sheet {
-  background:
-    radial-gradient(circle at 20% 0%, rgba(169,116,255,.12), transparent 34%),
-    linear-gradient(180deg, rgba(21,21,29,.86), rgba(10,10,15,.94)) !important;
-  border-top: 1px solid rgba(255,255,255,.09) !important;
-}
-
-#page-video-workspace .v82-editor-dock {
-  background: linear-gradient(180deg, rgba(24,24,31,.8), rgba(8,8,12,.92)) !important;
-  border-top: 1px solid rgba(255,255,255,.09) !important;
-  box-shadow: 0 -14px 35px rgba(0,0,0,.34);
-}
-
-#page-video-workspace .workspace-video-frame {
-  isolation: isolate;
-  background:
-    radial-gradient(circle at 70% 18%, rgba(169,116,255,.16), transparent 34%),
-    #050508 !important;
-}
-
-#v83-editor-attract.vf3-attract {
-  position: absolute;
-  inset: 0;
-  z-index: 9;
+.vf923-back {
   display: grid;
-  overflow: hidden;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 14px;
   color: #fff;
-  background: #050508;
+  background: rgba(255,255,255,.055);
 }
 
-#workspace-video-frame.has-video #v83-editor-attract.vf3-attract {
-  display: none !important;
+.vf923-back .material-icons-round {
+  font-size: 21px;
 }
 
-.vf3-ad-shell {
-  position: relative;
+.vf923-overlay-title {
   min-width: 0;
-  min-height: 0;
   display: grid;
-  grid-template-rows: minmax(0, 1.08fr) auto;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 74% 18%, rgba(169,116,255,.18), transparent 35%),
-    linear-gradient(160deg, #08080d 0%, #12121a 52%, #07070a 100%);
+  gap: 1px;
 }
 
-.vf3-carousel {
+.vf923-overlay-title span {
+  color: var(--vf923-lime);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .18em;
+}
+
+.vf923-overlay-title strong {
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vf923-live-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 9px;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 999px;
+  color: rgba(255,255,255,.75);
+  font-size: 7px;
+  font-weight: 900;
+  letter-spacing: .11em;
+  background: rgba(255,255,255,.045);
+}
+
+.vf923-live-chip i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--vf923-lime);
+  box-shadow: 0 0 13px rgba(202,255,98,.75);
+  animation: vf923-pulse 1.4s ease-in-out infinite;
+}
+
+.vf923-carousel {
   position: relative;
   min-height: 0;
   overflow: hidden;
@@ -112,285 +155,239 @@
   background: #050507;
 }
 
-.vf3-carousel::before {
-  content: "";
+.vf923-track {
   position: absolute;
-  inset: 0;
-  z-index: 6;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(0,0,0,.06), transparent 42%, rgba(5,5,8,.76) 100%),
-    radial-gradient(circle at 50% 118%, rgba(198,255,99,.13), transparent 43%);
-}
-
-.vf3-track {
+  inset: 0 auto 0 0;
+  display: flex;
   width: 400%;
   height: 100%;
-  display: flex;
   transform: translate3d(0,0,0);
-  transition: transform .8s cubic-bezier(.2,.78,.18,1);
+  transition: transform .78s cubic-bezier(.2,.78,.18,1);
   will-change: transform;
 }
 
-.vf3-slide {
+.vf923-slide {
   position: relative;
   flex: 0 0 25%;
-  min-width: 0;
+  width: 25%;
   height: 100%;
   overflow: hidden;
-  background: #08080b;
+  background:
+    radial-gradient(circle at 70% 20%, rgba(168,108,255,.18), transparent 34%),
+    #08080b;
 }
 
-.vf3-car-image {
+.vf923-slide > img {
   position: absolute;
-  inset: -4%;
-  background-image:
-    linear-gradient(90deg, rgba(2,2,5,.42), transparent 37%, rgba(2,2,5,.06)),
-    var(--vf3-image);
-  background-size: cover;
-  background-position: center;
-  transform: scale(1.06);
-  filter: saturate(1.14) contrast(1.05);
-  animation: vf3-car-drift 5.2s ease-in-out infinite alternate;
+  inset: -3%;
+  width: 106%;
+  height: 106%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(1.14) contrast(1.06) brightness(.88);
+  transform: scale(1.03) translate3d(-.6%,0,0);
+  animation: vf923-image-drift 5s ease-in-out infinite alternate;
 }
 
-.vf3-slide::after {
-  content: "";
+.vf923-image-shade {
   position: absolute;
   inset: 0;
   z-index: 2;
   pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(4,4,8,.8), transparent 46%),
-    linear-gradient(180deg, transparent 48%, rgba(4,4,8,.72) 100%);
+    linear-gradient(90deg, rgba(3,3,7,.76), transparent 57%),
+    linear-gradient(180deg, rgba(0,0,0,.02), transparent 42%, rgba(3,3,7,.82) 100%);
 }
 
-.vf3-grid {
+.vf923-speed-lines {
   position: absolute;
-  inset: 0;
   z-index: 3;
+  inset: 14% -18% 22% 8%;
   pointer-events: none;
-  opacity: .28;
-  background-image:
-    linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
-  background-size: 34px 34px;
-  mask-image: linear-gradient(to bottom, rgba(0,0,0,.75), transparent 78%);
-}
-
-.vf3-speed-lines {
-  position: absolute;
-  inset: 12% -18% 18% 6%;
-  z-index: 4;
-  pointer-events: none;
-  opacity: .38;
-  transform: skewX(-19deg);
+  opacity: .30;
+  transform: skewX(-18deg);
   background: repeating-linear-gradient(
     180deg,
-    transparent 0 15px,
-    rgba(255,255,255,.24) 16px 17px,
-    transparent 18px 30px
+    transparent 0 16px,
+    rgba(255,255,255,.23) 17px 18px,
+    transparent 19px 32px
   );
-  mask-image: linear-gradient(90deg, transparent, #000 26%, transparent 91%);
-  animation: vf3-lines 1.15s linear infinite;
+  mask-image: linear-gradient(90deg, transparent, #000 27%, transparent 92%);
+  animation: vf923-speed-lines 1.15s linear infinite;
 }
 
-.vf3-wheel {
+.vf923-smoke {
   position: absolute;
-  z-index: 5;
+  z-index: 4;
+  left: 4%;
+  bottom: 7%;
+  width: 160px;
+  height: 75px;
+  pointer-events: none;
+}
+
+.vf923-smoke i {
+  position: absolute;
+  left: 42px;
+  bottom: 8px;
+  width: 38px;
+  height: 25px;
+  border-radius: 50%;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(255,255,255,.48), rgba(255,255,255,.10) 57%, transparent 75%);
+  filter: blur(5px);
+  animation: vf923-smoke 2.45s ease-out infinite;
+}
+
+.vf923-smoke i:nth-child(2) { animation-delay: .72s; }
+.vf923-smoke i:nth-child(3) { animation-delay: 1.35s; }
+
+.vf923-wheel-glow {
+  position: absolute;
+  z-index: 4;
   bottom: 8%;
-  width: clamp(38px, 12vw, 62px);
+  width: clamp(44px, 13vw, 68px);
   aspect-ratio: 1;
   border-radius: 50%;
-  opacity: .84;
-  border: 2px solid color-mix(in srgb, var(--vf3-accent) 76%, white);
+  opacity: .48;
+  pointer-events: none;
+  border: 2px solid rgba(202,255,98,.78);
   box-shadow:
-    0 0 0 4px rgba(0,0,0,.48),
-    0 0 18px color-mix(in srgb, var(--vf3-accent) 42%, transparent);
+    0 0 0 4px rgba(0,0,0,.40),
+    0 0 23px rgba(202,255,98,.32);
   background:
     conic-gradient(
       from 0deg,
-      transparent 0 12deg,
-      rgba(255,255,255,.78) 13deg 19deg,
-      transparent 20deg 42deg
+      transparent 0 14deg,
+      rgba(255,255,255,.75) 15deg 20deg,
+      transparent 21deg 45deg
     );
-  animation: vf3-wheel-spin .62s linear infinite;
+  animation: vf923-wheel 680ms linear infinite;
 }
 
-.vf3-wheel.rear { left: 18%; }
-.vf3-wheel.front { right: 16%; }
+.vf923-wheel-glow.rear { left: 17%; }
+.vf923-wheel-glow.front { right: 15%; }
 
-.vf3-smoke {
+.vf923-slide-copy {
   position: absolute;
-  z-index: 4;
-  bottom: 7%;
-  left: 7%;
-  width: 42px;
-  height: 26px;
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(circle, rgba(255,255,255,.48), rgba(255,255,255,.12) 54%, transparent 73%);
-  filter: blur(5px);
-  animation: vf3-smoke 2.5s ease-out infinite;
-}
-
-.vf3-smoke.s2 { animation-delay: .72s; left: 2%; }
-.vf3-smoke.s3 { animation-delay: 1.35s; left: 11%; }
-
-.vf3-ad-brand {
-  position: absolute;
-  top: 13px;
-  left: 13px;
-  right: 13px;
   z-index: 8;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.vf3-brand-mark {
+  left: 19px;
+  right: 82px;
+  bottom: 24px;
   display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  flex: 0 0 34px;
-  border: 1px solid rgba(255,255,255,.17);
-  border-radius: 12px;
-  color: #09090d;
-  background: linear-gradient(145deg, #e3ffad, var(--vf3-lime));
-  box-shadow: 0 8px 24px rgba(198,255,99,.22);
-}
-
-.vf3-brand-mark svg {
-  width: 21px;
-  height: 21px;
-  stroke: currentColor;
-}
-
-.vf3-ad-brand span {
-  min-width: 0;
-  display: grid;
-  gap: 1px;
+  gap: 5px;
   text-align: left;
 }
 
-.vf3-ad-brand strong {
-  overflow: hidden;
-  font-size: 10px;
-  line-height: 1.1;
-  letter-spacing: .18em;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.vf3-ad-brand small {
-  color: rgba(255,255,255,.58);
-  font-size: 7px;
-  letter-spacing: .12em;
-}
-
-.vf3-live-pill {
-  margin-left: auto;
-  padding: 6px 9px;
-  border: 1px solid rgba(255,255,255,.13);
-  border-radius: 999px;
-  color: #fff;
-  font-size: 7px;
-  font-weight: 800;
-  letter-spacing: .11em;
-  background: rgba(9,9,14,.48);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-}
-
-.vf3-slide-copy {
-  position: absolute;
-  left: 16px;
-  right: 86px;
-  bottom: 19px;
-  z-index: 8;
-  display: grid;
-  gap: 3px;
-  text-align: left;
-}
-
-.vf3-slide-copy span {
-  color: color-mix(in srgb, var(--vf3-accent) 86%, white);
+.vf923-slide-copy > span {
+  color: var(--vf923-lime);
   font-size: 7px;
   font-weight: 900;
-  letter-spacing: .2em;
+  letter-spacing: .20em;
 }
 
-.vf3-slide-copy strong {
-  font-size: clamp(17px, 5.5vw, 28px);
-  line-height: .96;
-  letter-spacing: -.045em;
+.vf923-slide-copy h2 {
+  margin: 0;
+  font-size: clamp(23px, 8vw, 42px);
+  line-height: .91;
+  letter-spacing: -.055em;
   text-wrap: balance;
-  text-shadow: 0 5px 22px rgba(0,0,0,.46);
+  text-shadow: 0 8px 28px rgba(0,0,0,.58);
 }
 
-.vf3-v-badge {
+.vf923-slide-copy p {
+  display: none;
+  margin: 0;
+  max-width: 360px;
+  color: rgba(255,255,255,.68);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.vf923-brand-lockup {
   position: absolute;
-  right: 16px;
-  bottom: 16px;
-  z-index: 8;
+  z-index: 12;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vf923-brand-mark {
   display: grid;
   place-items: center;
-  width: 49px;
-  aspect-ratio: 1;
-  border: 1px solid rgba(255,255,255,.18);
-  border-radius: 17px;
-  color: #fff;
-  background: linear-gradient(145deg, rgba(169,116,255,.72), rgba(76,45,135,.54));
-  box-shadow: 0 15px 34px rgba(0,0,0,.38);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  border-radius: 13px;
+  color: #0b0b0e;
+  background: linear-gradient(145deg, #e9ffc1, var(--vf923-lime));
+  box-shadow: 0 10px 25px rgba(202,255,98,.18);
 }
 
-.vf3-v-badge svg {
-  width: 27px;
-  height: 27px;
+.vf923-brand-mark svg {
+  width: 23px;
+  height: 23px;
   stroke: currentColor;
 }
 
-.vf3-carousel-nav {
+.vf923-brand-lockup > span:last-child {
+  display: grid;
+  gap: 1px;
+}
+
+.vf923-brand-lockup strong {
+  font-size: 10px;
+  letter-spacing: .16em;
+}
+
+.vf923-brand-lockup small {
+  color: rgba(255,255,255,.58);
+  font-size: 7px;
+}
+
+.vf923-arrow {
   position: absolute;
-  z-index: 10;
+  z-index: 14;
   top: 50%;
   display: grid;
   place-items: center;
-  width: 31px;
-  height: 42px;
-  border: 1px solid rgba(255,255,255,.12);
+  width: 34px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.11);
   color: #fff;
-  background: rgba(8,8,12,.44);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  background: rgba(8,8,12,.43);
+  -webkit-backdrop-filter: blur(13px);
+  backdrop-filter: blur(13px);
   transform: translateY(-50%);
 }
 
-.vf3-carousel-nav.prev {
-  left: 6px;
-  border-radius: 6px 14px 14px 6px;
+.vf923-arrow.previous {
+  left: 7px;
+  border-radius: 7px 15px 15px 7px;
 }
 
-.vf3-carousel-nav.next {
-  right: 6px;
-  border-radius: 14px 6px 6px 14px;
+.vf923-arrow.next {
+  right: 7px;
+  border-radius: 15px 7px 7px 15px;
 }
 
-.vf3-carousel-nav .material-icons-round { font-size: 18px; }
+.vf923-arrow .material-icons-round {
+  font-size: 21px;
+}
 
-.vf3-dots {
+.vf923-dots {
   position: absolute;
-  right: 74px;
-  bottom: 19px;
-  z-index: 10;
+  z-index: 14;
+  right: 18px;
+  bottom: 25px;
   display: flex;
   gap: 5px;
 }
 
-.vf3-dot {
+.vf923-dots button {
   width: 5px;
   height: 5px;
   padding: 0;
@@ -400,160 +397,142 @@
   transition: width .28s ease, background .28s ease;
 }
 
-.vf3-dot.active {
-  width: 18px;
-  background: var(--vf3-lime);
+.vf923-dots button.active {
+  width: 20px;
+  background: var(--vf923-lime);
 }
 
-.vf3-workshop {
+.vf923-action-panel {
   position: relative;
-  z-index: 12;
+  z-index: 30;
   display: grid;
-  gap: 10px;
-  padding: 16px;
-  text-align: left;
-  border-top: 1px solid rgba(255,255,255,.1);
+  gap: 11px;
+  padding:
+    16px
+    15px
+    max(16px, env(safe-area-inset-bottom));
+  border-top: 1px solid rgba(255,255,255,.10);
   background:
-    radial-gradient(circle at 85% 0%, rgba(169,116,255,.14), transparent 43%),
-    linear-gradient(145deg, rgba(24,24,32,.86), rgba(11,11,16,.96));
-  -webkit-backdrop-filter: blur(26px) saturate(170%);
-  backdrop-filter: blur(26px) saturate(170%);
+    radial-gradient(circle at 86% 0%, rgba(168,108,255,.17), transparent 43%),
+    linear-gradient(145deg, rgba(24,24,33,.88), rgba(9,9,14,.97));
+  box-shadow: 0 -20px 55px rgba(0,0,0,.35);
+  -webkit-backdrop-filter: blur(26px) saturate(175%);
+  backdrop-filter: blur(26px) saturate(175%);
 }
 
-.vf3-workshop::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(115deg, rgba(255,255,255,.06), transparent 34%);
+.vf923-action-heading {
+  display: grid;
+  gap: 5px;
 }
 
-.vf3-workshop > * {
-  position: relative;
-  z-index: 1;
-}
-
-.vf3-workshop-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.vf3-workshop-kicker {
+.vf923-action-heading > span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--vf3-lime);
+  color: var(--vf923-lime);
   font-size: 7px;
   font-weight: 900;
-  letter-spacing: .18em;
+  letter-spacing: .17em;
 }
 
-.vf3-workshop-kicker .material-icons-round {
+.vf923-action-heading > span .material-icons-round {
   font-size: 13px;
 }
 
-.vf3-secure {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: rgba(255,255,255,.58);
-  font-size: 7px;
-  white-space: nowrap;
+.vf923-action-heading h1 {
+  margin: 0;
+  font-size: clamp(24px, 7vw, 34px);
+  line-height: .94;
+  letter-spacing: -.05em;
 }
 
-.vf3-secure .material-icons-round { font-size: 12px; }
-
-.vf3-workshop h2 {
+.vf923-action-heading p {
   margin: 0;
-  max-width: 420px;
-  font-size: clamp(20px, 6.2vw, 31px);
-  line-height: .98;
-  letter-spacing: -.045em;
-  text-wrap: balance;
-}
-
-.vf3-workshop p {
-  margin: 0;
-  color: rgba(255,255,255,.62);
+  color: rgba(255,255,255,.60);
   font-size: 9px;
-  line-height: 1.42;
+  line-height: 1.45;
 }
 
-.vf3-feature-row {
+.vf923-benefits {
   display: flex;
-  flex-wrap: wrap;
   gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
 
-.vf3-feature-row span {
+.vf923-benefits::-webkit-scrollbar {
+  display: none;
+}
+
+.vf923-benefits > span {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 8px;
+  gap: 5px;
+  flex: 0 0 auto;
+  padding: 7px 8px;
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 999px;
-  color: rgba(255,255,255,.78);
+  color: rgba(255,255,255,.74);
   font-size: 7px;
-  background: rgba(255,255,255,.045);
+  background: rgba(255,255,255,.04);
 }
 
-.vf3-feature-row .material-icons-round {
-  color: var(--vf3-cyan);
+.vf923-benefits .material-icons-round {
+  color: var(--vf923-cyan);
   font-size: 12px;
 }
 
-.vf3-open-workshop {
+.vf923-primary-action {
   position: relative;
   display: grid;
-  grid-template-columns: 39px minmax(0,1fr) 28px;
+  grid-template-columns: 43px minmax(0,1fr) 28px;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   width: 100%;
-  min-height: 58px;
-  padding: 8px 10px 8px 8px;
+  min-height: 62px;
+  padding: 9px 11px 9px 9px;
   overflow: hidden;
   border: 0;
-  border-radius: 18px;
+  border-radius: 19px;
   color: #0b0b0d;
   text-align: left;
-  background: linear-gradient(135deg, #e6ffb6, var(--vf3-lime) 58%, #9be73f);
-  box-shadow: 0 15px 36px rgba(198,255,99,.2);
+  background: linear-gradient(135deg, #eaffc1, var(--vf923-lime) 57%, #9ce640);
+  box-shadow: 0 17px 38px rgba(202,255,98,.20);
 }
 
-.vf3-open-workshop::after {
+.vf923-primary-action::after {
   content: "";
   position: absolute;
   top: -70%;
   bottom: -70%;
-  left: -25%;
+  left: -30%;
   width: 18%;
   transform: rotate(18deg);
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent);
-  animation: vf3-button-shine 3.6s ease-in-out infinite;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.76), transparent);
+  animation: vf923-shine 3.6s ease-in-out infinite;
 }
 
-.vf3-workshop-icon {
+.vf923-primary-icon {
   display: grid;
   place-items: center;
-  width: 39px;
-  height: 39px;
-  border-radius: 13px;
+  width: 43px;
+  height: 43px;
+  border-radius: 14px;
   color: #fff;
   background: #111116;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.14);
 }
 
-.vf3-workshop-icon .material-icons-round { font-size: 20px; }
+.vf923-primary-icon .material-icons-round {
+  font-size: 21px;
+}
 
-.vf3-open-workshop span:nth-child(2) {
+.vf923-primary-action > span:nth-child(2) {
   min-width: 0;
   display: grid;
   gap: 2px;
 }
 
-.vf3-open-workshop strong {
+.vf923-primary-action strong {
   overflow: hidden;
   font-size: 11px;
   line-height: 1.1;
@@ -561,7 +540,7 @@
   white-space: nowrap;
 }
 
-.vf3-open-workshop small {
+.vf923-primary-action small {
   overflow: hidden;
   color: rgba(10,10,12,.62);
   font-size: 7px;
@@ -570,348 +549,12 @@
   white-space: nowrap;
 }
 
-.vf3-open-workshop > .material-icons-round {
+.vf923-primary-action > .material-icons-round {
   justify-self: end;
-  font-size: 20px;
+  font-size: 21px;
 }
 
-@media (min-width: 720px) {
-  .vf3-ad-shell {
-    grid-template-columns: minmax(0, 1.35fr) minmax(250px, .65fr);
-    grid-template-rows: minmax(0, 1fr);
-  }
-
-  .vf3-workshop {
-    align-content: center;
-    padding: 22px;
-    border-top: 0;
-    border-left: 1px solid rgba(255,255,255,.1);
-  }
-
-  .vf3-slide-copy {
-    left: 24px;
-    bottom: 24px;
-  }
-
-  .vf3-ad-brand {
-    top: 18px;
-    left: 20px;
-    right: 20px;
-  }
-}
-
-@media (max-width: 430px) {
-  .vf3-ad-shell {
-    grid-template-rows: minmax(0, 1fr) auto;
-  }
-
-  .vf3-workshop {
-    gap: 8px;
-    padding: 13px;
-  }
-
-  .vf3-workshop p {
-    display: none;
-  }
-
-  .vf3-feature-row span:nth-child(n+3) {
-    display: none;
-  }
-
-  .vf3-wheel {
-    width: 42px;
-  }
-
-  .vf3-carousel-nav {
-    width: 27px;
-    height: 38px;
-  }
-
-  .vf3-open-workshop {
-    min-height: 54px;
-  }
-}
-
-@media (max-height: 610px) and (max-width: 899px) {
-  .vf3-workshop h2 {
-    font-size: 19px;
-  }
-
-  .vf3-feature-row {
-    display: none;
-  }
-
-  .vf3-workshop {
-    gap: 7px;
-    padding: 11px 13px;
-  }
-}
-
-@supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
-  #page-video-workspace .v82-editor-header,
-  #page-video-workspace .v91-preview-topbar,
-  #page-video-workspace .v91-preview-controls,
-  #page-video-workspace .v82-tool-sheet,
-  #page-video-workspace .v82-editor-dock,
-  .vf3-live-pill,
-  .vf3-v-badge,
-  .vf3-workshop {
-    background-color: rgba(13,13,18,.96) !important;
-  }
-}
-
-@keyframes vf3-car-drift {
-  from { transform: scale(1.06) translate3d(-.7%, 0, 0); }
-  to { transform: scale(1.11) translate3d(.9%, -.5%, 0); }
-}
-
-@keyframes vf3-wheel-spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes vf3-smoke {
-  0% { transform: translate3d(0,0,0) scale(.7); opacity: 0; }
-  22% { opacity: .7; }
-  100% { transform: translate3d(-70px,-31px,0) scale(2.25); opacity: 0; }
-}
-
-@keyframes vf3-lines {
-  to { background-position-y: 30px; }
-}
-
-@keyframes vf3-button-shine {
-  0%, 58% { left: -30%; opacity: 0; }
-  68% { opacity: .8; }
-  83%, 100% { left: 118%; opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .vf3-track,
-  .vf3-dot {
-    transition: none !important;
-  }
-
-  .vf3-car-image,
-  .vf3-speed-lines,
-  .vf3-wheel,
-  .vf3-smoke,
-  .vf3-open-workshop::after {
-    animation: none !important;
-  }
-}
-</style>
-<style id="vforge-v922-fix-style">
-/* ============================================================
-   V-FORGE V9.2.2
-   Fix collapsed carousel, legacy copy rotation, and black landing.
-   ============================================================ */
-
-#page-video-workspace .v82-editor-shell {
-  background:
-    radial-gradient(circle at 15% 15%, rgba(97,233,255,.11), transparent 30%),
-    radial-gradient(circle at 86% 20%, rgba(169,116,255,.18), transparent 37%),
-    radial-gradient(circle at 48% 94%, rgba(198,255,99,.08), transparent 34%),
-    #08080d !important;
-}
-
-/*
- * Existing editor CSS defines a grid for .v83-editor-attract.
- * Reset every grid constraint so the new ad always fills the frame.
- */
-#workspace-video-frame #v83-editor-attract.vf3-attract {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 20 !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  overflow: hidden !important;
-  grid-template-columns: none !important;
-  grid-template-rows: none !important;
-  align-items: stretch !important;
-  justify-items: stretch !important;
-  color: #fff;
-  background: #050508 !important;
-}
-
-/* Normal behavior: hide the landing after a real video is ready. */
-#workspace-video-frame.has-video #v83-editor-attract.vf3-attract {
-  display: none !important;
-}
-
-/*
- * Forced landing mode wins over stale .has-video/currentSrc states.
- * This fixes the empty black preview when the editor is opened again.
- */
-#page-video-workspace.vf922-show-landing
-#workspace-video-frame
-#v83-editor-attract.vf3-attract {
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-}
-
-#page-video-workspace.vf922-show-landing #workspace-video {
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-ad-shell {
-  position: absolute !important;
-  inset: 0 !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  overflow: hidden !important;
-  background: #050508 !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-carousel {
-  position: absolute !important;
-  inset: 0 !important;
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-width: 100% !important;
-  min-height: 100% !important;
-  overflow: hidden !important;
-  background:
-    radial-gradient(circle at 74% 18%, rgba(169,116,255,.18), transparent 35%),
-    #050508 !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-track {
-  position: absolute !important;
-  inset: 0 auto 0 0 !important;
-  display: flex !important;
-  width: 400% !important;
-  height: 100% !important;
-  min-height: 100% !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-slide {
-  position: relative !important;
-  display: block !important;
-  flex: 0 0 25% !important;
-  width: 25% !important;
-  height: 100% !important;
-  min-height: 100% !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-car-image {
-  position: absolute !important;
-  inset: -3% !important;
-  display: block !important;
-  width: 106% !important;
-  height: 106% !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  background-repeat: no-repeat !important;
-  background-size: cover !important;
-  background-position: center center !important;
-}
-
-/* Workshop now overlays the moving car instead of consuming its grid row. */
-#workspace-video-frame #v83-editor-attract .vf3-workshop {
-  position: absolute !important;
-  z-index: 30 !important;
-  left: 11px !important;
-  right: 11px !important;
-  bottom: 11px !important;
-  width: auto !important;
-  max-height: calc(100% - 70px) !important;
-  display: grid !important;
-  gap: 7px !important;
-  padding: 11px !important;
-  overflow: hidden !important;
-  border: 1px solid rgba(255,255,255,.14) !important;
-  border-radius: 19px !important;
-  background:
-    linear-gradient(145deg, rgba(24,24,34,.70), rgba(9,9,14,.86)) !important;
-  box-shadow:
-    0 18px 46px rgba(0,0,0,.45),
-    inset 0 1px 0 rgba(255,255,255,.08) !important;
-  -webkit-backdrop-filter: blur(25px) saturate(175%) !important;
-  backdrop-filter: blur(25px) saturate(175%) !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-workshop h2 {
-  margin: 0 !important;
-  max-width: 86% !important;
-  font-size: clamp(18px, 5.4vw, 26px) !important;
-  line-height: .98 !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-workshop p {
-  display: none !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-feature-row {
-  display: flex !important;
-  flex-wrap: nowrap !important;
-  gap: 5px !important;
-  overflow: hidden !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-feature-row span {
-  min-width: 0 !important;
-  padding: 5px 7px !important;
-  overflow: hidden !important;
-  font-size: 6px !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-feature-row span:nth-child(3) {
-  display: none !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-open-workshop {
-  min-height: 50px !important;
-  border-radius: 16px !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-open-workshop strong {
-  font-size: 10px !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-open-workshop small {
-  font-size: 6px !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-slide-copy {
-  left: 16px !important;
-  right: 76px !important;
-  bottom: 162px !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-slide-copy strong {
-  font-size: clamp(17px, 5.6vw, 27px) !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-v-badge {
-  right: 15px !important;
-  bottom: 164px !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-dots {
-  right: 72px !important;
-  bottom: 169px !important;
-}
-
-#workspace-video-frame #v83-editor-attract .vf3-carousel-nav {
-  z-index: 35 !important;
-}
-
-/* Make the glass treatment visibly different from the old opaque UI. */
+/* Editor glass remains visible after the landing closes. */
 #page-video-workspace .v82-editor-header,
 #page-video-workspace .v91-preview-topbar,
 #page-video-workspace .v91-preview-controls,
@@ -922,107 +565,145 @@
 }
 
 #page-video-workspace .v82-editor-header {
-  background: rgba(12,12,18,.73) !important;
+  background: rgba(12,12,18,.74) !important;
+  border-bottom-color: rgba(255,255,255,.09) !important;
 }
 
 #page-video-workspace .v91-preview-topbar,
 #page-video-workspace .v91-preview-controls {
-  background: rgba(16,16,24,.66) !important;
+  background: rgba(16,16,24,.67) !important;
+  border-color: rgba(255,255,255,.11) !important;
 }
 
 #page-video-workspace .v82-tool-sheet {
   background:
-    linear-gradient(180deg, rgba(27,27,38,.68), rgba(10,10,16,.82)) !important;
-  border: 1px solid rgba(255,255,255,.11) !important;
-  box-shadow:
-    0 -18px 50px rgba(0,0,0,.42),
-    inset 0 1px 0 rgba(255,255,255,.07) !important;
+    linear-gradient(180deg, rgba(27,27,38,.69), rgba(10,10,16,.84)) !important;
+  border-color: rgba(255,255,255,.11) !important;
 }
 
 #page-video-workspace .v82-editor-dock {
-  background: rgba(13,13,19,.75) !important;
-  border-top-color: rgba(255,255,255,.13) !important;
-}
-
-#page-video-workspace.vf922-show-landing .v82-preview-stage {
-  animation: vf922-stage-in .5s cubic-bezier(.2,.8,.2,1) both;
-}
-
-#page-video-workspace.vf922-show-landing .vf3-workshop {
-  animation: vf922-workshop-in .58s .08s cubic-bezier(.2,.8,.2,1) both;
-}
-
-@keyframes vf922-stage-in {
-  from { opacity: 0; transform: translate3d(0,10px,0) scale(.988); }
-  to { opacity: 1; transform: translate3d(0,0,0) scale(1); }
-}
-
-@keyframes vf922-workshop-in {
-  from { opacity: 0; transform: translate3d(0,24px,0); }
-  to { opacity: 1; transform: translate3d(0,0,0); }
-}
-
-@media (max-width: 390px) {
-  #workspace-video-frame #v83-editor-attract .vf3-workshop {
-    left: 8px !important;
-    right: 8px !important;
-    bottom: 8px !important;
-    padding: 9px !important;
-  }
-
-  #workspace-video-frame #v83-editor-attract .vf3-slide-copy {
-    bottom: 148px !important;
-  }
-
-  #workspace-video-frame #v83-editor-attract .vf3-v-badge {
-    bottom: 150px !important;
-  }
-
-  #workspace-video-frame #v83-editor-attract .vf3-dots {
-    bottom: 155px !important;
-  }
+  background: rgba(13,13,19,.76) !important;
+  border-top-color: rgba(255,255,255,.12) !important;
 }
 
 @media (min-width: 720px) {
-  #workspace-video-frame #v83-editor-attract .vf3-workshop {
-    left: auto !important;
-    right: 20px !important;
-    bottom: 20px !important;
-    width: min(350px, 42%) !important;
-    max-height: calc(100% - 40px) !important;
-    padding: 17px !important;
+  #vf923-workshop-overlay {
+    grid-template-columns: minmax(0,1.35fr) minmax(320px,.65fr);
+    grid-template-rows: auto minmax(0,1fr);
   }
 
-  #workspace-video-frame #v83-editor-attract .vf3-workshop p {
-    display: block !important;
+  .vf923-overlay-header {
+    grid-column: 1 / -1;
   }
 
-  #workspace-video-frame #v83-editor-attract .vf3-feature-row span:nth-child(3) {
-    display: inline-flex !important;
+  .vf923-carousel {
+    grid-column: 1;
+    grid-row: 2;
   }
 
-  #workspace-video-frame #v83-editor-attract .vf3-slide-copy {
-    left: 24px !important;
-    right: 390px !important;
-    bottom: 28px !important;
+  .vf923-action-panel {
+    grid-column: 2;
+    grid-row: 2;
+    align-content: center;
+    padding: 28px;
+    border-top: 0;
+    border-left: 1px solid rgba(255,255,255,.10);
   }
 
-  #workspace-video-frame #v83-editor-attract .vf3-v-badge {
-    right: 390px !important;
-    bottom: 26px !important;
+  .vf923-slide-copy {
+    left: 30px;
+    right: 110px;
+    bottom: 34px;
   }
 
-  #workspace-video-frame #v83-editor-attract .vf3-dots {
-    right: 450px !important;
-    bottom: 32px !important;
+  .vf923-slide-copy p {
+    display: block;
+  }
+
+  .vf923-dots {
+    right: 25px;
+    bottom: 35px;
+  }
+}
+
+@media (max-height: 700px) and (max-width: 719px) {
+  #vf923-workshop-overlay {
+    grid-template-rows: auto minmax(250px,1fr) auto;
+  }
+
+  .vf923-action-panel {
+    gap: 8px;
+    padding-top: 12px;
+  }
+
+  .vf923-action-heading p {
+    display: none;
+  }
+
+  .vf923-action-heading h1 {
+    font-size: 23px;
+  }
+
+  .vf923-benefits > span:nth-child(3) {
+    display: none;
+  }
+
+  .vf923-primary-action {
+    min-height: 56px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #page-video-workspace.vf922-show-landing .v82-preview-stage,
-  #page-video-workspace.vf922-show-landing .vf3-workshop {
+  #vf923-workshop-overlay,
+  .vf923-track,
+  .vf923-dots button {
+    transition: none !important;
+  }
+
+  .vf923-slide > img,
+  .vf923-speed-lines,
+  .vf923-smoke i,
+  .vf923-wheel-glow,
+  .vf923-primary-action::after,
+  .vf923-live-chip i {
     animation: none !important;
   }
+}
+
+@keyframes vf923-image-drift {
+  from { transform: scale(1.03) translate3d(-.6%,0,0); }
+  to { transform: scale(1.09) translate3d(.8%,-.45%,0); }
+}
+
+@keyframes vf923-speed-lines {
+  to { background-position-y: 32px; }
+}
+
+@keyframes vf923-smoke {
+  0% { transform: translate3d(0,0,0) scale(.7); opacity: 0; }
+  22% { opacity: .70; }
+  100% { transform: translate3d(-86px,-38px,0) scale(2.35); opacity: 0; }
+}
+
+@keyframes vf923-wheel {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes vf923-shine {
+  0%, 58% { left: -30%; opacity: 0; }
+  68% { opacity: .82; }
+  84%, 100% { left: 120%; opacity: 0; }
+}
+
+@keyframes vf923-pulse {
+  0%,100% { opacity: .55; transform: scale(.82); }
+  50% { opacity: 1; transform: scale(1); }
+}
+</style>
+<style id="vforge-v923-body-lock">
+body.vf923-overlay-open {
+  overflow: hidden !important;
+  overscroll-behavior: none;
 }
 </style>
 </head>
@@ -1240,58 +921,128 @@
 <div class="v82-editor-title"><span id="workspace-header-mode">Proyek baru</span><strong>V-Forge Editor</strong></div>
 <button class="v82-export-top" onclick="openV82EditorTool('export')" type="button">Export</button>
 </header>
+<section aria-hidden="true" aria-label="V-Forge Motion Workshop" class="vf923-workshop-overlay" id="vf923-workshop-overlay">
+<header class="vf923-overlay-header">
+<button aria-label="Kembali ke Beranda" class="vf923-back" id="vf923-workshop-back" type="button">
+<span class="material-icons-round">arrow_back</span>
+</button>
+<div class="vf923-overlay-title">
+<span>V-FORGE MOTION LAB</span>
+<strong>Motion Workshop</strong>
+</div>
+<span class="vf923-live-chip"><i></i>LIVE</span>
+</header>
+
+<div aria-label="Showcase mobil V-Forge" aria-roledescription="carousel" class="vf923-carousel" id="vf923-carousel" role="region">
+<div class="vf923-track" id="vf923-track">
+<article aria-label="Slide 1 dari 4" class="vf923-slide active" data-vf923-slide="0">
+<img alt="Mobil performa merah dalam studio sinematik" decoding="async" fetchpriority="high" src="assets/images/vf-car-01.jpg"/>
+<div class="vf923-image-shade"></div>
+<div class="vf923-speed-lines"></div>
+<div class="vf923-smoke"><i></i><i></i><i></i></div>
+<div class="vf923-wheel-glow rear"></div>
+<div class="vf923-wheel-glow front"></div>
+<div class="vf923-slide-copy">
+<span>VELOCITY SERIES 01</span>
+<h2>Cut faster.<br/>Move harder.</h2>
+<p>Motion agresif untuk footage otomotif dan konten berenergi tinggi.</p>
+</div>
+</article>
+
+<article aria-label="Slide 2 dari 4" class="vf923-slide" data-vf923-slide="1">
+<img alt="Mobil performa dalam pencahayaan ungu neon" decoding="async" loading="lazy" src="assets/images/vf-car-02.jpg"/>
+<div class="vf923-image-shade"></div>
+<div class="vf923-speed-lines"></div>
+<div class="vf923-smoke"><i></i><i></i><i></i></div>
+<div class="vf923-wheel-glow rear"></div>
+<div class="vf923-wheel-glow front"></div>
+<div class="vf923-slide-copy">
+<span>NEON DRIVE 02</span>
+<h2>Night color.<br/>Studio control.</h2>
+<p>Warna neon, kontras dramatis, dan transisi yang terasa premium.</p>
+</div>
+</article>
+
+<article aria-label="Slide 3 dari 4" class="vf923-slide" data-vf923-slide="2">
+<img alt="Mobil performa dengan energi cahaya biru" decoding="async" loading="lazy" src="assets/images/vf-car-03.jpg"/>
+<div class="vf923-image-shade"></div>
+<div class="vf923-speed-lines"></div>
+<div class="vf923-smoke"><i></i><i></i><i></i></div>
+<div class="vf923-wheel-glow rear"></div>
+<div class="vf923-wheel-glow front"></div>
+<div class="vf923-slide-copy">
+<span>TURBO MOTION 03</span>
+<h2>Frame by frame.<br/>Energy alive.</h2>
+<p>Preview, timeline, trim, dan motion effect berada dalam satu workshop.</p>
+</div>
+</article>
+
+<article aria-label="Slide 4 dari 4" class="vf923-slide" data-vf923-slide="3">
+<img alt="Mobil performa dengan pencahayaan hangat" decoding="async" loading="lazy" src="assets/images/vf-car-04.jpg"/>
+<div class="vf923-image-shade"></div>
+<div class="vf923-speed-lines"></div>
+<div class="vf923-smoke"><i></i><i></i><i></i></div>
+<div class="vf923-wheel-glow rear"></div>
+<div class="vf923-wheel-glow front"></div>
+<div class="vf923-slide-copy">
+<span>FORGE RACING 04</span>
+<h2>Your footage.<br/>Your signature.</h2>
+<p>Video tetap diproses secara lokal di perangkatmu.</p>
+</div>
+</article>
+</div>
+
+<div class="vf923-brand-lockup">
+<span class="vf923-brand-mark">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
+<path d="M4 4 L12 19 L20 4"></path>
+<path d="M4 4 H14"></path>
+<path d="M8 11.5 H16"></path>
+</svg>
+</span>
+<span><strong>V-FORGE</strong><small>Automotive Motion Studio</small></span>
+</div>
+
+<button aria-label="Slide sebelumnya" class="vf923-arrow previous" id="vf923-previous" type="button">
+<span class="material-icons-round">chevron_left</span>
+</button>
+<button aria-label="Slide berikutnya" class="vf923-arrow next" id="vf923-next" type="button">
+<span class="material-icons-round">chevron_right</span>
+</button>
+
+<div aria-label="Pilih slide" class="vf923-dots" role="group">
+<button aria-label="Slide 1" aria-pressed="true" class="active" data-vf923-dot="0" type="button"></button>
+<button aria-label="Slide 2" aria-pressed="false" data-vf923-dot="1" type="button"></button>
+<button aria-label="Slide 3" aria-pressed="false" data-vf923-dot="2" type="button"></button>
+<button aria-label="Slide 4" aria-pressed="false" data-vf923-dot="3" type="button"></button>
+</div>
+</div>
+
+<section class="vf923-action-panel">
+<div class="vf923-action-heading">
+<span><span class="material-icons-round">auto_awesome</span>MOTION-FIRST EDITOR</span>
+<h1>Pilih video.<br/>Mulai berkarya.</h1>
+<p>Masuk ke editor setelah media dipilih. Landing ini tidak lagi bertabrakan dengan preview, timeline, atau panel alat.</p>
+</div>
+
+<div class="vf923-benefits">
+<span><span class="material-icons-round">fit_screen</span>Full-frame preview</span>
+<span><span class="material-icons-round">content_cut</span>Timeline interaktif</span>
+<span><span class="material-icons-round">lock</span>Video tetap di HP</span>
+</div>
+
+<button class="vf923-primary-action" id="vf923-select-video" type="button">
+<span class="vf923-primary-icon"><span class="material-icons-round">video_library</span></span>
+<span><strong>Pilih Video &amp; Buka Editor</strong><small>MP4, MOV, WebM • proses lokal</small></span>
+<span class="material-icons-round">arrow_forward</span>
+</button>
+</section>
+</section>
 <main class="v82-editor-shell">
 <section aria-labelledby="workspace-preview-title" class="v82-preview-stage" id="v8-panel-media">
 <h2 class="sr-only" id="workspace-preview-title">Preview video</h2>
 <div class="workspace-video-frame ratio-original" id="workspace-video-frame">
-<div aria-live="polite" class="v83-editor-attract vf3-attract" id="v83-editor-attract">
-<section aria-label="V-Forge Motion Lab" class="vf3-ad-shell">
-<div aria-roledescription="carousel" aria-label="V-Forge automotive motion showcase" class="vf3-carousel" id="vf3-carousel" role="region">
-<div class="vf3-track" id="vf3-track">
-<article aria-label="Slide 1 dari 4" class="vf3-slide" data-vf3-slide="0" style="--vf3-image:url('assets/images/vf-car-01.jpg');--vf3-accent:#c8ff63;">
-<div class="vf3-car-image"></div><div class="vf3-grid"></div><div class="vf3-speed-lines"></div>
-<i aria-hidden="true" class="vf3-wheel rear"></i><i aria-hidden="true" class="vf3-wheel front"></i>
-<i aria-hidden="true" class="vf3-smoke s1"></i><i aria-hidden="true" class="vf3-smoke s2"></i><i aria-hidden="true" class="vf3-smoke s3"></i>
-<div class="vf3-slide-copy"><span>VELOCITY SERIES 01</span><strong>Cut faster.<br/>Move harder.</strong></div>
-<div aria-hidden="true" class="vf3-v-badge"><svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24"><path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path></svg></div>
-</article>
-<article aria-label="Slide 2 dari 4" class="vf3-slide" data-vf3-slide="1" style="--vf3-image:url('assets/images/vf-car-02.jpg');--vf3-accent:#a974ff;">
-<div class="vf3-car-image"></div><div class="vf3-grid"></div><div class="vf3-speed-lines"></div>
-<i aria-hidden="true" class="vf3-wheel rear"></i><i aria-hidden="true" class="vf3-wheel front"></i>
-<i aria-hidden="true" class="vf3-smoke s1"></i><i aria-hidden="true" class="vf3-smoke s2"></i><i aria-hidden="true" class="vf3-smoke s3"></i>
-<div class="vf3-slide-copy"><span>NEON DRIVE 02</span><strong>Night color.<br/>Studio control.</strong></div>
-<div aria-hidden="true" class="vf3-v-badge"><svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24"><path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path></svg></div>
-</article>
-<article aria-label="Slide 3 dari 4" class="vf3-slide" data-vf3-slide="2" style="--vf3-image:url('assets/images/vf-car-03.jpg');--vf3-accent:#61e9ff;">
-<div class="vf3-car-image"></div><div class="vf3-grid"></div><div class="vf3-speed-lines"></div>
-<i aria-hidden="true" class="vf3-wheel rear"></i><i aria-hidden="true" class="vf3-wheel front"></i>
-<i aria-hidden="true" class="vf3-smoke s1"></i><i aria-hidden="true" class="vf3-smoke s2"></i><i aria-hidden="true" class="vf3-smoke s3"></i>
-<div class="vf3-slide-copy"><span>TURBO MOTION 03</span><strong>Frame by frame.<br/>Energy alive.</strong></div>
-<div aria-hidden="true" class="vf3-v-badge"><svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24"><path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path></svg></div>
-</article>
-<article aria-label="Slide 4 dari 4" class="vf3-slide" data-vf3-slide="3" style="--vf3-image:url('assets/images/vf-car-04.jpg');--vf3-accent:#ff9d58;">
-<div class="vf3-car-image"></div><div class="vf3-grid"></div><div class="vf3-speed-lines"></div>
-<i aria-hidden="true" class="vf3-wheel rear"></i><i aria-hidden="true" class="vf3-wheel front"></i>
-<i aria-hidden="true" class="vf3-smoke s1"></i><i aria-hidden="true" class="vf3-smoke s2"></i><i aria-hidden="true" class="vf3-smoke s3"></i>
-<div class="vf3-slide-copy"><span>FORGE RACING 04</span><strong>Your footage.<br/>Your signature.</strong></div>
-<div aria-hidden="true" class="vf3-v-badge"><svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24"><path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path></svg></div>
-</article>
-</div>
-<div class="vf3-ad-brand"><span aria-hidden="true" class="vf3-brand-mark"><svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24"><path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path></svg></span><span><strong>V-FORGE</strong><small>MOTION LAB / AUTOMOTIVE</small></span><em class="vf3-live-pill">LIVE MOTION</em></div>
-<button aria-label="Iklan mobil sebelumnya" class="vf3-carousel-nav prev" id="vf3-prev" type="button"><span class="material-icons-round">chevron_left</span></button>
-<button aria-label="Iklan mobil berikutnya" class="vf3-carousel-nav next" id="vf3-next" type="button"><span class="material-icons-round">chevron_right</span></button>
-<div aria-label="Pilih slide iklan" class="vf3-dots" role="group"><button aria-label="Slide 1" class="vf3-dot active" data-vf3-dot="0" type="button"></button><button aria-label="Slide 2" class="vf3-dot" data-vf3-dot="1" type="button"></button><button aria-label="Slide 3" class="vf3-dot" data-vf3-dot="2" type="button"></button><button aria-label="Slide 4" class="vf3-dot" data-vf3-dot="3" type="button"></button></div>
-</div>
-<div class="vf3-workshop">
-<div class="vf3-workshop-top"><span class="vf3-workshop-kicker" id="vf3-attract-kicker"><span class="material-icons-round">auto_awesome</span>MOTION-FIRST EDITOR</span><span class="vf3-secure"><span class="material-icons-round">lock</span>Local only</span></div>
-<h2 id="vf3-attract-title">Pilih video.<br/>Buka workshop.</h2>
-<p id="vf3-attract-description">Masuk langsung ke preview, timeline, trim, transisi, efek, dan output dalam satu workspace tanpa menu yang berulang.</p>
-<div aria-label="Fitur editor" class="v9-feature-dots" hidden><i class="active"></i><i></i><i></i></div>
-<div class="vf3-feature-row"><span><span class="material-icons-round">fit_screen</span>Full-frame preview</span><span><span class="material-icons-round">content_cut</span>Interactive timeline</span><span><span class="material-icons-round">verified_user</span>Video tetap di HP</span></div>
-<button class="vf3-open-workshop" onclick="openVForgeWorkshopPicker()" type="button"><span class="vf3-workshop-icon"><span class="material-icons-round">video_library</span></span><span><strong>Pilih Video &amp; Buka Workshop</strong><small>MP4, MOV, WebM • proses lokal</small></span><span class="material-icons-round">arrow_forward</span></button>
-</div>
-</section>
-</div><video controls="" controlslist="nodownload noremoteplayback" id="workspace-video" onerror="handleWorkspacePreviewError()" onloadedmetadata="handleWorkspaceMetadataLoaded()" playsinline="" preload="metadata"></video>
+<div aria-hidden="true" hidden id="v83-editor-attract"></div><video controls="" controlslist="nodownload noremoteplayback" id="workspace-video" onerror="handleWorkspacePreviewError()" onloadedmetadata="handleWorkspaceMetadataLoaded()" playsinline="" preload="metadata"></video>
 <div aria-hidden="true" class="studio-transition-preview" id="studio-transition-preview"><span class="studio-transition-flare"></span><span class="studio-transition-grid"></span></div>
 <div class="workspace-video-loading" id="workspace-video-loading"><span class="workspace-spinner"></span><p>Membaca video...</p></div>
 </div>
@@ -1917,40 +1668,57 @@
   }
 })();
 </script>
-<script id="vforge-phase3a-script">
+<script id="vforge-v923-script">
 (function () {
   'use strict';
 
   try {
-    const VERSION = '9.2.0-phase3a';
-    const INTERVAL_MS = 4800;
-    const carousel = document.getElementById('vf3-carousel');
-    const track = document.getElementById('vf3-track');
+    const VERSION = '9.2.3';
+    const overlay = document.getElementById('vf923-workshop-overlay');
+    const track = document.getElementById('vf923-track');
+    const carousel = document.getElementById('vf923-carousel');
+    const slides = Array.from(document.querySelectorAll('[data-vf923-slide]'));
+    const dots = Array.from(document.querySelectorAll('[data-vf923-dot]'));
+    const previous = document.getElementById('vf923-previous');
+    const next = document.getElementById('vf923-next');
+    const selectButton = document.getElementById('vf923-select-video');
+    const backButton = document.getElementById('vf923-workshop-back');
+    const editorPage = document.getElementById('page-video-workspace');
     const frame = document.getElementById('workspace-video-frame');
-    const slides = Array.from(document.querySelectorAll('[data-vf3-slide]'));
-    const dots = Array.from(document.querySelectorAll('[data-vf3-dot]'));
-    const previous = document.getElementById('vf3-prev');
-    const next = document.getElementById('vf3-next');
-    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
+    const video = document.getElementById('workspace-video');
+    const reduceMotion =
+      window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
 
-    if (!carousel || !track || !slides.length) return;
+    if (!overlay || !track || !slides.length) return;
 
     let index = 0;
     let timer = null;
-    let dragStartX = null;
-    let pausedByPointer = false;
+    let pointerStartX = null;
+    let pickerPending = false;
+    let fileWasSelected = false;
+    let openBusy = false;
 
-    function attractionVisible() {
-      return !frame?.classList.contains('has-video')
-        && document.getElementById('page-video-workspace')?.classList.contains('active');
+    const originalOpenVideoPicker =
+      typeof window.openVideoPicker === 'function'
+        ? window.openVideoPicker
+        : null;
+
+    const originalHandleWorkspaceFileSelected =
+      typeof window.handleWorkspaceFileSelected === 'function'
+        ? window.handleWorkspaceFileSelected
+        : null;
+
+    function isOpen() {
+      return overlay.classList.contains('open');
     }
 
     function render(nextIndex, userInitiated = false) {
-      index = (nextIndex + slides.length) % slides.length;
+      index = (Number(nextIndex) + slides.length) % slides.length;
       track.style.transform = `translate3d(-${index * 25}%, 0, 0)`;
 
       slides.forEach((slide, slideIndex) => {
         const active = slideIndex === index;
+        slide.classList.toggle('active', active);
         slide.setAttribute('aria-hidden', String(!active));
       });
 
@@ -1970,154 +1738,25 @@
 
     function start() {
       stop();
-      if (reduceMotion || document.hidden || pausedByPointer || !attractionVisible()) return;
-      timer = window.setInterval(() => render(index + 1, false), INTERVAL_MS);
+      if (
+        reduceMotion ||
+        document.hidden ||
+        !isOpen()
+      ) {
+        return;
+      }
+
+      timer = window.setInterval(() => {
+        render(index + 1, false);
+      }, 4600);
     }
 
     function restart() {
       stop();
-      window.setTimeout(start, 160);
+      window.setTimeout(start, 140);
     }
 
-    previous?.addEventListener('click', () => render(index - 1, true));
-    next?.addEventListener('click', () => render(index + 1, true));
-    dots.forEach((dot) => {
-      dot.addEventListener('click', () => render(Number(dot.dataset.vf3Dot) || 0, true));
-    });
-
-    carousel.addEventListener('pointerdown', (event) => {
-      dragStartX = event.clientX;
-      pausedByPointer = true;
-      stop();
-    });
-
-    carousel.addEventListener('pointerup', (event) => {
-      if (dragStartX !== null) {
-        const distance = event.clientX - dragStartX;
-        if (Math.abs(distance) > 42) render(index + (distance < 0 ? 1 : -1), false);
-      }
-      dragStartX = null;
-      pausedByPointer = false;
-      restart();
-    });
-
-    carousel.addEventListener('pointercancel', () => {
-      dragStartX = null;
-      pausedByPointer = false;
-      restart();
-    });
-
-    carousel.addEventListener('mouseenter', () => {
-      pausedByPointer = true;
-      stop();
-    });
-
-    carousel.addEventListener('mouseleave', () => {
-      pausedByPointer = false;
-      start();
-    });
-
-    document.addEventListener('visibilitychange', start);
-
-    document.addEventListener('vforge:pagechange', (event) => {
-      if (event.detail?.pageId === 'page-video-workspace') start();
-      else stop();
-    });
-
-    if (frame) {
-      new MutationObserver(start).observe(frame, {
-        attributes: true,
-        attributeFilter: ['class']
-      });
-    }
-
-    render(0, false);
-    start();
-
-    document.documentElement.dataset.vforgePhase3a = VERSION;
-    window.VForgePhase3A = {
-      version: VERSION,
-      next: () => render(index + 1, true),
-      previous: () => render(index - 1, true),
-      goTo: (value) => render(Number(value) || 0, true)
-    };
-  } catch (error) {
-    console.error('[V-Forge] Phase 3A tidak dapat dimulai:', error);
-  }
-})();
-</script>
-<script id="vforge-v922-fix-script">
-(function () {
-  'use strict';
-
-  try {
-    const VERSION = '9.2.2';
-    const page = document.getElementById('page-video-workspace');
-    const frame = document.getElementById('workspace-video-frame');
-    const video = document.getElementById('workspace-video');
-    let opening = false;
-    let pickerOpen = false;
-
-    const carSources = [
-      'assets/images/vf-car-01.jpg',
-      'assets/images/vf-car-02.jpg',
-      'assets/images/vf-car-03.jpg',
-      'assets/images/vf-car-04.jpg'
-    ];
-
-    function hasSelectedVideo() {
-      try {
-        return Boolean(
-          videoWorkspaceState?.file ||
-          video?.getAttribute('src') ||
-          (video?.currentSrc && !page?.classList.contains('vf922-show-landing'))
-        );
-      } catch (_) {
-        return Boolean(video?.getAttribute('src'));
-      }
-    }
-
-    function stopLegacyCopyRotation() {
-      try {
-        if (typeof stopV9FeatureRotation === 'function') {
-          stopV9FeatureRotation();
-        }
-      } catch (_) {}
-
-      try {
-        window.startV9FeatureRotation = function () {};
-        window.renderV9EditorFeature = function () {};
-      } catch (_) {}
-    }
-
-    function forceCarImages() {
-      document.querySelectorAll('.vf3-car-image').forEach((element, index) => {
-        const source = carSources[index % carSources.length];
-        element.style.setProperty(
-          'background-image',
-          `linear-gradient(90deg, rgba(2,2,5,.48), transparent 40%, rgba(2,2,5,.06)), url("${source}")`,
-          'important'
-        );
-        element.style.setProperty('background-size', 'cover', 'important');
-        element.style.setProperty('background-position', 'center center', 'important');
-      });
-    }
-
-    function resetVideoElement() {
-      if (!video) return;
-
-      try { video.pause(); } catch (_) {}
-      video.removeAttribute('src');
-      video.removeAttribute('poster');
-
-      try {
-        video.srcObject = null;
-      } catch (_) {}
-
-      try { video.load(); } catch (_) {}
-    }
-
-    function clearWorkspaceState() {
+    function releaseObjectUrlAndVideo() {
       try {
         if (typeof resetVideoProcessor === 'function') {
           resetVideoProcessor({ silent: true });
@@ -2136,9 +1775,18 @@
         }
       } catch (_) {}
 
-      resetVideoElement();
+      if (video) {
+        try { video.pause(); } catch (_) {}
+        video.removeAttribute('src');
+        video.removeAttribute('poster');
 
-      const fields = {
+        try { video.srcObject = null; } catch (_) {}
+        try { video.load(); } catch (_) {}
+      }
+
+      frame?.classList.remove('has-video');
+
+      const resetText = {
         'workspace-file-name': 'Belum ada video',
         'workspace-file-type': 'Pilih dari perangkat',
         'workspace-file-size': '—',
@@ -2146,7 +1794,7 @@
         'workspace-resolution': '—'
       };
 
-      Object.entries(fields).forEach(([id, value]) => {
+      Object.entries(resetText).forEach(([id, value]) => {
         const element = document.getElementById(id);
         if (element) element.textContent = value;
       });
@@ -2156,47 +1804,65 @@
       } catch (_) {}
     }
 
-    function applyLandingState() {
-      if (!page || !frame) return;
+    function showOverlay(options = {}) {
+      if (openBusy) return;
+      openBusy = true;
 
-      page.classList.add('vf922-show-landing');
-      frame.classList.remove('has-video');
-      frame.dataset.vf922Landing = 'true';
-
-      const attraction = document.getElementById('v83-editor-attract');
-      if (attraction) {
-        attraction.hidden = false;
-        attraction.removeAttribute('aria-hidden');
+      if (options.reset !== false) {
+        releaseObjectUrlAndVideo();
       }
 
-      forceCarImages();
-      stopLegacyCopyRotation();
+      pickerPending = false;
+      fileWasSelected = false;
 
+      overlay.classList.add('open');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body?.classList.add('vf923-overlay-open');
+      render(0, false);
+      start();
+
+      window.setTimeout(() => {
+        openBusy = false;
+      }, 320);
+    }
+
+    function hideOverlay() {
+      stop();
+      overlay.classList.remove('open');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body?.classList.remove('vf923-overlay-open');
+    }
+
+    function getReturnPage() {
       try {
-        window.VForgePhase3A?.goTo?.(0);
+        if (
+          typeof videoWorkspaceReturnPage === 'string' &&
+          videoWorkspaceReturnPage !== 'page-video-workspace'
+        ) {
+          return videoWorkspaceReturnPage;
+        }
       } catch (_) {}
+
+      return 'page-home';
     }
 
-    function releaseLandingState() {
-      page?.classList.remove('vf922-show-landing');
-      frame?.removeAttribute('data-vf922-landing');
+    function returnFromOverlay() {
+      hideOverlay();
+
+      const target = getReturnPage();
+      const indexMap = {
+        'page-home': 0,
+        'page-search': 1,
+        'page-enhancer': 2,
+        'page-profile': 3
+      };
+
+      if (typeof goToPage === 'function') {
+        goToPage(target, indexMap[target] ?? 0);
+      }
     }
 
-    function reinforceLandingState() {
-      [0, 40, 120, 260, 520].forEach((delay) => {
-        window.setTimeout(() => {
-          if (!pickerOpen && !hasSelectedVideo()) {
-            applyLandingState();
-          }
-        }, delay);
-      });
-    }
-
-    function openLanding() {
-      if (opening) return;
-      opening = true;
-      pickerOpen = false;
-
+    function openMotionWorkshop() {
       const source =
         typeof currentPage === 'string' &&
         currentPage !== 'page-video-workspace'
@@ -2207,111 +1873,124 @@
         if (typeof setVideoWorkspaceReturnPage === 'function') {
           setVideoWorkspaceReturnPage(source);
         }
+      } catch (_) {}
 
-        clearWorkspaceState();
+      releaseObjectUrlAndVideo();
 
-        if (typeof goToPage === 'function') {
-          goToPage('page-video-workspace', -1);
-        }
-
-        applyLandingState();
-        reinforceLandingState();
-
-        window.setTimeout(() => {
-          document.getElementById('vf3-carousel')?.scrollIntoView({
-            block: 'center',
-            behavior: 'smooth'
-          });
-        }, 100);
-      } finally {
-        window.setTimeout(() => {
-          opening = false;
-        }, 550);
+      if (typeof goToPage === 'function') {
+        goToPage('page-video-workspace', -1);
       }
+
+      window.requestAnimationFrame(() => {
+        showOverlay({ reset: false });
+      });
     }
 
-    const originalOpenVideoPicker =
-      typeof window.openVideoPicker === 'function'
-        ? window.openVideoPicker
-        : null;
+    function openPickerFromWorkshop() {
+      if (!originalOpenVideoPicker) return;
 
-    window.openVForgeWorkshopPicker = function (projectId = null) {
-      pickerOpen = true;
-      releaseLandingState();
+      pickerPending = true;
+      fileWasSelected = false;
+      hideOverlay();
 
-      if (originalOpenVideoPicker) {
-        return originalOpenVideoPicker(projectId);
+      window.setTimeout(() => {
+        try {
+          originalOpenVideoPicker(null);
+        } catch (error) {
+          pickerPending = false;
+          showOverlay({ reset: false });
+          throw error;
+        }
+      }, 80);
+    }
+
+    previous?.addEventListener('click', () => {
+      render(index - 1, true);
+    });
+
+    next?.addEventListener('click', () => {
+      render(index + 1, true);
+    });
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        render(Number(dot.dataset.vf923Dot) || 0, true);
+      });
+    });
+
+    carousel?.addEventListener('pointerdown', (event) => {
+      pointerStartX = event.clientX;
+      stop();
+    });
+
+    carousel?.addEventListener('pointerup', (event) => {
+      if (pointerStartX !== null) {
+        const distance = event.clientX - pointerStartX;
+
+        if (Math.abs(distance) > 42) {
+          render(index + (distance < 0 ? 1 : -1), false);
+        }
       }
-    };
 
-    const originalHandleWorkspaceFileSelected =
-      typeof window.handleWorkspaceFileSelected === 'function'
-        ? window.handleWorkspaceFileSelected
-        : null;
+      pointerStartX = null;
+      restart();
+    });
+
+    carousel?.addEventListener('pointercancel', () => {
+      pointerStartX = null;
+      restart();
+    });
+
+    selectButton?.addEventListener('click', openPickerFromWorkshop);
+    backButton?.addEventListener('click', returnFromOverlay);
 
     if (originalHandleWorkspaceFileSelected) {
       window.handleWorkspaceFileSelected = function (input) {
         const file = input?.files?.[0];
 
         if (file) {
-          pickerOpen = false;
-          releaseLandingState();
+          fileWasSelected = true;
+          pickerPending = false;
+          hideOverlay();
         }
 
         return originalHandleWorkspaceFileSelected.apply(this, arguments);
       };
     }
 
-    const originalOpenVideoWorkspace =
-      typeof window.openVideoWorkspace === 'function'
-        ? window.openVideoWorkspace
-        : null;
-
-    if (originalOpenVideoWorkspace) {
-      window.openVideoWorkspace = function () {
-        pickerOpen = false;
-        releaseLandingState();
-        return originalOpenVideoWorkspace.apply(this, arguments);
-      };
-    }
-
+    /*
+     * Android returns focus after closing the picker. Restore the workshop
+     * only when no file was selected.
+     */
     window.addEventListener('focus', () => {
       window.setTimeout(() => {
-        if (pickerOpen && !hasSelectedVideo()) {
-          pickerOpen = false;
-          applyLandingState();
-          reinforceLandingState();
+        if (pickerPending && !fileWasSelected) {
+          pickerPending = false;
+          showOverlay({ reset: false });
         }
-      }, 260);
-    });
-
-    document.addEventListener('vforge:pagechange', (event) => {
-      if (event.detail?.pageId !== 'page-video-workspace') return;
-
-      window.setTimeout(() => {
-        if (!hasSelectedVideo()) {
-          applyLandingState();
-          reinforceLandingState();
-        } else {
-          releaseLandingState();
-        }
-      }, 30);
+      }, 420);
     });
 
     video?.addEventListener('loadedmetadata', () => {
-      pickerOpen = false;
-      releaseLandingState();
+      fileWasSelected = true;
+      pickerPending = false;
+      hideOverlay();
     });
 
-    video?.addEventListener('emptied', () => {
-      if (page?.classList.contains('active') && !pickerOpen) {
-        applyLandingState();
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stop();
+      else start();
+    });
+
+    document.addEventListener('vforge:pagechange', (event) => {
+      if (event.detail?.pageId !== 'page-video-workspace') {
+        hideOverlay();
       }
     });
 
-    window.startV83NewProject = openLanding;
-    window.openV82CreateSheet = openLanding;
-    window.startV82BlankProject = openLanding;
+    window.startV83NewProject = openMotionWorkshop;
+    window.openV82CreateSheet = openMotionWorkshop;
+    window.startV82BlankProject = openMotionWorkshop;
 
     const homeButton = document.querySelector(
       '#page-home .v82-create-button strong'
@@ -2321,23 +2000,26 @@
     );
 
     if (homeButton) homeButton.textContent = 'Buka Motion Workshop';
+
     if (homeDescription) {
       homeDescription.textContent =
-        'Lihat showcase mobil V-Forge terlebih dahulu, lalu pilih video dari workshop.';
+        'Lihat showcase mobil V-Forge, lalu pilih video untuk masuk ke editor.';
     }
 
-    stopLegacyCopyRotation();
-    forceCarImages();
+    render(0, false);
 
-    document.documentElement.dataset.vforgeV922 = VERSION;
-    window.VForgeWorkshop922 = {
+    document.documentElement.dataset.vforgeV923 = VERSION;
+
+    window.VForgeWorkshop923 = {
       version: VERSION,
-      open: openLanding,
-      show: applyLandingState,
-      hide: releaseLandingState
+      open: openMotionWorkshop,
+      show: () => showOverlay({ reset: false }),
+      hide: hideOverlay,
+      next: () => render(index + 1, true),
+      previous: () => render(index - 1, true)
     };
   } catch (error) {
-    console.error('[V-Forge] V9.2.2 gagal dimulai:', error);
+    console.error('[V-Forge] V9.2.3 gagal dimulai:', error);
   }
 })();
 </script>
