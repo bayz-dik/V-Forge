@@ -700,20 +700,239 @@
   }
 }
 </style>
-<style id="vforge-v921-visible-fix-style">
-/* V9.2.1 — make the motion workshop and glass treatment clearly visible. */
+<style id="vforge-v922-fix-style">
+/* ============================================================
+   V-FORGE V9.2.2
+   Fix collapsed carousel, legacy copy rotation, and black landing.
+   ============================================================ */
 
 #page-video-workspace .v82-editor-shell {
   background:
-    radial-gradient(circle at 14% 15%, rgba(97,233,255,.11), transparent 30%),
-    radial-gradient(circle at 86% 22%, rgba(169,116,255,.19), transparent 36%),
+    radial-gradient(circle at 15% 15%, rgba(97,233,255,.11), transparent 30%),
+    radial-gradient(circle at 86% 20%, rgba(169,116,255,.18), transparent 37%),
     radial-gradient(circle at 48% 94%, rgba(198,255,99,.08), transparent 34%),
     #08080d !important;
 }
 
+/*
+ * Existing editor CSS defines a grid for .v83-editor-attract.
+ * Reset every grid constraint so the new ad always fills the frame.
+ */
+#workspace-video-frame #v83-editor-attract.vf3-attract {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 20 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  grid-template-columns: none !important;
+  grid-template-rows: none !important;
+  align-items: stretch !important;
+  justify-items: stretch !important;
+  color: #fff;
+  background: #050508 !important;
+}
+
+/* Normal behavior: hide the landing after a real video is ready. */
+#workspace-video-frame.has-video #v83-editor-attract.vf3-attract {
+  display: none !important;
+}
+
+/*
+ * Forced landing mode wins over stale .has-video/currentSrc states.
+ * This fixes the empty black preview when the editor is opened again.
+ */
+#page-video-workspace.vf922-show-landing
+#workspace-video-frame
+#v83-editor-attract.vf3-attract {
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+#page-video-workspace.vf922-show-landing #workspace-video {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-ad-shell {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  background: #050508 !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-carousel {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 100% !important;
+  min-height: 100% !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 74% 18%, rgba(169,116,255,.18), transparent 35%),
+    #050508 !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-track {
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  display: flex !important;
+  width: 400% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-slide {
+  position: relative !important;
+  display: block !important;
+  flex: 0 0 25% !important;
+  width: 25% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-car-image {
+  position: absolute !important;
+  inset: -3% !important;
+  display: block !important;
+  width: 106% !important;
+  height: 106% !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: center center !important;
+}
+
+/* Workshop now overlays the moving car instead of consuming its grid row. */
+#workspace-video-frame #v83-editor-attract .vf3-workshop {
+  position: absolute !important;
+  z-index: 30 !important;
+  left: 11px !important;
+  right: 11px !important;
+  bottom: 11px !important;
+  width: auto !important;
+  max-height: calc(100% - 70px) !important;
+  display: grid !important;
+  gap: 7px !important;
+  padding: 11px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  border-radius: 19px !important;
+  background:
+    linear-gradient(145deg, rgba(24,24,34,.70), rgba(9,9,14,.86)) !important;
+  box-shadow:
+    0 18px 46px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.08) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(175%) !important;
+  backdrop-filter: blur(25px) saturate(175%) !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-workshop h2 {
+  margin: 0 !important;
+  max-width: 86% !important;
+  font-size: clamp(18px, 5.4vw, 26px) !important;
+  line-height: .98 !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-workshop p {
+  display: none !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-feature-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 5px !important;
+  overflow: hidden !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-feature-row span {
+  min-width: 0 !important;
+  padding: 5px 7px !important;
+  overflow: hidden !important;
+  font-size: 6px !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-feature-row span:nth-child(3) {
+  display: none !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-open-workshop {
+  min-height: 50px !important;
+  border-radius: 16px !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-open-workshop strong {
+  font-size: 10px !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-open-workshop small {
+  font-size: 6px !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-slide-copy {
+  left: 16px !important;
+  right: 76px !important;
+  bottom: 162px !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-slide-copy strong {
+  font-size: clamp(17px, 5.6vw, 27px) !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-v-badge {
+  right: 15px !important;
+  bottom: 164px !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-dots {
+  right: 72px !important;
+  bottom: 169px !important;
+}
+
+#workspace-video-frame #v83-editor-attract .vf3-carousel-nav {
+  z-index: 35 !important;
+}
+
+/* Make the glass treatment visibly different from the old opaque UI. */
+#page-video-workspace .v82-editor-header,
+#page-video-workspace .v91-preview-topbar,
+#page-video-workspace .v91-preview-controls,
+#page-video-workspace .v82-tool-sheet,
+#page-video-workspace .v82-editor-dock {
+  -webkit-backdrop-filter: blur(26px) saturate(180%) !important;
+  backdrop-filter: blur(26px) saturate(180%) !important;
+}
+
+#page-video-workspace .v82-editor-header {
+  background: rgba(12,12,18,.73) !important;
+}
+
+#page-video-workspace .v91-preview-topbar,
+#page-video-workspace .v91-preview-controls {
+  background: rgba(16,16,24,.66) !important;
+}
+
 #page-video-workspace .v82-tool-sheet {
   background:
-    linear-gradient(180deg, rgba(28,28,38,.70), rgba(10,10,16,.82)) !important;
+    linear-gradient(180deg, rgba(27,27,38,.68), rgba(10,10,16,.82)) !important;
   border: 1px solid rgba(255,255,255,.11) !important;
   box-shadow:
     0 -18px 50px rgba(0,0,0,.42),
@@ -721,67 +940,87 @@
 }
 
 #page-video-workspace .v82-editor-dock {
-  background: rgba(13,13,19,.76) !important;
+  background: rgba(13,13,19,.75) !important;
   border-top-color: rgba(255,255,255,.13) !important;
 }
 
-#page-video-workspace .v82-editor-header {
-  background: rgba(12,12,18,.74) !important;
+#page-video-workspace.vf922-show-landing .v82-preview-stage {
+  animation: vf922-stage-in .5s cubic-bezier(.2,.8,.2,1) both;
 }
 
-#page-video-workspace .v91-preview-topbar,
-#page-video-workspace .v91-preview-controls {
-  background: rgba(16,16,24,.68) !important;
+#page-video-workspace.vf922-show-landing .vf3-workshop {
+  animation: vf922-workshop-in .58s .08s cubic-bezier(.2,.8,.2,1) both;
 }
 
-#page-video-workspace.vf921-workshop-entry .v82-preview-stage {
-  animation: vf921-workshop-enter .55s cubic-bezier(.2,.8,.2,1) both;
-}
-
-#page-video-workspace.vf921-workshop-entry .vf3-workshop {
-  animation: vf921-panel-enter .65s .08s cubic-bezier(.2,.8,.2,1) both;
-}
-
-#page-video-workspace.vf921-workshop-entry .vf3-slide-copy,
-#page-video-workspace.vf921-workshop-entry .vf3-ad-brand {
-  animation: vf921-copy-enter .7s .12s cubic-bezier(.2,.8,.2,1) both;
-}
-
-.vf921-workshop-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 4px;
-  color: rgba(255,255,255,.55);
-  font-size: 7px;
-  font-weight: 700;
-}
-
-.vf921-workshop-hint .material-icons-round {
-  color: var(--vf3-lime);
-  font-size: 12px;
-}
-
-@keyframes vf921-workshop-enter {
-  from { opacity: 0; transform: translate3d(0,12px,0) scale(.985); }
+@keyframes vf922-stage-in {
+  from { opacity: 0; transform: translate3d(0,10px,0) scale(.988); }
   to { opacity: 1; transform: translate3d(0,0,0) scale(1); }
 }
 
-@keyframes vf921-panel-enter {
-  from { opacity: 0; transform: translate3d(0,26px,0); }
+@keyframes vf922-workshop-in {
+  from { opacity: 0; transform: translate3d(0,24px,0); }
   to { opacity: 1; transform: translate3d(0,0,0); }
 }
 
-@keyframes vf921-copy-enter {
-  from { opacity: 0; transform: translate3d(-16px,0,0); }
-  to { opacity: 1; transform: translate3d(0,0,0); }
+@media (max-width: 390px) {
+  #workspace-video-frame #v83-editor-attract .vf3-workshop {
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    padding: 9px !important;
+  }
+
+  #workspace-video-frame #v83-editor-attract .vf3-slide-copy {
+    bottom: 148px !important;
+  }
+
+  #workspace-video-frame #v83-editor-attract .vf3-v-badge {
+    bottom: 150px !important;
+  }
+
+  #workspace-video-frame #v83-editor-attract .vf3-dots {
+    bottom: 155px !important;
+  }
+}
+
+@media (min-width: 720px) {
+  #workspace-video-frame #v83-editor-attract .vf3-workshop {
+    left: auto !important;
+    right: 20px !important;
+    bottom: 20px !important;
+    width: min(350px, 42%) !important;
+    max-height: calc(100% - 40px) !important;
+    padding: 17px !important;
+  }
+
+  #workspace-video-frame #v83-editor-attract .vf3-workshop p {
+    display: block !important;
+  }
+
+  #workspace-video-frame #v83-editor-attract .vf3-feature-row span:nth-child(3) {
+    display: inline-flex !important;
+  }
+
+  #workspace-video-frame #v83-editor-attract .vf3-slide-copy {
+    left: 24px !important;
+    right: 390px !important;
+    bottom: 28px !important;
+  }
+
+  #workspace-video-frame #v83-editor-attract .vf3-v-badge {
+    right: 390px !important;
+    bottom: 26px !important;
+  }
+
+  #workspace-video-frame #v83-editor-attract .vf3-dots {
+    right: 450px !important;
+    bottom: 32px !important;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #page-video-workspace.vf921-workshop-entry .v82-preview-stage,
-  #page-video-workspace.vf921-workshop-entry .vf3-workshop,
-  #page-video-workspace.vf921-workshop-entry .vf3-slide-copy,
-  #page-video-workspace.vf921-workshop-entry .vf3-ad-brand {
+  #page-video-workspace.vf922-show-landing .v82-preview-stage,
+  #page-video-workspace.vf922-show-landing .vf3-workshop {
     animation: none !important;
   }
 }
@@ -1044,12 +1283,12 @@
 <div aria-label="Pilih slide iklan" class="vf3-dots" role="group"><button aria-label="Slide 1" class="vf3-dot active" data-vf3-dot="0" type="button"></button><button aria-label="Slide 2" class="vf3-dot" data-vf3-dot="1" type="button"></button><button aria-label="Slide 3" class="vf3-dot" data-vf3-dot="2" type="button"></button><button aria-label="Slide 4" class="vf3-dot" data-vf3-dot="3" type="button"></button></div>
 </div>
 <div class="vf3-workshop">
-<div class="vf3-workshop-top"><span class="vf3-workshop-kicker" id="v9-attract-kicker"><span class="material-icons-round">auto_awesome</span>MOTION-FIRST EDITOR</span><span class="vf3-secure"><span class="material-icons-round">lock</span>Local only</span></div>
-<h2 id="v9-attract-title">Pilih video.<br/>Buka workshop.</h2>
-<p id="v9-attract-description">Masuk langsung ke preview, timeline, trim, transisi, efek, dan output dalam satu workspace tanpa menu yang berulang.</p>
+<div class="vf3-workshop-top"><span class="vf3-workshop-kicker" id="vf3-attract-kicker"><span class="material-icons-round">auto_awesome</span>MOTION-FIRST EDITOR</span><span class="vf3-secure"><span class="material-icons-round">lock</span>Local only</span></div>
+<h2 id="vf3-attract-title">Pilih video.<br/>Buka workshop.</h2>
+<p id="vf3-attract-description">Masuk langsung ke preview, timeline, trim, transisi, efek, dan output dalam satu workspace tanpa menu yang berulang.</p>
 <div aria-label="Fitur editor" class="v9-feature-dots" hidden><i class="active"></i><i></i><i></i></div>
 <div class="vf3-feature-row"><span><span class="material-icons-round">fit_screen</span>Full-frame preview</span><span><span class="material-icons-round">content_cut</span>Interactive timeline</span><span><span class="material-icons-round">verified_user</span>Video tetap di HP</span></div>
-<button class="vf3-open-workshop" onclick="openVideoPicker()" type="button"><span class="vf3-workshop-icon"><span class="material-icons-round">video_library</span></span><span><strong>Pilih Video &amp; Buka Workshop</strong><small>MP4, MOV, WebM • proses lokal</small></span><span class="material-icons-round">arrow_forward</span></button>
+<button class="vf3-open-workshop" onclick="openVForgeWorkshopPicker()" type="button"><span class="vf3-workshop-icon"><span class="material-icons-round">video_library</span></span><span><strong>Pilih Video &amp; Buka Workshop</strong><small>MP4, MOV, WebM • proses lokal</small></span><span class="material-icons-round">arrow_forward</span></button>
 </div>
 </section>
 </div><video controls="" controlslist="nodownload noremoteplayback" id="workspace-video" onerror="handleWorkspacePreviewError()" onloadedmetadata="handleWorkspaceMetadataLoaded()" playsinline="" preload="metadata"></video>
@@ -1807,19 +2046,78 @@
   }
 })();
 </script>
-<script id="vforge-v921-visible-fix-script">
+<script id="vforge-v922-fix-script">
 (function () {
   'use strict';
 
   try {
-    const VERSION = '9.2.1';
+    const VERSION = '9.2.2';
+    const page = document.getElementById('page-video-workspace');
+    const frame = document.getElementById('workspace-video-frame');
+    const video = document.getElementById('workspace-video');
     let opening = false;
+    let pickerOpen = false;
 
-    function byId(id) {
-      return document.getElementById(id);
+    const carSources = [
+      'assets/images/vf-car-01.jpg',
+      'assets/images/vf-car-02.jpg',
+      'assets/images/vf-car-03.jpg',
+      'assets/images/vf-car-04.jpg'
+    ];
+
+    function hasSelectedVideo() {
+      try {
+        return Boolean(
+          videoWorkspaceState?.file ||
+          video?.getAttribute('src') ||
+          (video?.currentSrc && !page?.classList.contains('vf922-show-landing'))
+        );
+      } catch (_) {
+        return Boolean(video?.getAttribute('src'));
+      }
     }
 
-    function clearWorkspaceForLanding() {
+    function stopLegacyCopyRotation() {
+      try {
+        if (typeof stopV9FeatureRotation === 'function') {
+          stopV9FeatureRotation();
+        }
+      } catch (_) {}
+
+      try {
+        window.startV9FeatureRotation = function () {};
+        window.renderV9EditorFeature = function () {};
+      } catch (_) {}
+    }
+
+    function forceCarImages() {
+      document.querySelectorAll('.vf3-car-image').forEach((element, index) => {
+        const source = carSources[index % carSources.length];
+        element.style.setProperty(
+          'background-image',
+          `linear-gradient(90deg, rgba(2,2,5,.48), transparent 40%, rgba(2,2,5,.06)), url("${source}")`,
+          'important'
+        );
+        element.style.setProperty('background-size', 'cover', 'important');
+        element.style.setProperty('background-position', 'center center', 'important');
+      });
+    }
+
+    function resetVideoElement() {
+      if (!video) return;
+
+      try { video.pause(); } catch (_) {}
+      video.removeAttribute('src');
+      video.removeAttribute('poster');
+
+      try {
+        video.srcObject = null;
+      } catch (_) {}
+
+      try { video.load(); } catch (_) {}
+    }
+
+    function clearWorkspaceState() {
       try {
         if (typeof resetVideoProcessor === 'function') {
           resetVideoProcessor({ silent: true });
@@ -1838,40 +2136,66 @@
         }
       } catch (_) {}
 
-      try {
-        const video = byId('workspace-video');
-        if (video) {
-          try { video.pause(); } catch (_) {}
-          video.removeAttribute('src');
-          try { video.load(); } catch (_) {}
-        }
-      } catch (_) {}
+      resetVideoElement();
 
-      const frame = byId('workspace-video-frame');
-      if (frame) frame.classList.remove('has-video');
+      const fields = {
+        'workspace-file-name': 'Belum ada video',
+        'workspace-file-type': 'Pilih dari perangkat',
+        'workspace-file-size': '—',
+        'workspace-duration': '—',
+        'workspace-resolution': '—'
+      };
 
-      const fileName = byId('workspace-file-name');
-      const fileType = byId('workspace-file-type');
-      const fileSize = byId('workspace-file-size');
-      const duration = byId('workspace-duration');
-      const resolution = byId('workspace-resolution');
-
-      if (fileName) fileName.textContent = 'Belum ada video';
-      if (fileType) fileType.textContent = 'Pilih dari perangkat';
-      if (fileSize) fileSize.textContent = '—';
-      if (duration) duration.textContent = '—';
-      if (resolution) resolution.textContent = '—';
+      Object.entries(fields).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = value;
+      });
 
       try {
-        if (typeof syncV83EditorAttraction === 'function') {
-          syncV83EditorAttraction();
-        }
+        window.VForgeSafeZoom913B?.resetPreviewTransform?.(false);
       } catch (_) {}
     }
 
-    function openMotionWorkshopLanding() {
+    function applyLandingState() {
+      if (!page || !frame) return;
+
+      page.classList.add('vf922-show-landing');
+      frame.classList.remove('has-video');
+      frame.dataset.vf922Landing = 'true';
+
+      const attraction = document.getElementById('v83-editor-attract');
+      if (attraction) {
+        attraction.hidden = false;
+        attraction.removeAttribute('aria-hidden');
+      }
+
+      forceCarImages();
+      stopLegacyCopyRotation();
+
+      try {
+        window.VForgePhase3A?.goTo?.(0);
+      } catch (_) {}
+    }
+
+    function releaseLandingState() {
+      page?.classList.remove('vf922-show-landing');
+      frame?.removeAttribute('data-vf922-landing');
+    }
+
+    function reinforceLandingState() {
+      [0, 40, 120, 260, 520].forEach((delay) => {
+        window.setTimeout(() => {
+          if (!pickerOpen && !hasSelectedVideo()) {
+            applyLandingState();
+          }
+        }, delay);
+      });
+    }
+
+    function openLanding() {
       if (opening) return;
       opening = true;
+      pickerOpen = false;
 
       const source =
         typeof currentPage === 'string' &&
@@ -1884,86 +2208,136 @@
           setVideoWorkspaceReturnPage(source);
         }
 
-        clearWorkspaceForLanding();
+        clearWorkspaceState();
 
         if (typeof goToPage === 'function') {
           goToPage('page-video-workspace', -1);
         }
 
-        const page = byId('page-video-workspace');
-        if (page) {
-          page.classList.remove('vf921-workshop-entry');
-          void page.offsetWidth;
-          page.classList.add('vf921-workshop-entry');
-        }
+        applyLandingState();
+        reinforceLandingState();
 
         window.setTimeout(() => {
-          try {
-            byId('vf3-carousel')?.scrollIntoView({
-              block: 'center',
-              behavior: 'smooth'
-            });
-          } catch (_) {}
+          document.getElementById('vf3-carousel')?.scrollIntoView({
+            block: 'center',
+            behavior: 'smooth'
+          });
         }, 100);
       } finally {
         window.setTimeout(() => {
           opening = false;
-        }, 500);
+        }, 550);
       }
     }
 
-    /*
-     * Important UX correction:
-     * The old function immediately opened Android's file picker,
-     * hiding the animation. Replace it with a workshop landing first.
-     * The green button inside the workshop remains responsible for
-     * calling openVideoPicker().
-     */
-    window.startV83NewProject = openMotionWorkshopLanding;
-    window.openV82CreateSheet = openMotionWorkshopLanding;
-    window.startV82BlankProject = openMotionWorkshopLanding;
+    const originalOpenVideoPicker =
+      typeof window.openVideoPicker === 'function'
+        ? window.openVideoPicker
+        : null;
 
-    function updateVisibleCopy() {
-      const homeButton = document.querySelector(
-        '#page-home .v82-create-button strong'
-      );
-      const homeDescription = document.querySelector(
-        '#page-home .v82-create-copy p'
-      );
+    window.openVForgeWorkshopPicker = function (projectId = null) {
+      pickerOpen = true;
+      releaseLandingState();
 
-      if (homeButton) homeButton.textContent = 'Buka Motion Workshop';
-      if (homeDescription) {
-        homeDescription.textContent =
-          'Masuk ke showcase mobil V-Forge, lalu pilih video langsung dari workshop.';
+      if (originalOpenVideoPicker) {
+        return originalOpenVideoPicker(projectId);
       }
+    };
 
-      const workshop = document.querySelector('.vf3-workshop');
-      if (workshop && !workshop.querySelector('.vf921-workshop-hint')) {
-        const hint = document.createElement('span');
-        hint.className = 'vf921-workshop-hint';
-        hint.innerHTML =
-          '<span class="material-icons-round">touch_app</span>' +
-          'Iklan tampil dulu — pemilih video dibuka setelah tombol hijau ditekan.';
-        const button = workshop.querySelector('.vf3-open-workshop');
-        if (button) button.insertAdjacentElement('afterend', hint);
-      }
+    const originalHandleWorkspaceFileSelected =
+      typeof window.handleWorkspaceFileSelected === 'function'
+        ? window.handleWorkspaceFileSelected
+        : null;
+
+    if (originalHandleWorkspaceFileSelected) {
+      window.handleWorkspaceFileSelected = function (input) {
+        const file = input?.files?.[0];
+
+        if (file) {
+          pickerOpen = false;
+          releaseLandingState();
+        }
+
+        return originalHandleWorkspaceFileSelected.apply(this, arguments);
+      };
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', updateVisibleCopy, {
-        once: true
-      });
-    } else {
-      updateVisibleCopy();
+    const originalOpenVideoWorkspace =
+      typeof window.openVideoWorkspace === 'function'
+        ? window.openVideoWorkspace
+        : null;
+
+    if (originalOpenVideoWorkspace) {
+      window.openVideoWorkspace = function () {
+        pickerOpen = false;
+        releaseLandingState();
+        return originalOpenVideoWorkspace.apply(this, arguments);
+      };
     }
 
-    document.documentElement.dataset.vforgeVisibleWorkshop = VERSION;
-    window.VForgeVisibleWorkshop921 = {
+    window.addEventListener('focus', () => {
+      window.setTimeout(() => {
+        if (pickerOpen && !hasSelectedVideo()) {
+          pickerOpen = false;
+          applyLandingState();
+          reinforceLandingState();
+        }
+      }, 260);
+    });
+
+    document.addEventListener('vforge:pagechange', (event) => {
+      if (event.detail?.pageId !== 'page-video-workspace') return;
+
+      window.setTimeout(() => {
+        if (!hasSelectedVideo()) {
+          applyLandingState();
+          reinforceLandingState();
+        } else {
+          releaseLandingState();
+        }
+      }, 30);
+    });
+
+    video?.addEventListener('loadedmetadata', () => {
+      pickerOpen = false;
+      releaseLandingState();
+    });
+
+    video?.addEventListener('emptied', () => {
+      if (page?.classList.contains('active') && !pickerOpen) {
+        applyLandingState();
+      }
+    });
+
+    window.startV83NewProject = openLanding;
+    window.openV82CreateSheet = openLanding;
+    window.startV82BlankProject = openLanding;
+
+    const homeButton = document.querySelector(
+      '#page-home .v82-create-button strong'
+    );
+    const homeDescription = document.querySelector(
+      '#page-home .v82-create-copy p'
+    );
+
+    if (homeButton) homeButton.textContent = 'Buka Motion Workshop';
+    if (homeDescription) {
+      homeDescription.textContent =
+        'Lihat showcase mobil V-Forge terlebih dahulu, lalu pilih video dari workshop.';
+    }
+
+    stopLegacyCopyRotation();
+    forceCarImages();
+
+    document.documentElement.dataset.vforgeV922 = VERSION;
+    window.VForgeWorkshop922 = {
       version: VERSION,
-      open: openMotionWorkshopLanding
+      open: openLanding,
+      show: applyLandingState,
+      hide: releaseLandingState
     };
   } catch (error) {
-    console.error('[V-Forge] V9.2.1 visible workshop fix gagal:', error);
+    console.error('[V-Forge] V9.2.2 gagal dimulai:', error);
   }
 })();
 </script>
