@@ -1,0 +1,438 @@
+/* V-Forge V9.3 — Premium Showcase consolidated from accepted V9.2.9 */
+/* ===== Premium Showcase: detached from editor page, no editor flash ===== */
+#vf926-workshop {
+  position:fixed;
+  inset:0;
+  z-index:20000;
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  width:100%;
+  height:100dvh;
+  color:#fff;
+  background:#07070b;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translate3d(0,8px,0);
+  transition:opacity .22s ease, visibility .22s ease, transform .32s cubic-bezier(.2,.8,.2,1);
+}
+#vf926-workshop.open {
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:none;
+}
+.vf926-workshop-header {
+  z-index:20;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  min-height:68px;
+  padding:max(10px,env(safe-area-inset-top)) 14px 10px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:rgba(8,8,13,.86);
+  -webkit-backdrop-filter:blur(24px) saturate(170%);
+  backdrop-filter:blur(24px) saturate(170%);
+}
+.vf926-back {
+  display:grid;place-items:center;width:40px;height:40px;padding:0;
+  border:1px solid rgba(255,255,255,.11);border-radius:14px;color:#fff;background:rgba(255,255,255,.055);
+}
+.vf926-heading {min-width:0;display:grid;gap:2px}
+.vf926-heading span {color:var(--vf926-lime);font-size:7px;font-weight:900;letter-spacing:.18em}
+.vf926-heading strong {font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vf926-featured {
+  display:inline-flex;align-items:center;gap:5px;padding:7px 9px;border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;color:rgba(255,255,255,.72);font-size:7px;font-weight:900;background:rgba(255,255,255,.045)
+}
+.vf926-featured i {width:6px;height:6px;border-radius:50%;background:var(--vf926-lime);box-shadow:0 0 12px rgba(202,255,98,.6)}
+
+.vf926-carousel {position:relative;min-height:0;overflow:hidden;touch-action:pan-y;background:#050507}
+.vf926-slide {
+  position:absolute;inset:0;overflow:hidden;background:#07070b;
+  opacity:0;visibility:hidden;transform:scale(1.015);
+  transition:opacity .48s ease, visibility .48s ease, transform .75s cubic-bezier(.2,.8,.2,1)
+}
+.vf926-slide.active {opacity:1;visibility:visible;transform:scale(1)}
+.vf926-backdrop {
+  position:absolute;inset:-30px;background-image:var(--vf926-image);background-size:cover;background-position:center;
+  filter:blur(25px) brightness(.38) saturate(1.1);transform:scale(1.11)
+}
+.vf926-slide>img {
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;
+  filter:saturate(1.04) contrast(1.03) brightness(.92)
+}
+.vf926-shade {position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(0,0,0,.05),transparent 42%,rgba(4,4,8,.9) 100%)}
+.vf926-brand {position:absolute;z-index:8;top:17px;left:16px;display:flex;align-items:center;gap:9px}
+.vf926-logo {display:grid;place-items:center;width:38px;height:38px;border-radius:13px;color:#0b0b0e;background:linear-gradient(145deg,#ebffc6,var(--vf926-lime))}
+.vf926-logo svg {width:23px;height:23px;stroke:currentColor}
+.vf926-brand>span:last-child {display:grid;gap:1px}
+.vf926-brand strong {font-size:10px;letter-spacing:.14em}
+.vf926-brand small {color:rgba(255,255,255,.58);font-size:7px}
+.vf926-copy {position:absolute;z-index:8;left:20px;right:78px;bottom:24px;display:grid;gap:5px}
+.vf926-copy>span {color:var(--vf926-lime);font-size:7px;font-weight:900;letter-spacing:.18em}
+.vf926-copy h2 {margin:0;font-size:clamp(27px,9vw,44px);line-height:.92;letter-spacing:-.055em;text-shadow:0 8px 28px rgba(0,0,0,.55)}
+.vf926-copy p {margin:0;max-width:410px;color:rgba(255,255,255,.69);font-size:9px;line-height:1.42}
+.vf926-arrow {
+  position:absolute;z-index:15;top:50%;display:grid;place-items:center;width:34px;height:48px;padding:0;
+  border:1px solid rgba(255,255,255,.11);color:#fff;background:rgba(8,8,12,.44);
+  -webkit-backdrop-filter:blur(13px);backdrop-filter:blur(13px);transform:translateY(-50%)
+}
+.vf926-arrow.previous {left:7px;border-radius:7px 15px 15px 7px}
+.vf926-arrow.next {right:7px;border-radius:15px 7px 7px 15px}
+.vf926-dots {position:absolute;z-index:15;right:18px;bottom:27px;display:flex;gap:6px}
+.vf926-dots button {width:6px;height:6px;padding:0;border:0;border-radius:999px;background:rgba(255,255,255,.34);transition:width .25s ease,background .25s ease}
+.vf926-dots button.active {width:22px;background:var(--vf926-lime)}
+
+.vf926-action {
+  z-index:20;display:grid;gap:10px;max-height:43dvh;padding:15px 15px max(15px,env(safe-area-inset-bottom));
+  overflow-y:auto;overscroll-behavior:contain;border-top:1px solid rgba(255,255,255,.10);
+  background:radial-gradient(circle at 86% 0%,rgba(168,108,255,.16),transparent 43%),linear-gradient(145deg,rgba(24,24,33,.92),rgba(9,9,14,.99));
+  -webkit-backdrop-filter:blur(26px) saturate(175%);backdrop-filter:blur(26px) saturate(175%)
+}
+.vf926-action-copy {display:grid;gap:5px}
+.vf926-action-copy>span {display:inline-flex;align-items:center;gap:6px;color:var(--vf926-lime);font-size:7px;font-weight:900;letter-spacing:.16em}
+.vf926-action-copy h1 {margin:0;font-size:clamp(24px,7vw,34px);line-height:.94;letter-spacing:-.05em}
+.vf926-action-copy p {margin:0;color:rgba(255,255,255,.61);font-size:9px;line-height:1.45}
+.vf926-pills {display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.vf926-pills::-webkit-scrollbar{display:none}
+.vf926-pills>span {display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;padding:7px 9px;border:1px solid rgba(255,255,255,.08);border-radius:999px;color:rgba(255,255,255,.75);font-size:7px;background:rgba(255,255,255,.04)}
+.vf926-pills .material-icons-round {color:var(--vf926-cyan);font-size:12px}
+
+
+
+
+
+
+
+@media (min-width:720px) {
+  #vf926-workshop {grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);grid-template-rows:auto minmax(0,1fr)}
+  .vf926-workshop-header {grid-column:1/-1}
+  .vf926-carousel {grid-column:1;grid-row:2}
+  .vf926-action {grid-column:2;grid-row:2;align-content:center;max-height:none;padding:28px;border-top:0;border-left:1px solid rgba(255,255,255,.10)}
+}
+
+body.vf926-workshop-open {overflow:hidden!important;overscroll-behavior:none}
+@media (prefers-reduced-motion:reduce) {
+  #vf926-workshop,.vf926-slide,.vf926-dots button {transition:none!important}
+}
+/* Accepted V9.2.9 navigation/CTA/branding final overrides */
+/* ============================================================
+   V-FORGE V9.2.9
+   Premium Showcase CTA + bottom navigation visibility hotfix.
+   ============================================================ */
+
+/*
+ * Premium Showcase is opened while currentPage can still be Home.
+ * The global bottom navigation therefore remains visible unless
+ * explicitly suppressed while the root-level Showcase is open.
+ */
+body.vf926-workshop-open #bottom-navigation,
+body.vf926-workshop-open .v82-bottom-nav-wrapper,
+body.vf926-workshop-open .bottom-nav-wrapper {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* The overlay must always win over app-level navigation/modals. */
+body.vf926-workshop-open #vf926-workshop {
+  z-index: 2147483000 !important;
+}
+
+/*
+ * Reserve a reliable CTA area. The descriptive copy may scroll on short
+ * screens, but the edit button itself must never disappear below the fold.
+ */
+#vf926-workshop .vf926-action {
+  position: relative !important;
+  display: grid !important;
+  grid-template-rows: auto auto auto !important;
+  max-height: min(46dvh, 480px) !important;
+  min-height: 0 !important;
+  padding:
+    14px
+    15px
+    max(14px, env(safe-area-inset-bottom)) !important;
+  overflow-y: auto !important;
+  scroll-padding-bottom: 82px !important;
+}
+
+/* Keep the primary editor entry visible at the bottom of its own panel. */
+
+
+/* Solid halo prevents text behind the sticky CTA from visually bleeding in. */
+
+
+/* Small/short Android screens: prioritize the CTA over explanatory copy. */
+@media (max-width: 719px) and (max-height: 760px) {
+  #vf926-workshop {
+    grid-template-rows: auto minmax(250px, 1fr) auto !important;
+  }
+
+  #vf926-workshop .vf926-action {
+    gap: 8px !important;
+    max-height: 40dvh !important;
+    padding-top: 11px !important;
+  }
+
+  #vf926-workshop .vf926-action-copy p {
+    display: none !important;
+  }
+
+  #vf926-workshop .vf926-pills {
+    max-height: 31px !important;
+  }
+
+  
+}
+
+@media (max-width: 390px) {
+  #vf926-workshop .vf926-action-copy h1 {
+    font-size: 23px !important;
+  }
+
+  #vf926-workshop .vf926-pills > span:nth-child(3) {
+    display: none !important;
+  }
+}
+#vf926-workshop{--vf926-lime:#caff62;--vf926-purple:#a86cff;--vf926-cyan:#65e8ff}
+#vf926-workshop .vf926-logo{display:grid!important;place-items:center!important;width:40px!important;height:40px!important;flex:0 0 40px!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:14px!important;color:#0b0b0e!important;background:linear-gradient(145deg,#efffce,var(--vf926-lime))!important;box-shadow:0 9px 24px rgba(202,255,98,.24),inset 0 1px 0 rgba(255,255,255,.45)!important;opacity:1!important;visibility:visible!important}
+#vf926-workshop .vf926-logo svg{width:24px!important;height:24px!important;stroke:currentColor!important;opacity:1!important}
+#vf926-workshop .vf926-brand strong{color:#fff!important}
+#vf926-workshop .vf926-brand small{color:rgba(255,255,255,.62)!important}
+#vf926-workshop .vf926-heading span,#vf926-workshop .vf926-copy>span,#vf926-workshop .vf926-action-copy>span{color:var(--vf926-lime)!important}
+#vf926-workshop .vf926-featured i,#vf926-workshop .vf926-dots button.active{background:var(--vf926-lime)!important}
+#vf926-workshop .vf926-featured i{box-shadow:0 0 13px rgba(202,255,98,.70)!important}
+
+
+
+
+
+
+
+
+#vf926-workshop .vf926-action{padding-bottom:max(16px,env(safe-area-inset-bottom))!important;scroll-padding-bottom:92px!important}
+@media(max-width:390px){}
+/* ============================================================
+   V-FORGE V9.2.9
+   Explicit Video Editor entry card.
+   ============================================================ */
+
+/* Old CTA class is no longer used. This new card has no pseudo overlay. */
+#vf926-workshop .vf929-editor-entry {
+  position: sticky !important;
+  bottom: max(0px, env(safe-area-inset-bottom)) !important;
+  z-index: 90 !important;
+  display: grid !important;
+  gap: 10px !important;
+  width: 100% !important;
+  padding: 12px !important;
+  border: 1px solid rgba(202,255,98,.20) !important;
+  border-radius: 22px !important;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(202,255,98,.09), transparent 33%),
+    linear-gradient(145deg, rgba(18,18,25,.98), rgba(8,8,12,1)) !important;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.36),
+    inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+
+#vf926-workshop .vf929-editor-entry-head {
+  display: grid !important;
+  grid-template-columns: 43px minmax(0,1fr) !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+
+#vf926-workshop .vf929-editor-badge {
+  display: grid !important;
+  place-items: center !important;
+  width: 43px !important;
+  height: 43px !important;
+  border-radius: 14px !important;
+  color: #0b0b0d !important;
+  background:
+    linear-gradient(145deg, #efffce, var(--vf926-lime)) !important;
+  box-shadow: 0 8px 22px rgba(202,255,98,.20) !important;
+}
+
+#vf926-workshop .vf929-editor-badge .material-icons-round {
+  font-size: 22px !important;
+}
+
+#vf926-workshop .vf929-editor-entry-head > div {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 2px !important;
+}
+
+#vf926-workshop .vf929-editor-entry-head small {
+  color: var(--vf926-lime) !important;
+  font-size: 7px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: .17em !important;
+}
+
+#vf926-workshop .vf929-editor-entry-head strong {
+  color: #fff !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1.12 !important;
+}
+
+#vf926-workshop .vf929-editor-entry-head p {
+  margin: 0 !important;
+  overflow: hidden !important;
+  color: rgba(255,255,255,.58) !important;
+  font-size: 7px !important;
+  line-height: 1.35 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#vf926-workshop .vf929-editor-button {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 47px minmax(0,1fr) 27px !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-height: 68px !important;
+  margin: 0 !important;
+  padding: 9px 12px 9px 9px !important;
+  border: 0 !important;
+  border-radius: 18px !important;
+  color: #0b0b0d !important;
+  text-align: left !important;
+  background:
+    linear-gradient(
+      135deg,
+      #efffce 0%,
+      var(--vf926-lime) 53%,
+      #9de642 100%
+    ) !important;
+  box-shadow:
+    0 12px 30px rgba(202,255,98,.20),
+    inset 0 1px 0 rgba(255,255,255,.48) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  overflow: hidden !important;
+}
+
+#vf926-workshop .vf929-editor-button:active {
+  transform: scale(.985) !important;
+}
+
+#vf926-workshop .vf929-editor-button-icon {
+  display: grid !important;
+  place-items: center !important;
+  width: 47px !important;
+  height: 47px !important;
+  border-radius: 14px !important;
+  color: #fff !important;
+  background: #111116 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14) !important;
+}
+
+#vf926-workshop .vf929-editor-button-icon .material-icons-round {
+  font-size: 24px !important;
+}
+
+#vf926-workshop .vf929-editor-button > span:nth-child(2) {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 3px !important;
+}
+
+#vf926-workshop .vf929-editor-button strong {
+  display: block !important;
+  overflow: hidden !important;
+  color: #0b0b0d !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  line-height: 1.12 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#vf926-workshop .vf929-editor-button small {
+  display: block !important;
+  overflow: hidden !important;
+  color: rgba(11,11,13,.62) !important;
+  font-size: 7px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#vf926-workshop .vf929-editor-button > .material-icons-round {
+  justify-self: end !important;
+  color: #0b0b0d !important;
+  font-size: 23px !important;
+}
+
+/* Action panel leaves room for the explicit editor card. */
+#vf926-workshop .vf926-action {
+  gap: 10px !important;
+  padding-bottom:
+    max(14px, env(safe-area-inset-bottom)) !important;
+  scroll-padding-bottom: 132px !important;
+}
+
+/* Hide the old third pill on narrow phones so editor entry remains dominant. */
+@media (max-width: 420px) {
+  #vf926-workshop .vf926-pills > span:nth-child(3) {
+    display: none !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #vf926-workshop .vf929-editor-entry {
+    gap: 8px !important;
+    padding: 10px !important;
+  }
+
+  #vf926-workshop .vf929-editor-entry-head {
+    grid-template-columns: 40px minmax(0,1fr) !important;
+    gap: 9px !important;
+  }
+
+  #vf926-workshop .vf929-editor-badge {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  #vf926-workshop .vf929-editor-entry-head strong {
+    font-size: 12px !important;
+  }
+
+  #vf926-workshop .vf929-editor-entry-head p {
+    font-size: 6.5px !important;
+  }
+
+  #vf926-workshop .vf929-editor-button {
+    grid-template-columns: 44px minmax(0,1fr) 23px !important;
+    min-height: 64px !important;
+    gap: 8px !important;
+    padding-right: 9px !important;
+  }
+
+  #vf926-workshop .vf929-editor-button-icon {
+    width: 44px !important;
+    height: 44px !important;
+  }
+
+  #vf926-workshop .vf929-editor-button strong {
+    font-size: 11px !important;
+  }
+
+  #vf926-workshop .vf929-editor-button small {
+    font-size: 6.3px !important;
+  }
+}

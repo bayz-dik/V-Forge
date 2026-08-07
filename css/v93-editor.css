@@ -1,0 +1,506 @@
+/* ============================================================
+   V-FORGE V9.3 — EDITOR LAYOUT + PREVIEW PRESENTATION
+   One geometry owner for mobile; V9.1 editor engine remains intact.
+   ============================================================ */
+
+#page-video-workspace {
+  --vf93-page-h: 100dvh;
+  --vf93-header-h: 76px;
+  --vf93-dock-h: 78px;
+  --vf93-panel: #101015;
+  --vf93-card: #19191f;
+  --vf93-line: rgba(255,255,255,.09);
+  --vf93-muted: #94949f;
+  --vf93-accent: #c6ff63;
+}
+
+/* Shared preview presentation migrated from the accepted v9.1.3 layout layer. */
+#page-video-workspace .v913-preview-layout {
+  position: relative;
+  display: grid !important;
+  grid-template-rows: auto minmax(0,1fr) auto auto !important;
+  align-items: stretch;
+  gap: 8px !important;
+}
+
+#page-video-workspace .v913-preview-layout .v91-preview-topbar {
+  position: static !important;
+  inset: auto !important;
+  z-index: 14;
+  display: flex !important;
+  width: 100%;
+  min-height: 36px;
+  align-items: center;
+  justify-content: space-between !important;
+  gap: 8px;
+  pointer-events: auto !important;
+}
+
+#page-video-workspace .v913-preview-layout .v91-preview-badge[hidden] {
+  display: none !important;
+}
+
+#page-video-workspace .v913-preview-layout .workspace-video-frame {
+  grid-row: 2;
+  align-self: center !important;
+  justify-self: center !important;
+  min-height: 0;
+  border-radius: 15px !important;
+}
+
+#page-video-workspace .v913-preview-layout .workspace-video-frame video {
+  will-change: transform;
+  transition: transform .16s cubic-bezier(.2,.8,.2,1);
+  touch-action: none !important;
+}
+
+#page-video-workspace .v913-preview-layout .workspace-video-frame[data-preview-zoom="zoomed"] {
+  cursor: grab;
+  box-shadow: 0 0 0 1px rgba(198,255,99,.2), 0 16px 44px rgba(0,0,0,.42) !important;
+}
+
+#page-video-workspace .v913-preview-layout .workspace-video-frame[data-preview-zoom="zoomed"]:active {
+  cursor: grabbing;
+}
+
+#page-video-workspace .v913-preview-layout .v91-preview-controls {
+  position: static !important;
+  inset: auto !important;
+  z-index: 14;
+  grid-row: 3;
+  width: 100% !important;
+  min-height: 46px;
+  margin: 0;
+  opacity: 0;
+  transform: none !important;
+  pointer-events: none;
+}
+
+body.v91-editor-ready #page-video-workspace .v913-preview-layout .v91-preview-controls {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+#page-video-workspace .v913-preview-layout .v82-preview-meta { grid-row: 4; }
+
+.v913-preview-zoom {
+  display: grid;
+  grid-template-columns: 31px 52px 31px;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  background: rgba(10,10,14,.78);
+  box-shadow: 0 8px 24px rgba(0,0,0,.24);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+.v913-preview-zoom button {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  height: 30px;
+  border: 0;
+  border-radius: 9px;
+  color: #f7f7fb;
+  background: rgba(255,255,255,.06);
+}
+.v913-preview-zoom button:disabled { opacity: .3; }
+.v913-preview-zoom button .material-icons-round { font-size: 17px; }
+.v913-preview-zoom strong { font-size: 8px; font-variant-numeric: tabular-nums; }
+
+#page-video-workspace .v82-tool-sheet {
+  color: #f7f7fb !important;
+  background: var(--vf93-panel) !important;
+}
+#page-video-workspace .v82-tool-panel,
+#page-video-workspace .v82-tool-panel.active { width: 100%; min-width: 0; }
+#page-video-workspace .v82-setting-card,
+#page-video-workspace .workspace-setting-group,
+#page-video-workspace .v91-quick-tools {
+  width: 100% !important;
+  color: #f7f7fb !important;
+  border-color: var(--vf93-line) !important;
+  background: var(--vf93-card) !important;
+  box-shadow: none !important;
+}
+#page-video-workspace .workspace-choice-grid { width: 100%; background: transparent !important; }
+#page-video-workspace .workspace-choice {
+  min-width: 0;
+  color: #b7b7c0 !important;
+  border: 1px solid rgba(255,255,255,.075) !important;
+  background: #111116 !important;
+  box-shadow: none !important;
+}
+#page-video-workspace .workspace-choice strong { color: inherit !important; }
+#page-video-workspace .workspace-choice.active {
+  color: #fff !important;
+  border-color: rgba(169,116,255,.72) !important;
+  background: linear-gradient(145deg, rgba(169,116,255,.3), rgba(104,67,255,.14)) !important;
+  box-shadow: inset 0 0 0 1px rgba(198,255,99,.1), 0 10px 24px rgba(83,48,153,.22) !important;
+}
+#page-video-workspace .v91-quick-tools {
+  margin-inline: 0 !important;
+  padding: 13px !important;
+  border-radius: 18px !important;
+}
+#page-video-workspace .v91-quick-grid button { min-height: 58px; background: #121217 !important; }
+#page-video-workspace .v91-zoom-controls button:not(:disabled) { color: #fff; }
+#page-video-workspace .v91-zoom-controls button:disabled { opacity: .28; }
+
+/* ===== V9.2.9 MOBILE LAYOUT CONTRACT =====
+   HEADER | PREVIEW | TIMELINE | TOOL SCROLLER | DOCK
+   Header/dock dimensions are measured at runtime.
+*/
+@media (max-width:899px) {
+  #page-video-workspace {
+    --vf93-page-h: 100dvh;
+    --vf93-header-h: 76px;
+    --vf93-dock-h: 78px;
+    position: relative !important;
+    width: 100% !important;
+    height: var(--vf93-page-h) !important;
+    min-height: 0 !important;
+    max-height: var(--vf93-page-h) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    background: #08080d !important;
+  }
+
+  #page-video-workspace .v82-editor-header {
+    position: absolute !important;
+    inset: 0 0 auto 0 !important;
+    z-index: 160 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  #page-video-workspace .v82-editor-dock {
+    position: absolute !important;
+    inset: auto 0 0 0 !important;
+    z-index: 160 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  #page-video-workspace .v82-editor-shell {
+    position: absolute !important;
+    top: var(--vf93-header-h) !important;
+    right: 0 !important;
+    bottom: var(--vf93-dock-h) !important;
+    left: 0 !important;
+    z-index: 10 !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    grid-template-rows:
+      clamp(230px, 42%, 360px)
+      clamp(102px, 14%, 122px)
+      minmax(0,1fr) !important;
+    align-content: stretch !important;
+
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    background:
+      radial-gradient(circle at 82% 9%, rgba(168,108,255,.10), transparent 34%),
+      #08080d !important;
+  }
+
+  /* ---------- Zone 1: live preview ---------- */
+  #page-video-workspace .v82-preview-stage {
+    position: relative !important;
+    inset: auto !important;
+    z-index: 30 !important;
+    grid-row: 1 !important;
+
+    display: grid !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 7px 10px 6px !important;
+
+    overflow: hidden !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,.08) !important;
+    border-radius: 0 !important;
+    background:
+      radial-gradient(circle at 76% 18%, rgba(168,108,255,.11), transparent 38%),
+      rgba(8,8,13,.99) !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  #page-video-workspace .v913-preview-layout {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    grid-template-rows: 31px minmax(0,1fr) 39px !important;
+    gap: 5px !important;
+
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-preview-topbar {
+    position: static !important;
+    inset: auto !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 31px !important;
+    height: 31px !important;
+    gap: 5px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-fit-switch {
+    min-width: 0 !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-fit-switch button {
+    min-width: 40px !important;
+    min-height: 27px !important;
+    height: 27px !important;
+    padding: 0 6px !important;
+    font-size: 8px !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v913-preview-zoom {
+    grid-template-columns: 27px 42px 27px !important;
+    gap: 2px !important;
+    padding: 2px !important;
+    border-radius: 9px !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v913-preview-zoom button {
+    height: 25px !important;
+    border-radius: 7px !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .workspace-video-frame {
+    position: relative !important;
+    inset: auto !important;
+    grid-row: 2 !important;
+    align-self: center !important;
+    justify-self: center !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    margin: 0 auto !important;
+    overflow: hidden !important;
+    transform: none !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .workspace-video-frame video {
+    object-position: 50% 50% !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-preview-controls {
+    position: static !important;
+    inset: auto !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 39px !important;
+    height: 39px !important;
+    margin: 0 !important;
+    padding: 3px 7px !important;
+    gap: 5px !important;
+    border-radius: 12px !important;
+    transform: none !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-play-button,
+  #page-video-workspace .v913-preview-layout .v91-icon-button {
+    width: 29px !important;
+    height: 29px !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-time-label {
+    font-size: 7px !important;
+  }
+
+  #page-video-workspace .v82-preview-meta {
+    display: none !important;
+  }
+
+  #page-video-workspace .workspace-preview-error {
+    position: absolute !important;
+    right: 12px !important;
+    bottom: 51px !important;
+    left: 12px !important;
+    z-index: 60 !important;
+    max-height: 52px !important;
+    margin: 0 !important;
+    overflow: auto !important;
+    pointer-events: none !important;
+  }
+
+  #page-video-workspace .workspace-preview-error:empty {
+    display: none !important;
+  }
+
+  /* ---------- Zone 2: timeline ---------- */
+  #page-video-workspace .v82-timeline {
+    position: relative !important;
+    inset: auto !important;
+    z-index: 24 !important;
+    grid-row: 2 !important;
+    display: grid !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    background: #08080c !important;
+  }
+
+  #page-video-workspace .v91-timeline-header {
+    min-height: 34px !important;
+    padding: 3px 7px !important;
+  }
+
+  #page-video-workspace .v91-history-controls button,
+  #page-video-workspace .v91-zoom-controls button {
+    width: 27px !important;
+    height: 27px !important;
+  }
+
+  #page-video-workspace .v91-timeline-canvas {
+    grid-template-rows: 16px 46px 22px !important;
+    min-height: 0 !important;
+    height: 100% !important;
+  }
+
+  #page-video-workspace .v91-clip-row {
+    height: 46px !important;
+    padding-block: 3px !important;
+  }
+
+  #page-video-workspace .v91-clip {
+    height: 40px !important;
+  }
+
+  /* ---------- Zone 3: the ONLY vertical scroller ---------- */
+  #page-video-workspace .v82-tool-sheet {
+    position: relative !important;
+    inset: auto !important;
+    z-index: 12 !important;
+    grid-row: 3 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding:
+      10px
+      14px
+      max(20px, env(safe-area-inset-bottom)) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-x: none !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    border: 0 !important;
+    border-top: 1px solid rgba(255,255,255,.08) !important;
+    border-radius: 20px 20px 0 0 !important;
+    transform: none !important;
+    background:
+      linear-gradient(180deg, rgba(24,24,34,.985), rgba(9,9,14,1)) !important;
+    box-shadow:
+      0 -12px 30px rgba(0,0,0,.30),
+      inset 0 1px 0 rgba(255,255,255,.05) !important;
+    scrollbar-gutter: stable;
+  }
+
+  #page-video-workspace .v82-tool-sheet > .v82-sheet-handle {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+    margin: 0 auto 10px !important;
+  }
+
+  #page-video-workspace .v82-tool-panel,
+  #page-video-workspace .v82-tool-panel.active {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  #page-video-workspace .v82-tool-panel.active > :last-child {
+    margin-bottom: 12px !important;
+  }
+}
+
+@media (max-width:899px) and (max-height:700px) {
+  #page-video-workspace .v82-editor-shell {
+    grid-template-rows:
+      clamp(205px, 39%, 255px)
+      96px
+      minmax(0,1fr) !important;
+  }
+
+  #page-video-workspace .v913-preview-layout {
+    grid-template-rows: 29px minmax(0,1fr) 36px !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-preview-controls {
+    min-height: 36px !important;
+    height: 36px !important;
+  }
+}
+
+@media (max-width:370px) and (max-height:650px) {
+  #page-video-workspace .v82-editor-shell {
+    grid-template-rows: 190px 90px minmax(0,1fr) !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-time-label {
+    display: none !important;
+  }
+}
+
+.vf93-live-effect-vibrant {filter:saturate(1.28) contrast(1.08)!important}
+.vf93-live-effect-cinematic {filter:contrast(1.12) saturate(.9) sepia(.08)!important}
+.vf93-live-effect-soft-film {filter:contrast(.95) saturate(.88) brightness(1.04)!important}
+.vf93-live-effect-mono {filter:grayscale(1) contrast(1.08)!important}
+.vf93-live-effect-neon {filter:saturate(1.55) contrast(1.18) hue-rotate(8deg)!important}
+.vf93-live-effect-cinematic-pro {filter:contrast(1.18) saturate(.82) sepia(.12)!important}
