@@ -20,767 +20,251 @@
 <link href="css/style.css?v=9.0.2" rel="stylesheet"/>
 <link data-vforge-v91="9.1.2" href="css/v91-editor.css?v=9.1.2" rel="stylesheet"/>
 <link data-vforge-layout-safe="9.1.3a" href="css/v913-layout.css?v=9.1.3a" rel="stylesheet"/>
-<style id="vforge-v924-style">
-/* ============================================================
-   V-FORGE V9.2.4
-   Mobile editor visibility + clean Premium showcase.
-   ============================================================ */
-
+<style id="vforge-v925-style">
 #page-video-workspace {
-  --vf924-lime: #caff62;
-  --vf924-purple: #a86cff;
-  --vf924-cyan: #65e8ff;
-  --vf924-editor-bg: #08080d;
+  --vf925-lime:#caff62;
+  --vf925-purple:#a86cff;
+  --vf925-cyan:#65e8ff;
 }
 
-/* ---------- Fullscreen Premium showcase ---------- */
-
-#vf924-workshop {
-  position: fixed;
-  inset: 0;
-  z-index: 12000;
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
-  width: 100%;
-  height: 100dvh;
-  overflow: hidden;
-  color: #fff;
-  background:
-    radial-gradient(circle at 82% 7%, rgba(168,108,255,.18), transparent 34%),
-    #07070b;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transform: translate3d(0,10px,0);
-  transition:
-    opacity .28s ease,
-    visibility .28s ease,
-    transform .40s cubic-bezier(.2,.8,.2,1);
+/* ===== Premium Showcase: detached from editor page, no editor flash ===== */
+#vf925-workshop {
+  position:fixed;
+  inset:0;
+  z-index:20000;
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  width:100%;
+  height:100dvh;
+  color:#fff;
+  background:#07070b;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transform:translate3d(0,8px,0);
+  transition:opacity .22s ease, visibility .22s ease, transform .32s cubic-bezier(.2,.8,.2,1);
 }
-
-#vf924-workshop.open {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translate3d(0,0,0);
+#vf925-workshop.open {
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:none;
 }
-
-.vf924-workshop-header {
-  position: relative;
-  z-index: 40;
-  display: grid;
-  grid-template-columns: 42px minmax(0,1fr) auto;
-  align-items: center;
-  gap: 10px;
-  min-height: 68px;
-  padding:
-    max(10px, env(safe-area-inset-top))
-    14px
-    10px;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  background: rgba(8,8,13,.78);
-  -webkit-backdrop-filter: blur(24px) saturate(170%);
-  backdrop-filter: blur(24px) saturate(170%);
+.vf925-workshop-header {
+  z-index:20;
+  display:grid;
+  grid-template-columns:42px minmax(0,1fr) auto;
+  align-items:center;
+  gap:10px;
+  min-height:68px;
+  padding:max(10px,env(safe-area-inset-top)) 14px 10px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:rgba(8,8,13,.86);
+  -webkit-backdrop-filter:blur(24px) saturate(170%);
+  backdrop-filter:blur(24px) saturate(170%);
 }
-
-.vf924-back {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: 1px solid rgba(255,255,255,.11);
-  border-radius: 14px;
-  color: #fff;
-  background: rgba(255,255,255,.055);
+.vf925-back {
+  display:grid;place-items:center;width:40px;height:40px;padding:0;
+  border:1px solid rgba(255,255,255,.11);border-radius:14px;color:#fff;background:rgba(255,255,255,.055);
 }
-
-.vf924-back .material-icons-round {
-  font-size: 21px;
+.vf925-heading {min-width:0;display:grid;gap:2px}
+.vf925-heading span {color:var(--vf925-lime);font-size:7px;font-weight:900;letter-spacing:.18em}
+.vf925-heading strong {font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vf925-featured {
+  display:inline-flex;align-items:center;gap:5px;padding:7px 9px;border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;color:rgba(255,255,255,.72);font-size:7px;font-weight:900;background:rgba(255,255,255,.045)
 }
+.vf925-featured i {width:6px;height:6px;border-radius:50%;background:var(--vf925-lime);box-shadow:0 0 12px rgba(202,255,98,.6)}
 
-.vf924-heading {
-  min-width: 0;
-  display: grid;
-  gap: 2px;
+.vf925-carousel {position:relative;min-height:0;overflow:hidden;touch-action:pan-y;background:#050507}
+.vf925-slide {
+  position:absolute;inset:0;overflow:hidden;background:#07070b;
+  opacity:0;visibility:hidden;transform:scale(1.015);
+  transition:opacity .48s ease, visibility .48s ease, transform .75s cubic-bezier(.2,.8,.2,1)
 }
-
-.vf924-heading span {
-  color: var(--vf924-lime);
-  font-size: 7px;
-  font-weight: 900;
-  letter-spacing: .18em;
+.vf925-slide.active {opacity:1;visibility:visible;transform:scale(1)}
+.vf925-backdrop {
+  position:absolute;inset:-30px;background-image:var(--vf925-image);background-size:cover;background-position:center;
+  filter:blur(25px) brightness(.38) saturate(1.1);transform:scale(1.11)
 }
-
-.vf924-heading strong {
-  overflow: hidden;
-  font-size: 16px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.vf925-slide>img {
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;
+  filter:saturate(1.04) contrast(1.03) brightness(.92)
 }
-
-.vf924-live {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 7px 9px;
-  border: 1px solid rgba(255,255,255,.10);
-  border-radius: 999px;
-  color: rgba(255,255,255,.72);
-  font-size: 7px;
-  font-weight: 900;
-  letter-spacing: .08em;
-  background: rgba(255,255,255,.045);
+.vf925-shade {position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(0,0,0,.05),transparent 42%,rgba(4,4,8,.9) 100%)}
+.vf925-brand {position:absolute;z-index:8;top:17px;left:16px;display:flex;align-items:center;gap:9px}
+.vf925-logo {display:grid;place-items:center;width:38px;height:38px;border-radius:13px;color:#0b0b0e;background:linear-gradient(145deg,#ebffc6,var(--vf925-lime))}
+.vf925-logo svg {width:23px;height:23px;stroke:currentColor}
+.vf925-brand>span:last-child {display:grid;gap:1px}
+.vf925-brand strong {font-size:10px;letter-spacing:.14em}
+.vf925-brand small {color:rgba(255,255,255,.58);font-size:7px}
+.vf925-copy {position:absolute;z-index:8;left:20px;right:78px;bottom:24px;display:grid;gap:5px}
+.vf925-copy>span {color:var(--vf925-lime);font-size:7px;font-weight:900;letter-spacing:.18em}
+.vf925-copy h2 {margin:0;font-size:clamp(27px,9vw,44px);line-height:.92;letter-spacing:-.055em;text-shadow:0 8px 28px rgba(0,0,0,.55)}
+.vf925-copy p {margin:0;max-width:410px;color:rgba(255,255,255,.69);font-size:9px;line-height:1.42}
+.vf925-arrow {
+  position:absolute;z-index:15;top:50%;display:grid;place-items:center;width:34px;height:48px;padding:0;
+  border:1px solid rgba(255,255,255,.11);color:#fff;background:rgba(8,8,12,.44);
+  -webkit-backdrop-filter:blur(13px);backdrop-filter:blur(13px);transform:translateY(-50%)
 }
+.vf925-arrow.previous {left:7px;border-radius:7px 15px 15px 7px}
+.vf925-arrow.next {right:7px;border-radius:15px 7px 7px 15px}
+.vf925-dots {position:absolute;z-index:15;right:18px;bottom:27px;display:flex;gap:6px}
+.vf925-dots button {width:6px;height:6px;padding:0;border:0;border-radius:999px;background:rgba(255,255,255,.34);transition:width .25s ease,background .25s ease}
+.vf925-dots button.active {width:22px;background:var(--vf925-lime)}
 
-.vf924-live i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--vf924-lime);
-  box-shadow: 0 0 12px rgba(202,255,98,.66);
+.vf925-action {
+  z-index:20;display:grid;gap:10px;max-height:43dvh;padding:15px 15px max(15px,env(safe-area-inset-bottom));
+  overflow-y:auto;overscroll-behavior:contain;border-top:1px solid rgba(255,255,255,.10);
+  background:radial-gradient(circle at 86% 0%,rgba(168,108,255,.16),transparent 43%),linear-gradient(145deg,rgba(24,24,33,.92),rgba(9,9,14,.99));
+  -webkit-backdrop-filter:blur(26px) saturate(175%);backdrop-filter:blur(26px) saturate(175%)
 }
-
-.vf924-carousel {
-  position: relative;
-  min-height: 0;
-  overflow: hidden;
-  touch-action: pan-y;
-  background: #050507;
+.vf925-action-copy {display:grid;gap:5px}
+.vf925-action-copy>span {display:inline-flex;align-items:center;gap:6px;color:var(--vf925-lime);font-size:7px;font-weight:900;letter-spacing:.16em}
+.vf925-action-copy h1 {margin:0;font-size:clamp(24px,7vw,34px);line-height:.94;letter-spacing:-.05em}
+.vf925-action-copy p {margin:0;color:rgba(255,255,255,.61);font-size:9px;line-height:1.45}
+.vf925-pills {display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.vf925-pills::-webkit-scrollbar{display:none}
+.vf925-pills>span {display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;padding:7px 9px;border:1px solid rgba(255,255,255,.08);border-radius:999px;color:rgba(255,255,255,.75);font-size:7px;background:rgba(255,255,255,.04)}
+.vf925-pills .material-icons-round {color:var(--vf925-cyan);font-size:12px}
+.vf925-primary {
+  display:grid;grid-template-columns:43px minmax(0,1fr) 28px;align-items:center;gap:10px;width:100%;min-height:62px;padding:9px 11px 9px 9px;
+  border:0;border-radius:19px;color:#0b0b0d;text-align:left;background:linear-gradient(135deg,#ecffc7,var(--vf925-lime) 57%,#9ce640);
+  box-shadow:0 17px 38px rgba(202,255,98,.19)
 }
+.vf925-primary-icon {display:grid;place-items:center;width:43px;height:43px;border-radius:14px;color:#fff;background:#111116}
+.vf925-primary>span:nth-child(2){min-width:0;display:grid;gap:2px}
+.vf925-primary strong,.vf925-primary small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vf925-primary strong{font-size:11px}.vf925-primary small{color:rgba(10,10,12,.62);font-size:7px;font-weight:700}
 
-.vf924-track {
-  position: absolute;
-  inset: 0 auto 0 0;
-  display: flex;
-  width: 300%;
-  height: 100%;
-  transform: translate3d(0,0,0);
-  transition: transform .72s cubic-bezier(.2,.78,.18,1);
-  will-change: transform;
-}
-
-.vf924-slide {
-  position: relative;
-  flex: 0 0 33.333333%;
-  width: 33.333333%;
-  height: 100%;
-  overflow: hidden;
-  background: #07070b;
-}
-
-.vf924-backdrop {
-  position: absolute;
-  inset: -28px;
-  background-image: var(--vf924-image);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  filter: blur(24px) brightness(.42) saturate(1.15);
-  transform: scale(1.10);
-}
-
-.vf924-media {
-  position: absolute;
-  inset: 9px 0 0;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-
-.vf924-media img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  object-position: center;
-  filter: saturate(1.05) contrast(1.03) brightness(.91);
-  transform: scale(1.01);
-  animation: vf924-image-breathe 7s ease-in-out infinite alternate;
-}
-
-.vf924-shade {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(0,0,0,.04), transparent 40%, rgba(4,4,8,.88) 100%),
-    linear-gradient(90deg, rgba(4,4,8,.28), transparent 52%);
-}
-
-.vf924-brand {
-  position: absolute;
-  z-index: 8;
-  top: 17px;
-  left: 16px;
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.vf924-logo {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  flex: 0 0 38px;
-  border-radius: 13px;
-  color: #0b0b0e;
-  background: linear-gradient(145deg, #ebffc6, var(--vf924-lime));
-  box-shadow: 0 10px 25px rgba(202,255,98,.16);
-}
-
-.vf924-logo svg {
-  width: 23px;
-  height: 23px;
-  stroke: currentColor;
-}
-
-.vf924-brand > span:last-child {
-  display: grid;
-  gap: 1px;
-}
-
-.vf924-brand strong {
-  font-size: 10px;
-  letter-spacing: .14em;
-}
-
-.vf924-brand small {
-  color: rgba(255,255,255,.58);
-  font-size: 7px;
-  letter-spacing: .08em;
-}
-
-.vf924-copy {
-  position: absolute;
-  z-index: 8;
-  left: 20px;
-  right: 76px;
-  bottom: 24px;
-  display: grid;
-  gap: 5px;
-  text-align: left;
-}
-
-.vf924-copy > span {
-  color: var(--vf924-lime);
-  font-size: 7px;
-  font-weight: 900;
-  letter-spacing: .18em;
-}
-
-.vf924-copy h2 {
-  margin: 0;
-  font-size: clamp(27px, 9vw, 44px);
-  line-height: .92;
-  letter-spacing: -.055em;
-  text-shadow: 0 8px 28px rgba(0,0,0,.55);
-}
-
-.vf924-copy p {
-  margin: 0;
-  max-width: 400px;
-  color: rgba(255,255,255,.68);
-  font-size: 9px;
-  line-height: 1.42;
-}
-
-.vf924-arrow {
-  position: absolute;
-  z-index: 15;
-  top: 50%;
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 48px;
-  padding: 0;
-  border: 1px solid rgba(255,255,255,.11);
-  color: #fff;
-  background: rgba(8,8,12,.44);
-  -webkit-backdrop-filter: blur(13px);
-  backdrop-filter: blur(13px);
-  transform: translateY(-50%);
-}
-
-.vf924-arrow.previous {
-  left: 7px;
-  border-radius: 7px 15px 15px 7px;
-}
-
-.vf924-arrow.next {
-  right: 7px;
-  border-radius: 15px 7px 7px 15px;
-}
-
-.vf924-arrow .material-icons-round {
-  font-size: 21px;
-}
-
-.vf924-dots {
-  position: absolute;
-  z-index: 15;
-  right: 18px;
-  bottom: 27px;
-  display: flex;
-  gap: 6px;
-}
-
-.vf924-dots button {
-  width: 6px;
-  height: 6px;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(255,255,255,.34);
-  transition: width .25s ease, background .25s ease;
-}
-
-.vf924-dots button.active {
-  width: 22px;
-  background: var(--vf924-lime);
-}
-
-.vf924-action {
-  position: relative;
-  z-index: 40;
-  display: grid;
-  gap: 11px;
-  max-height: 43dvh;
-  padding:
-    16px
-    15px
-    max(16px, env(safe-area-inset-bottom));
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  border-top: 1px solid rgba(255,255,255,.10);
-  background:
-    radial-gradient(circle at 86% 0%, rgba(168,108,255,.16), transparent 43%),
-    linear-gradient(145deg, rgba(24,24,33,.91), rgba(9,9,14,.98));
-  box-shadow: 0 -20px 55px rgba(0,0,0,.34);
-  -webkit-backdrop-filter: blur(26px) saturate(175%);
-  backdrop-filter: blur(26px) saturate(175%);
-}
-
-.vf924-action-copy {
-  display: grid;
-  gap: 5px;
-}
-
-.vf924-action-copy > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--vf924-lime);
-  font-size: 7px;
-  font-weight: 900;
-  letter-spacing: .16em;
-}
-
-.vf924-action-copy > span .material-icons-round {
-  font-size: 13px;
-}
-
-.vf924-action-copy h1 {
-  margin: 0;
-  font-size: clamp(24px, 7vw, 34px);
-  line-height: .94;
-  letter-spacing: -.05em;
-}
-
-.vf924-action-copy p {
-  margin: 0;
-  color: rgba(255,255,255,.61);
-  font-size: 9px;
-  line-height: 1.45;
-}
-
-.vf924-feature-pills {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.vf924-feature-pills::-webkit-scrollbar {
-  display: none;
-}
-
-.vf924-feature-pills > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  flex: 0 0 auto;
-  padding: 7px 9px;
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 999px;
-  color: rgba(255,255,255,.75);
-  font-size: 7px;
-  background: rgba(255,255,255,.04);
-}
-
-.vf924-feature-pills .material-icons-round {
-  color: var(--vf924-cyan);
-  font-size: 12px;
-}
-
-.vf924-primary {
-  position: relative;
-  display: grid;
-  grid-template-columns: 43px minmax(0,1fr) 28px;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  min-height: 62px;
-  padding: 9px 11px 9px 9px;
-  overflow: hidden;
-  border: 0;
-  border-radius: 19px;
-  color: #0b0b0d;
-  text-align: left;
-  background: linear-gradient(135deg, #ecffc7, var(--vf924-lime) 57%, #9ce640);
-  box-shadow: 0 17px 38px rgba(202,255,98,.19);
-}
-
-.vf924-primary::after {
-  content: "";
-  position: absolute;
-  top: -70%;
-  bottom: -70%;
-  left: -30%;
-  width: 18%;
-  transform: rotate(18deg);
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.74), transparent);
-  animation: vf924-shine 4.2s ease-in-out infinite;
-}
-
-.vf924-primary-icon {
-  display: grid;
-  place-items: center;
-  width: 43px;
-  height: 43px;
-  border-radius: 14px;
-  color: #fff;
-  background: #111116;
-}
-
-.vf924-primary-icon .material-icons-round {
-  font-size: 21px;
-}
-
-.vf924-primary > span:nth-child(2) {
-  min-width: 0;
-  display: grid;
-  gap: 2px;
-}
-
-.vf924-primary strong {
-  overflow: hidden;
-  font-size: 11px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.vf924-primary small {
-  overflow: hidden;
-  color: rgba(10,10,12,.62);
-  font-size: 7px;
-  font-weight: 700;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.vf924-primary > .material-icons-round {
-  justify-self: end;
-  font-size: 21px;
-}
-
-/* ---------- Mobile editor visibility and scrolling ---------- */
-
-@media (max-width: 899px) {
+/* ===== Editor: fixed live preview + timeline, only tools scroll ===== */
+@media (max-width:899px) {
   #page-video-workspace .v82-editor-shell {
-    position: relative !important;
-    display: grid !important;
-    grid-template-columns: minmax(0,1fr) !important;
-    grid-template-rows: auto auto auto !important;
-    align-content: start !important;
-    width: 100% !important;
-    height: calc(var(--vf-editor-height, 100dvh) - 76px) !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    padding: 0 0 calc(104px + env(safe-area-inset-bottom)) !important;
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
-    overscroll-behavior-y: contain;
-    scroll-padding-top: 245px;
-    scroll-padding-bottom: 110px;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    background:
-      radial-gradient(circle at 14% 15%, rgba(101,232,255,.08), transparent 31%),
-      radial-gradient(circle at 85% 12%, rgba(168,108,255,.12), transparent 36%),
-      var(--vf924-editor-bg) !important;
+    position:relative!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:clamp(270px,38dvh,330px) 112px minmax(0,1fr)!important;
+    width:100%!important;
+    height:calc(var(--vf-editor-height,100dvh) - 76px)!important;
+    min-height:0!important;
+    padding:0 0 calc(76px + env(safe-area-inset-bottom))!important;
+    box-sizing:border-box!important;
+    overflow:hidden!important;
+    background:radial-gradient(circle at 84% 8%,rgba(168,108,255,.12),transparent 34%),#08080d!important;
   }
-
+  #page-video-workspace.v925-preview-expanded .v82-editor-shell {
+    grid-template-rows:clamp(390px,55dvh,510px) 96px minmax(100px,1fr)!important;
+  }
   #page-video-workspace .v82-preview-stage {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 70 !important;
-    grid-row: 1 !important;
-    width: 100% !important;
-    height: clamp(420px, 59dvh, 590px) !important;
-    min-height: 420px !important;
-    max-height: 590px !important;
-    padding: 9px 11px 8px !important;
-    overflow: hidden !important;
-    border-bottom: 1px solid rgba(255,255,255,.08);
-    background:
-      radial-gradient(circle at 76% 18%, rgba(168,108,255,.12), transparent 38%),
-      rgba(8,8,13,.97) !important;
-    box-shadow: 0 16px 36px rgba(0,0,0,.28);
-    transition:
-      height .30s cubic-bezier(.2,.8,.2,1),
-      min-height .30s cubic-bezier(.2,.8,.2,1);
+    position:relative!important;
+    inset:auto!important;
+    z-index:30!important;
+    grid-row:1!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    padding:8px 10px 7px!important;
+    overflow:hidden!important;
+    background:radial-gradient(circle at 76% 18%,rgba(168,108,255,.12),transparent 38%),rgba(8,8,13,.98)!important;
+    border-bottom:1px solid rgba(255,255,255,.08);
   }
-
-  #page-video-workspace.v924-preview-compact .v82-preview-stage {
-    height: clamp(232px, 34dvh, 310px) !important;
-    min-height: 232px !important;
-    max-height: 310px !important;
-    box-shadow: 0 14px 34px rgba(0,0,0,.42);
-  }
-
-  #page-video-workspace.v924-preview-compact .v82-preview-stage::after {
-    content: "LIVE PREVIEW";
-    position: absolute;
-    z-index: 30;
-    top: 9px;
-    left: 50%;
-    padding: 4px 7px;
-    border: 1px solid rgba(202,255,98,.18);
-    border-radius: 999px;
-    color: var(--vf924-lime);
-    background: rgba(7,7,11,.70);
-    font-size: 6px;
-    font-weight: 900;
-    letter-spacing: .13em;
-    pointer-events: none;
-    transform: translateX(-50%);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-  }
-
   #page-video-workspace .v913-preview-layout {
-    height: 100% !important;
-    min-height: 0 !important;
-    grid-template-rows: auto minmax(0,1fr) auto auto !important;
+    height:100%!important;min-height:0!important;
+    grid-template-rows:auto minmax(0,1fr) auto auto!important;
+    gap:5px!important
   }
-
   #page-video-workspace .v913-preview-layout .workspace-video-frame {
-    min-width: 0 !important;
-    min-height: 0 !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    margin: 0 auto !important;
+    min-width:0!important;min-height:0!important;max-width:100%!important;max-height:100%!important;margin:0 auto!important
   }
-
   #page-video-workspace .v913-preview-layout .workspace-video-frame video {
-    object-position: 50% 50% !important;
+    object-position:center!important
   }
-
-  #page-video-workspace.v924-preview-compact .v913-preview-layout {
-    gap: 5px !important;
+  #page-video-workspace .v913-preview-layout .v82-preview-meta {
+    display:none!important
   }
-
-  #page-video-workspace.v924-preview-compact .v913-preview-layout .v91-preview-topbar {
-    min-height: 31px !important;
-  }
-
-  #page-video-workspace.v924-preview-compact .v91-fit-switch button {
-    min-width: 42px !important;
-    min-height: 27px !important;
-    padding-inline: 7px !important;
-  }
-
-  #page-video-workspace.v924-preview-compact .v913-preview-zoom {
-    grid-template-columns: 27px 43px 27px !important;
-  }
-
-  #page-video-workspace.v924-preview-compact .v913-preview-zoom button {
-    height: 27px !important;
-  }
-
-  #page-video-workspace.v924-preview-compact .v913-preview-layout .v91-preview-controls {
-    min-height: 39px !important;
-    padding: 4px 7px !important;
-  }
-
-  #page-video-workspace.v924-preview-compact .v913-preview-layout .v82-preview-meta {
-    display: none !important;
-  }
-
   #page-video-workspace .v82-timeline {
-    position: relative !important;
-    inset: auto !important;
-    z-index: 20 !important;
-    grid-row: 2 !important;
-    width: 100% !important;
-    height: 150px !important;
-    min-height: 150px !important;
-    max-height: 150px !important;
-    margin: 0 !important;
-    transform: none !important;
-    overflow: hidden !important;
-    background: #08080c !important;
+    position:relative!important;
+    inset:auto!important;
+    z-index:24!important;
+    grid-row:2!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    overflow:hidden!important;
+    transform:none!important;
   }
-
-  #page-video-workspace.v924-preview-compact .v82-timeline {
-    height: 124px !important;
-    min-height: 124px !important;
-    max-height: 124px !important;
+  #page-video-workspace .v91-timeline-canvas {
+    grid-template-rows:17px 49px 23px!important
   }
-
-  #page-video-workspace.v924-preview-compact .v91-timeline-canvas {
-    grid-template-rows: 18px 54px 25px !important;
-  }
-
   #page-video-workspace .v82-tool-sheet {
-    position: relative !important;
-    inset: auto !important;
-    z-index: 10 !important;
-    grid-row: 3 !important;
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 420px !important;
-    max-height: none !important;
-    margin: 0 !important;
-    padding: 12px 14px calc(126px + env(safe-area-inset-bottom)) !important;
-    overflow: visible !important;
-    transform: none !important;
-    border-radius: 24px 24px 0 0 !important;
-    background:
-      linear-gradient(180deg, rgba(24,24,34,.96), rgba(9,9,14,.99)) !important;
-    box-shadow:
-      0 -15px 38px rgba(0,0,0,.34),
-      inset 0 1px 0 rgba(255,255,255,.06) !important;
-    scroll-margin-top: 244px;
-    touch-action: pan-y;
+    position:relative!important;
+    inset:auto!important;
+    z-index:12!important;
+    grid-row:3!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    padding:10px 14px calc(26px + env(safe-area-inset-bottom))!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior-y:contain!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-y!important;
+    transform:none!important;
+    border-radius:23px 23px 0 0!important;
+    background:linear-gradient(180deg,rgba(24,24,34,.97),rgba(9,9,14,.995))!important;
+    box-shadow:0 -15px 38px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.06)!important
   }
-
-  #page-video-workspace .v82-tool-sheet > .v82-sheet-handle {
-    position: sticky !important;
-    top: 7px !important;
-    z-index: 30 !important;
-    margin-bottom: 12px !important;
+  #page-video-workspace .v82-tool-sheet>.v82-sheet-handle {
+    position:sticky!important;top:0!important;z-index:30!important;margin-bottom:10px!important
   }
-
   #page-video-workspace .v82-tool-panel,
   #page-video-workspace .v82-tool-panel.active {
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-    touch-action: pan-y;
+    min-height:0!important;max-height:none!important;overflow:visible!important
   }
-
-  #page-video-workspace .v82-tool-panel.active > :last-child {
-    margin-bottom: 20px !important;
-  }
-
   #page-video-workspace .v82-editor-dock {
-    z-index: 110 !important;
+    z-index:110!important
+  }
+
+  .vf925-preview-toggle {
+    display:inline-flex;align-items:center;gap:4px;min-height:30px;padding:0 9px;border:1px solid rgba(255,255,255,.10);
+    border-radius:10px;color:#fff;background:rgba(255,255,255,.065);font-size:7px;font-weight:800;pointer-events:auto
+  }
+  .vf925-preview-toggle .material-icons-round {font-size:15px}
+}
+
+@media (max-width:390px) and (max-height:760px) {
+  #page-video-workspace .v82-editor-shell {
+    grid-template-rows:245px 100px minmax(0,1fr)!important
+  }
+  #page-video-workspace.v925-preview-expanded .v82-editor-shell {
+    grid-template-rows:350px 92px minmax(90px,1fr)!important
   }
 }
 
-/* Very small screens keep enough room for both preview and tools. */
-@media (max-width: 390px) and (max-height: 760px) {
-  #page-video-workspace .v82-preview-stage {
-    height: 405px !important;
-    min-height: 405px !important;
-  }
-
-  #page-video-workspace.v924-preview-compact .v82-preview-stage {
-    height: 220px !important;
-    min-height: 220px !important;
-  }
-
-  #page-video-workspace .v82-timeline {
-    height: 138px !important;
-    min-height: 138px !important;
-    max-height: 138px !important;
-  }
-
-  #page-video-workspace.v924-preview-compact .v82-timeline {
-    height: 116px !important;
-    min-height: 116px !important;
-    max-height: 116px !important;
-  }
+@media (min-width:720px) {
+  #vf925-workshop {grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);grid-template-rows:auto minmax(0,1fr)}
+  .vf925-workshop-header {grid-column:1/-1}
+  .vf925-carousel {grid-column:1;grid-row:2}
+  .vf925-action {grid-column:2;grid-row:2;align-content:center;max-height:none;padding:28px;border-top:0;border-left:1px solid rgba(255,255,255,.10)}
 }
 
-/* Desktop keeps the same fullscreen promo without cropping the image. */
-@media (min-width: 720px) {
-  #vf924-workshop {
-    grid-template-columns: minmax(0,1.35fr) minmax(320px,.65fr);
-    grid-template-rows: auto minmax(0,1fr);
-  }
+body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
 
-  .vf924-workshop-header {
-    grid-column: 1 / -1;
-  }
+.vf925-live-effect-vibrant {filter:saturate(1.28) contrast(1.08)!important}
+.vf925-live-effect-cinematic {filter:contrast(1.12) saturate(.9) sepia(.08)!important}
+.vf925-live-effect-soft-film {filter:contrast(.95) saturate(.88) brightness(1.04)!important}
+.vf925-live-effect-mono {filter:grayscale(1) contrast(1.08)!important}
+.vf925-live-effect-neon {filter:saturate(1.55) contrast(1.18) hue-rotate(8deg)!important}
+.vf925-live-effect-cinematic-pro {filter:contrast(1.18) saturate(.82) sepia(.12)!important}
 
-  .vf924-carousel {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .vf924-action {
-    grid-column: 2;
-    grid-row: 2;
-    align-content: center;
-    max-height: none;
-    padding: 28px;
-    border-top: 0;
-    border-left: 1px solid rgba(255,255,255,.10);
-  }
-
-  .vf924-copy {
-    left: 30px;
-    right: 110px;
-    bottom: 35px;
-  }
-}
-
-body.vf924-workshop-open {
-  overflow: hidden !important;
-  overscroll-behavior: none;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #vf924-workshop,
-  .vf924-track,
-  .vf924-dots button,
-  #page-video-workspace .v82-preview-stage {
-    transition: none !important;
-  }
-
-  .vf924-media img,
-  .vf924-primary::after {
-    animation: none !important;
-  }
-}
-
-@keyframes vf924-image-breathe {
-  from { transform: scale(1.005); }
-  to { transform: scale(1.035); }
-}
-
-@keyframes vf924-shine {
-  0%, 62% { left: -30%; opacity: 0; }
-  70% { opacity: .82; }
-  86%, 100% { left: 120%; opacity: 0; }
+@media (prefers-reduced-motion:reduce) {
+  #vf925-workshop,.vf925-slide,.vf925-dots button {transition:none!important}
 }
 </style>
 </head>
@@ -998,126 +482,6 @@ body.vf924-workshop-open {
 <div class="v82-editor-title"><span id="workspace-header-mode">Proyek baru</span><strong>V-Forge Editor</strong></div>
 <button class="v82-export-top" onclick="openV82EditorTool('export')" type="button">Export</button>
 </header>
-<section aria-hidden="true" aria-label="V-Forge Premium Showcase" class="vf924-workshop" id="vf924-workshop">
-<header class="vf924-workshop-header">
-<button aria-label="Kembali" class="vf924-back" id="vf924-back" type="button">
-<span class="material-icons-round">arrow_back</span>
-</button>
-<div class="vf924-heading">
-<span>V-FORGE MOTION LAB</span>
-<strong>Premium Showcase</strong>
-</div>
-<span class="vf924-live"><i></i>FEATURED</span>
-</header>
-
-<div aria-label="Showcase fitur Premium V-Forge" aria-roledescription="carousel" class="vf924-carousel" id="vf924-carousel" role="region">
-<div class="vf924-track" id="vf924-track">
-
-<article aria-label="Slide 1 dari 3" class="vf924-slide active" data-vf924-slide="0" style="--vf924-image:url('assets/images/vf-car-01.jpg')">
-<div class="vf924-backdrop"></div>
-<div class="vf924-media">
-<img alt="Promosi V-Forge Premium 4K Ultra HD" decoding="async" fetchpriority="high" src="assets/images/vf-car-01.jpg"/>
-</div>
-<div class="vf924-shade"></div>
-<div class="vf924-brand">
-<span class="vf924-logo">
-<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
-<path d="M4 4 L12 19 L20 4"></path>
-<path d="M4 4 H14"></path>
-<path d="M8 11.5 H16"></path>
-</svg>
-</span>
-<span><strong>V-FORGE PREMIUM</strong><small>OUTPUT ULTRA</small></span>
-</div>
-<div class="vf924-copy">
-<span>PREMIUM FEATURE 01</span>
-<h2>4K Ultra HD</h2>
-<p>Target output detail tinggi untuk perangkat dan sumber video yang mendukung.</p>
-</div>
-</article>
-
-<article aria-label="Slide 2 dari 3" class="vf924-slide" data-vf924-slide="1" style="--vf924-image:url('assets/images/vf-car-02.jpg')">
-<div class="vf924-backdrop"></div>
-<div class="vf924-media">
-<img alt="Promosi V-Forge Premium 120 FPS" decoding="async" loading="lazy" src="assets/images/vf-car-02.jpg"/>
-</div>
-<div class="vf924-shade"></div>
-<div class="vf924-brand">
-<span class="vf924-logo">
-<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
-<path d="M4 4 L12 19 L20 4"></path>
-<path d="M4 4 H14"></path>
-<path d="M8 11.5 H16"></path>
-</svg>
-</span>
-<span><strong>V-FORGE PREMIUM</strong><small>MOTION PRO</small></span>
-</div>
-<div class="vf924-copy">
-<span>PREMIUM FEATURE 02</span>
-<h2>120 FPS Motion</h2>
-<p>Gerakan lebih halus untuk footage frame-rate tinggi pada perangkat yang kompatibel.</p>
-</div>
-</article>
-
-<article aria-label="Slide 3 dari 3" class="vf924-slide" data-vf924-slide="2" style="--vf924-image:url('assets/images/vf-car-03.jpg')">
-<div class="vf924-backdrop"></div>
-<div class="vf924-media">
-<img alt="Promosi V-Forge Premium Hi-Res Lossless" decoding="async" loading="lazy" src="assets/images/vf-car-03.jpg"/>
-</div>
-<div class="vf924-shade"></div>
-<div class="vf924-brand">
-<span class="vf924-logo">
-<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
-<path d="M4 4 L12 19 L20 4"></path>
-<path d="M4 4 H14"></path>
-<path d="M8 11.5 H16"></path>
-</svg>
-</span>
-<span><strong>V-FORGE PREMIUM</strong><small>AUDIO MASTER</small></span>
-</div>
-<div class="vf924-copy">
-<span>PREMIUM FEATURE 03</span>
-<h2>Hi-Res Lossless</h2>
-<p>Ekspor audio WAV terpisah untuk kualitas suara yang lebih bersih dan fleksibel.</p>
-</div>
-</article>
-
-</div>
-
-<button aria-label="Promo sebelumnya" class="vf924-arrow previous" id="vf924-previous" type="button">
-<span class="material-icons-round">chevron_left</span>
-</button>
-<button aria-label="Promo berikutnya" class="vf924-arrow next" id="vf924-next" type="button">
-<span class="material-icons-round">chevron_right</span>
-</button>
-
-<div aria-label="Pilih promo" class="vf924-dots" role="group">
-<button aria-label="Promo 1" aria-pressed="true" class="active" data-vf924-dot="0" type="button"></button>
-<button aria-label="Promo 2" aria-pressed="false" data-vf924-dot="1" type="button"></button>
-<button aria-label="Promo 3" aria-pressed="false" data-vf924-dot="2" type="button"></button>
-</div>
-</div>
-
-<section class="vf924-action">
-<div class="vf924-action-copy">
-<span><span class="material-icons-round">workspace_premium</span>PREMIUM CREATIVE TOOLS</span>
-<h1>Pilih video.<br/>Lihat hasilnya langsung.</h1>
-<p>Masuk ke editor dengan preview yang tetap terlihat saat memakai Edit, Audio, Text, Overlay, Effects, dan Adjust.</p>
-</div>
-
-<div class="vf924-feature-pills">
-<span><span class="material-icons-round">fit_screen</span>Live preview</span>
-<span><span class="material-icons-round">swipe_vertical</span>Panel dapat digulir</span>
-<span><span class="material-icons-round">lock</span>Video tetap lokal</span>
-</div>
-
-<button class="vf924-primary" id="vf924-select-video" type="button">
-<span class="vf924-primary-icon"><span class="material-icons-round">video_library</span></span>
-<span><strong>Pilih Video &amp; Buka Editor</strong><small>MP4, MOV, WebM • proses lokal</small></span>
-<span class="material-icons-round">arrow_forward</span>
-</button>
-</section>
-</section>
 <main class="v82-editor-shell">
 <section aria-labelledby="workspace-preview-title" class="v82-preview-stage" id="v8-panel-media">
 <h2 class="sr-only" id="workspace-preview-title">Preview video</h2>
@@ -1748,457 +1112,431 @@ body.vf924-workshop-open {
   }
 })();
 </script>
-<script id="vforge-v924-script">
-(function () {
+<section aria-hidden="true" aria-label="V-Forge Premium Showcase" class="vf925-workshop" id="vf925-workshop">
+<header class="vf925-workshop-header">
+<button aria-label="Kembali" class="vf925-back" id="vf925-back" type="button">
+<span class="material-icons-round">arrow_back</span>
+</button>
+<div class="vf925-heading">
+<span>V-FORGE MOTION LAB</span>
+<strong>Premium Showcase</strong>
+</div>
+<span class="vf925-featured"><i></i>FEATURED</span>
+</header>
+
+<div aria-label="Showcase fitur Premium V-Forge" aria-roledescription="carousel" class="vf925-carousel" id="vf925-carousel" role="region">
+<article aria-label="Slide 1 dari 3" class="vf925-slide active" data-vf925-slide="0" style="--vf925-image:url('assets/images/vf-car-01.jpg')">
+<div class="vf925-backdrop"></div>
+<img alt="Promosi V-Forge Premium 4K Ultra HD" decoding="async" fetchpriority="high" src="assets/images/vf-car-01.jpg"/>
+<div class="vf925-shade"></div>
+<div class="vf925-brand">
+<span class="vf925-logo">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
+<path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path>
+</svg>
+</span>
+<span><strong>V-FORGE PREMIUM</strong><small>OUTPUT ULTRA</small></span>
+</div>
+<div class="vf925-copy">
+<span>PREMIUM FEATURE 01</span>
+<h2>4K Ultra HD</h2>
+<p>Output resolusi tinggi untuk perangkat dan sumber video yang mendukung.</p>
+</div>
+</article>
+
+<article aria-label="Slide 2 dari 3" class="vf925-slide" data-vf925-slide="1" style="--vf925-image:url('assets/images/vf-car-02.jpg')">
+<div class="vf925-backdrop"></div>
+<img alt="Promosi V-Forge Premium 120 FPS" decoding="async" loading="lazy" src="assets/images/vf-car-02.jpg"/>
+<div class="vf925-shade"></div>
+<div class="vf925-brand">
+<span class="vf925-logo">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
+<path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path>
+</svg>
+</span>
+<span><strong>V-FORGE PREMIUM</strong><small>MOTION PRO</small></span>
+</div>
+<div class="vf925-copy">
+<span>PREMIUM FEATURE 02</span>
+<h2>120 FPS Motion</h2>
+<p>Frame-rate tinggi untuk gerakan yang lebih halus pada perangkat kompatibel.</p>
+</div>
+</article>
+
+<article aria-label="Slide 3 dari 3" class="vf925-slide" data-vf925-slide="2" style="--vf925-image:url('assets/images/vf-car-03.jpg')">
+<div class="vf925-backdrop"></div>
+<img alt="Promosi V-Forge Premium Hi-Res Lossless" decoding="async" loading="lazy" src="assets/images/vf-car-03.jpg"/>
+<div class="vf925-shade"></div>
+<div class="vf925-brand">
+<span class="vf925-logo">
+<svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
+<path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path>
+</svg>
+</span>
+<span><strong>V-FORGE PREMIUM</strong><small>AUDIO MASTER</small></span>
+</div>
+<div class="vf925-copy">
+<span>PREMIUM FEATURE 03</span>
+<h2>Hi-Res Lossless</h2>
+<p>Audio WAV terpisah untuk kualitas tinggi dan workflow yang lebih fleksibel.</p>
+</div>
+</article>
+
+<button aria-label="Promo sebelumnya" class="vf925-arrow previous" id="vf925-previous" type="button"><span class="material-icons-round">chevron_left</span></button>
+<button aria-label="Promo berikutnya" class="vf925-arrow next" id="vf925-next" type="button"><span class="material-icons-round">chevron_right</span></button>
+
+<div aria-label="Pilih promo" class="vf925-dots" role="group">
+<button aria-label="Promo 1" aria-pressed="true" class="active" data-vf925-dot="0" type="button"></button>
+<button aria-label="Promo 2" aria-pressed="false" data-vf925-dot="1" type="button"></button>
+<button aria-label="Promo 3" aria-pressed="false" data-vf925-dot="2" type="button"></button>
+</div>
+</div>
+
+<section class="vf925-action">
+<div class="vf925-action-copy">
+<span><span class="material-icons-round">workspace_premium</span>PREMIUM CREATIVE TOOLS</span>
+<h1>Pilih video.<br/>Lihat hasilnya langsung.</h1>
+<p>Preview tetap tersedia saat kamu berpindah Edit, Audio, Text, Overlay, Effects, dan Adjust.</p>
+</div>
+<div class="vf925-pills">
+<span><span class="material-icons-round">visibility</span>Live preview</span>
+<span><span class="material-icons-round">swipe_vertical</span>Tool scroll sendiri</span>
+<span><span class="material-icons-round">lock</span>Video tetap lokal</span>
+</div>
+<button class="vf925-primary" id="vf925-select-video" type="button">
+<span class="vf925-primary-icon"><span class="material-icons-round">video_library</span></span>
+<span><strong>Pilih Video &amp; Buka Editor</strong><small>MP4, MOV, WebM • proses lokal</small></span>
+<span class="material-icons-round">arrow_forward</span>
+</button>
+</section>
+</section>
+<script id="vforge-v925-script">
+(function(){
   'use strict';
 
   try {
-    const VERSION = '9.2.4';
-    const workshop = document.getElementById('vf924-workshop');
-    const carousel = document.getElementById('vf924-carousel');
-    const track = document.getElementById('vf924-track');
-    const slides = Array.from(document.querySelectorAll('[data-vf924-slide]'));
-    const dots = Array.from(document.querySelectorAll('[data-vf924-dot]'));
-    const previous = document.getElementById('vf924-previous');
-    const next = document.getElementById('vf924-next');
-    const selectVideo = document.getElementById('vf924-select-video');
-    const back = document.getElementById('vf924-back');
+    const VERSION='9.2.5';
+    const workshop=document.getElementById('vf925-workshop');
+    const carousel=document.getElementById('vf925-carousel');
+    const slides=Array.from(document.querySelectorAll('[data-vf925-slide]'));
+    const dots=Array.from(document.querySelectorAll('[data-vf925-dot]'));
+    const previous=document.getElementById('vf925-previous');
+    const next=document.getElementById('vf925-next');
+    const selectButton=document.getElementById('vf925-select-video');
+    const backButton=document.getElementById('vf925-back');
 
-    const page = document.getElementById('page-video-workspace');
-    const shell = page?.querySelector('.v82-editor-shell');
-    const preview = page?.querySelector('.v82-preview-stage');
-    const timeline = document.getElementById('studio-mini-timeline');
-    const toolSheet = document.getElementById('workspace-form');
-    const frame = document.getElementById('workspace-video-frame');
-    const video = document.getElementById('workspace-video');
+    const page=document.getElementById('page-video-workspace');
+    const toolSheet=document.getElementById('workspace-form');
+    const video=document.getElementById('workspace-video');
 
-    const reduceMotion =
-      window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
+    if(!workshop || slides.length!==3) return;
 
-    if (!workshop || !track || slides.length !== 3) return;
+    let index=0;
+    let timer=null;
+    let pointerStartX=null;
+    let pickerPending=false;
+    let fileSelected=false;
+    let sourcePage='page-home';
 
-    let index = 0;
-    let timer = null;
-    let pointerStartX = null;
-    let pickerPending = false;
-    let selectedFile = false;
-    let workshopOpening = false;
-    let scrollFrame = 0;
+    const originalOpenVideoPicker=typeof window.openVideoPicker==='function'?window.openVideoPicker:null;
+    const originalHandleWorkspaceFileSelected=typeof window.handleWorkspaceFileSelected==='function'?window.handleWorkspaceFileSelected:null;
+    const originalOpenV82EditorTool=typeof window.openV82EditorTool==='function'?window.openV82EditorTool:null;
+    const originalToggleWorkspaceAudio=typeof window.toggleWorkspaceAudio==='function'?window.toggleWorkspaceAudio:null;
+    const originalSelectStudioEffect=typeof window.selectStudioEffect==='function'?window.selectStudioEffect:null;
+    const originalSelectStudioTemplate=typeof window.selectStudioTemplate==='function'?window.selectStudioTemplate:null;
 
-    const originalOpenVideoPicker =
-      typeof window.openVideoPicker === 'function'
-        ? window.openVideoPicker
-        : null;
+    const effectClasses=[
+      'vf925-live-effect-vibrant','vf925-live-effect-cinematic','vf925-live-effect-soft-film',
+      'vf925-live-effect-mono','vf925-live-effect-neon','vf925-live-effect-cinematic-pro'
+    ];
 
-    const originalHandleWorkspaceFileSelected =
-      typeof window.handleWorkspaceFileSelected === 'function'
-        ? window.handleWorkspaceFileSelected
-        : null;
-
-    const originalOpenV82EditorTool =
-      typeof window.openV82EditorTool === 'function'
-        ? window.openV82EditorTool
-        : null;
-
-    function workshopIsOpen() {
-      return workshop.classList.contains('open');
+    function navIndex(pageId){
+      return ({'page-home':0,'page-search':1,'page-enhancer':2,'page-profile':3})[pageId] ?? 0;
     }
 
-    function render(nextIndex, userInitiated = false) {
-      index = (Number(nextIndex) + 3) % 3;
-      track.style.transform =
-        `translate3d(-${index * 33.333333}%, 0, 0)`;
+    function isWorkshopOpen(){return workshop.classList.contains('open')}
 
-      slides.forEach((slide, slideIndex) => {
-        const active = slideIndex === index;
-        slide.classList.toggle('active', active);
-        slide.setAttribute('aria-hidden', String(!active));
+    function render(nextIndex,userInitiated=false){
+      index=(Number(nextIndex)+3)%3;
+      slides.forEach((slide,i)=>{
+        const active=i===index;
+        slide.classList.toggle('active',active);
+        slide.setAttribute('aria-hidden',String(!active));
       });
-
-      dots.forEach((dot, dotIndex) => {
-        const active = dotIndex === index;
-        dot.classList.toggle('active', active);
-        dot.setAttribute('aria-pressed', String(active));
+      dots.forEach((dot,i)=>{
+        const active=i===index;
+        dot.classList.toggle('active',active);
+        dot.setAttribute('aria-pressed',String(active));
       });
-
-      if (userInitiated) restartCarousel();
+      if(userInitiated) restart();
     }
 
-    function stopCarousel() {
-      if (timer) window.clearInterval(timer);
-      timer = null;
+    function stop(){
+      if(timer) window.clearInterval(timer);
+      timer=null;
     }
 
-    function startCarousel() {
-      stopCarousel();
-
-      if (
-        reduceMotion ||
-        document.hidden ||
-        !workshopIsOpen()
-      ) {
-        return;
-      }
-
-      timer = window.setInterval(() => {
-        render(index + 1, false);
-      }, 5200);
+    function start(){
+      stop();
+      if(document.hidden || !isWorkshopOpen()) return;
+      timer=window.setInterval(()=>render(index+1,false),5000);
     }
 
-    function restartCarousel() {
-      stopCarousel();
-      window.setTimeout(startCarousel, 160);
+    function restart(){
+      stop();
+      window.setTimeout(start,140);
     }
 
-    function clearWorkspaceVideo() {
-      try {
-        if (typeof resetVideoProcessor === 'function') {
-          resetVideoProcessor({ silent: true });
-        }
-      } catch (_) {}
-
-      try {
-        if (typeof releaseWorkspaceObjectUrl === 'function') {
-          releaseWorkspaceObjectUrl();
-        }
-      } catch (_) {}
-
-      try {
-        if (typeof createEmptyVideoWorkspaceState === 'function') {
-          videoWorkspaceState = createEmptyVideoWorkspaceState();
-        }
-      } catch (_) {}
-
-      if (video) {
-        try { video.pause(); } catch (_) {}
-        video.removeAttribute('src');
-        video.removeAttribute('poster');
-
-        try { video.srcObject = null; } catch (_) {}
-        try { video.load(); } catch (_) {}
-      }
-
-      frame?.classList.remove('has-video');
-
-      const placeholders = {
-        'workspace-file-name': 'Belum ada video',
-        'workspace-file-type': 'Pilih dari perangkat',
-        'workspace-file-size': '—',
-        'workspace-duration': '—',
-        'workspace-resolution': '—'
-      };
-
-      Object.entries(placeholders).forEach(([id, value]) => {
-        const element = document.getElementById(id);
-        if (element) element.textContent = value;
-      });
-
-      try {
-        window.VForgeSafeZoom913B?.resetPreviewTransform?.(false);
-      } catch (_) {}
-    }
-
-    function showWorkshop(options = {}) {
-      if (workshopOpening) return;
-      workshopOpening = true;
-
-      if (options.reset !== false) clearWorkspaceVideo();
-
-      pickerPending = false;
-      selectedFile = false;
-
+    function showWorkshop(){
+      pickerPending=false;
+      fileSelected=false;
       workshop.classList.add('open');
-      workshop.setAttribute('aria-hidden', 'false');
-      document.body?.classList.add('vf924-workshop-open');
-
-      render(0, false);
-      startCarousel();
-
-      window.setTimeout(() => {
-        workshopOpening = false;
-      }, 320);
+      workshop.setAttribute('aria-hidden','false');
+      document.body?.classList.add('vf925-workshop-open');
+      render(0,false);
+      start();
     }
 
-    function hideWorkshop() {
-      stopCarousel();
+    function hideWorkshop(){
+      stop();
       workshop.classList.remove('open');
-      workshop.setAttribute('aria-hidden', 'true');
-      document.body?.classList.remove('vf924-workshop-open');
+      workshop.setAttribute('aria-hidden','true');
+      document.body?.classList.remove('vf925-workshop-open');
     }
 
-    function returnPage() {
-      try {
-        if (
-          typeof videoWorkspaceReturnPage === 'string' &&
-          videoWorkspaceReturnPage !== 'page-video-workspace'
-        ) {
-          return videoWorkspaceReturnPage;
-        }
-      } catch (_) {}
+    function openPremiumShowcase(){
+      sourcePage=(typeof currentPage==='string' && currentPage!=='page-video-workspace')
+        ? currentPage
+        : 'page-home';
 
-      return 'page-home';
+      try{
+        if(typeof setVideoWorkspaceReturnPage==='function') setVideoWorkspaceReturnPage(sourcePage);
+      }catch(_){}
+
+      /* Important: show first. We do NOT navigate to editor here. */
+      showWorkshop();
     }
 
-    function closeWorkshop() {
+    function closePremiumShowcase(){
+      hideWorkshop();
+    }
+
+    function openPicker(){
+      if(!originalOpenVideoPicker) return;
+
+      pickerPending=true;
+      fileSelected=false;
       hideWorkshop();
 
-      const target = returnPage();
-      const navMap = {
-        'page-home': 0,
-        'page-search': 1,
-        'page-enhancer': 2,
-        'page-profile': 3
-      };
+      try{
+        if(typeof setVideoWorkspaceReturnPage==='function') setVideoWorkspaceReturnPage(sourcePage);
+        if(typeof goToPage==='function') goToPage('page-video-workspace',-1);
+      }catch(_){}
 
-      if (typeof goToPage === 'function') {
-        goToPage(target, navMap[target] ?? 0);
-      }
-    }
-
-    function openMotionWorkshop() {
-      const source =
-        typeof currentPage === 'string' &&
-        currentPage !== 'page-video-workspace'
-          ? currentPage
-          : 'page-home';
-
-      try {
-        if (typeof setVideoWorkspaceReturnPage === 'function') {
-          setVideoWorkspaceReturnPage(source);
-        }
-      } catch (_) {}
-
-      clearWorkspaceVideo();
-
-      if (typeof goToPage === 'function') {
-        goToPage('page-video-workspace', -1);
-      }
-
-      window.requestAnimationFrame(() => {
-        showWorkshop({ reset: false });
-      });
-    }
-
-    function openPicker() {
-      if (!originalOpenVideoPicker) return;
-
-      pickerPending = true;
-      selectedFile = false;
-      hideWorkshop();
-
-      window.setTimeout(() => {
-        try {
+      window.setTimeout(()=>{
+        try{
           originalOpenVideoPicker(null);
-        } catch (error) {
-          pickerPending = false;
-          showWorkshop({ reset: false });
-          console.error('[V-Forge] Pemilih video gagal dibuka:', error);
+        }catch(error){
+          pickerPending=false;
+          if(typeof goToPage==='function') goToPage(sourcePage,navIndex(sourcePage));
+          showWorkshop();
+          console.error('[V-Forge] Gagal membuka pemilih video:',error);
         }
-      }, 80);
+      },100);
     }
 
-    function currentTool() {
-      return page?.dataset.editorTool || 'edit';
-    }
+    function installPreviewToggle(){
+      const topbar=document.getElementById('v91-preview-topbar');
+      if(!topbar || document.getElementById('vf925-preview-toggle')) return;
 
-    function syncCompactPreview(options = {}) {
-      if (!page || !shell) return;
+      const button=document.createElement('button');
+      button.id='vf925-preview-toggle';
+      button.className='vf925-preview-toggle';
+      button.type='button';
+      button.innerHTML='<span class="material-icons-round">open_in_full</span><span>Perbesar</span>';
+      button.setAttribute('aria-label','Perbesar atau ringkas preview');
 
-      const shouldCompact =
-        shell.scrollTop > 36 ||
-        currentTool() !== 'edit' ||
-        options.force === true;
-
-      page.classList.toggle('v924-preview-compact', shouldCompact);
-    }
-
-    function scrollToolsIntoView(behavior = 'smooth') {
-      if (!shell || !toolSheet || !preview) return;
-
-      page?.classList.add('v924-preview-compact');
-
-      window.requestAnimationFrame(() => {
-        const previewHeight = preview.getBoundingClientRect().height;
-        const timelineHeight = timeline?.getBoundingClientRect().height || 0;
-        const target =
-          Math.max(
-            0,
-            toolSheet.offsetTop -
-            previewHeight -
-            Math.min(28, timelineHeight * 0.18)
-          );
-
-        shell.scrollTo({
-          top: target,
-          left: 0,
-          behavior: reduceMotion ? 'auto' : behavior
-        });
+      button.addEventListener('click',()=>{
+        const expanded=page?.classList.toggle('v925-preview-expanded');
+        const icon=button.querySelector('.material-icons-round');
+        const label=button.querySelector('span:last-child');
+        if(icon) icon.textContent=expanded?'close_fullscreen':'open_in_full';
+        if(label) label.textContent=expanded?'Ringkas':'Perbesar';
       });
+
+      topbar.appendChild(button);
     }
 
-    function handleEditorScroll() {
-      if (scrollFrame) return;
-
-      scrollFrame = window.requestAnimationFrame(() => {
-        scrollFrame = 0;
-        syncCompactPreview();
-      });
+    function resetToolScroll(){
+      if(toolSheet) toolSheet.scrollTop=0;
     }
 
-    previous?.addEventListener('click', () => {
-      render(index - 1, true);
+    function applyLiveEffect(){
+      if(!video) return;
+      effectClasses.forEach(cls=>video.classList.remove(cls));
+
+      let effect='natural';
+      try{
+        effect=videoWorkspaceState?.settings?.effectId || 'natural';
+      }catch(_){}
+
+      const classMap={
+        vibrant:'vf925-live-effect-vibrant',
+        cinematic:'vf925-live-effect-cinematic',
+        'soft-film':'vf925-live-effect-soft-film',
+        mono:'vf925-live-effect-mono',
+        neon:'vf925-live-effect-neon',
+        'cinematic-pro':'vf925-live-effect-cinematic-pro'
+      };
+
+      if(classMap[effect]) video.classList.add(classMap[effect]);
+    }
+
+    function syncAudioPreview(){
+      if(!video) return;
+      try{
+        video.muted=videoWorkspaceState?.settings?.audioEnabled===false;
+      }catch(_){}
+    }
+
+    previous?.addEventListener('click',()=>render(index-1,true));
+    next?.addEventListener('click',()=>render(index+1,true));
+    dots.forEach(dot=>dot.addEventListener('click',()=>render(Number(dot.dataset.vf925Dot)||0,true)));
+
+    carousel?.addEventListener('pointerdown',event=>{
+      pointerStartX=event.clientX;
+      stop();
     });
-
-    next?.addEventListener('click', () => {
-      render(index + 1, true);
-    });
-
-    dots.forEach((dot) => {
-      dot.addEventListener('click', () => {
-        render(Number(dot.dataset.vf924Dot) || 0, true);
-      });
-    });
-
-    carousel?.addEventListener('pointerdown', (event) => {
-      pointerStartX = event.clientX;
-      stopCarousel();
-    });
-
-    carousel?.addEventListener('pointerup', (event) => {
-      if (pointerStartX !== null) {
-        const distance = event.clientX - pointerStartX;
-
-        if (Math.abs(distance) > 42) {
-          render(index + (distance < 0 ? 1 : -1), false);
-        }
+    carousel?.addEventListener('pointerup',event=>{
+      if(pointerStartX!==null){
+        const distance=event.clientX-pointerStartX;
+        if(Math.abs(distance)>42) render(index+(distance<0?1:-1),false);
       }
-
-      pointerStartX = null;
-      restartCarousel();
+      pointerStartX=null;
+      restart();
+    });
+    carousel?.addEventListener('pointercancel',()=>{
+      pointerStartX=null;
+      restart();
     });
 
-    carousel?.addEventListener('pointercancel', () => {
-      pointerStartX = null;
-      restartCarousel();
-    });
+    selectButton?.addEventListener('click',openPicker);
+    backButton?.addEventListener('click',closePremiumShowcase);
 
-    selectVideo?.addEventListener('click', openPicker);
-    back?.addEventListener('click', closeWorkshop);
-    shell?.addEventListener('scroll', handleEditorScroll, { passive: true });
-
-    if (originalHandleWorkspaceFileSelected) {
-      window.handleWorkspaceFileSelected = function (input) {
-        const file = input?.files?.[0];
-
-        if (file) {
-          selectedFile = true;
-          pickerPending = false;
+    if(originalHandleWorkspaceFileSelected){
+      window.handleWorkspaceFileSelected=function(input){
+        const file=input?.files?.[0];
+        if(file){
+          fileSelected=true;
+          pickerPending=false;
           hideWorkshop();
-
-          window.requestAnimationFrame(() => {
-            shell?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-            page?.classList.remove('v924-preview-compact');
-          });
+          page?.classList.remove('v925-preview-expanded');
         }
-
-        return originalHandleWorkspaceFileSelected.apply(this, arguments);
+        return originalHandleWorkspaceFileSelected.apply(this,arguments);
       };
     }
 
-    if (originalOpenV82EditorTool) {
-      window.openV82EditorTool = function (tool, button) {
-        const result =
-          originalOpenV82EditorTool.apply(this, arguments);
-
-        page?.setAttribute('data-v924-active-tool', tool || 'edit');
-
-        window.requestAnimationFrame(() => {
-          syncCompactPreview({ force: true });
-          scrollToolsIntoView('smooth');
+    if(originalOpenV82EditorTool){
+      window.openV82EditorTool=function(){
+        const result=originalOpenV82EditorTool.apply(this,arguments);
+        window.requestAnimationFrame(()=>{
+          resetToolScroll();
+          installPreviewToggle();
         });
-
         return result;
       };
     }
 
-    /*
-     * Android restores focus after the system picker closes.
-     * Reopen the showcase only when the picker was cancelled.
-     */
-    window.addEventListener('focus', () => {
-      window.setTimeout(() => {
-        if (pickerPending && !selectedFile) {
-          pickerPending = false;
-          showWorkshop({ reset: false });
+    if(originalToggleWorkspaceAudio){
+      window.toggleWorkspaceAudio=function(){
+        const result=originalToggleWorkspaceAudio.apply(this,arguments);
+        syncAudioPreview();
+        return result;
+      };
+    }
+
+    if(originalSelectStudioEffect){
+      window.selectStudioEffect=function(){
+        const result=originalSelectStudioEffect.apply(this,arguments);
+        applyLiveEffect();
+        return result;
+      };
+    }
+
+    if(originalSelectStudioTemplate){
+      window.selectStudioTemplate=function(){
+        const result=originalSelectStudioTemplate.apply(this,arguments);
+        applyLiveEffect();
+        syncAudioPreview();
+        return result;
+      };
+    }
+
+    window.addEventListener('focus',()=>{
+      window.setTimeout(()=>{
+        if(pickerPending && !fileSelected){
+          pickerPending=false;
+          try{
+            if(typeof goToPage==='function') goToPage(sourcePage,navIndex(sourcePage));
+          }catch(_){}
+          showWorkshop();
         }
-      }, 420);
+      },420);
     });
 
-    video?.addEventListener('loadedmetadata', () => {
-      selectedFile = true;
-      pickerPending = false;
+    video?.addEventListener('loadedmetadata',()=>{
+      fileSelected=true;
+      pickerPending=false;
       hideWorkshop();
-
-      window.requestAnimationFrame(() => {
-        shell?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-        page?.classList.remove('v924-preview-compact');
-      });
+      page?.classList.remove('v925-preview-expanded');
+      resetToolScroll();
+      installPreviewToggle();
+      applyLiveEffect();
+      syncAudioPreview();
     });
 
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) stopCarousel();
-      else startCarousel();
+    video?.addEventListener('emptied',()=>{
+      effectClasses.forEach(cls=>video.classList.remove(cls));
+      video.muted=false;
     });
 
-    document.addEventListener('vforge:pagechange', (event) => {
-      if (event.detail?.pageId !== 'page-video-workspace') {
-        hideWorkshop();
-        page?.classList.remove('v924-preview-compact');
-      } else {
-        window.requestAnimationFrame(() => syncCompactPreview());
+    document.addEventListener('visibilitychange',()=>{
+      if(document.hidden) stop(); else start();
+    });
+
+    document.addEventListener('vforge:pagechange',event=>{
+      if(event.detail?.pageId==='page-video-workspace'){
+        window.requestAnimationFrame(()=>{
+          installPreviewToggle();
+          resetToolScroll();
+          applyLiveEffect();
+          syncAudioPreview();
+        });
       }
     });
 
-    window.addEventListener(
-      'resize',
-      () => window.requestAnimationFrame(() => syncCompactPreview()),
-      { passive: true }
-    );
+    window.startV83NewProject=openPremiumShowcase;
+    window.openV82CreateSheet=openPremiumShowcase;
+    window.startV82BlankProject=openPremiumShowcase;
 
-    window.startV83NewProject = openMotionWorkshop;
-    window.openV82CreateSheet = openMotionWorkshop;
-    window.startV82BlankProject = openMotionWorkshop;
+    const homeButton=document.querySelector('#page-home .v82-create-button strong');
+    const homeDescription=document.querySelector('#page-home .v82-create-copy p');
+    if(homeButton) homeButton.textContent='Buka Premium Showcase';
+    if(homeDescription) homeDescription.textContent='Lihat tiga fitur unggulan V-Forge, lalu pilih video untuk masuk ke editor.';
 
-    const homeButton = document.querySelector(
-      '#page-home .v82-create-button strong'
-    );
-    const homeDescription = document.querySelector(
-      '#page-home .v82-create-copy p'
-    );
+    render(0,false);
+    installPreviewToggle();
 
-    if (homeButton) homeButton.textContent = 'Buka Premium Showcase';
-
-    if (homeDescription) {
-      homeDescription.textContent =
-        'Lihat tiga fitur unggulan V-Forge, lalu pilih video untuk masuk ke editor.';
-    }
-
-    render(0, false);
-    syncCompactPreview();
-
-    document.documentElement.dataset.vforgeV924 = VERSION;
-
-    window.VForgeWorkshop924 = {
-      version: VERSION,
-      open: openMotionWorkshop,
-      show: () => showWorkshop({ reset: false }),
-      hide: hideWorkshop,
-      next: () => render(index + 1, true),
-      previous: () => render(index - 1, true),
-      scrollToTools: scrollToolsIntoView
+    document.documentElement.dataset.vforgeV925=VERSION;
+    window.VForgeStability925={
+      version:VERSION,
+      openShowcase:openPremiumShowcase,
+      next:()=>render(index+1,true),
+      previous:()=>render(index-1,true),
+      applyLiveEffect
     };
-  } catch (error) {
-    console.error('[V-Forge] V9.2.4 gagal dimulai:', error);
+  }catch(error){
+    console.error('[V-Forge] V9.2.5 gagal dimulai:',error);
   }
 })();
 </script>
