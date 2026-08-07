@@ -1,8 +1,8 @@
-/* V-Forge V9.3 — Premium Showcase controller */
+/* V-Forge V9.3.1 — Premium Showcase controller */
 (function () {
   'use strict';
 
-  const VERSION = '9.3.0';
+  const VERSION = '9.3.1';
   if (window.VForgeShowcase93?.version === VERSION) return;
 
   try {
