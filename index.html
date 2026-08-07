@@ -138,7 +138,7 @@
 .vf926-primary strong{font-size:11px}.vf926-primary small{color:rgba(10,10,12,.62);font-size:7px;font-weight:700}
 
 
-/* ===== V9.2.7 MOBILE LAYOUT CONTRACT =====
+/* ===== V9.2.8 MOBILE LAYOUT CONTRACT =====
    HEADER | PREVIEW | TIMELINE | TOOL SCROLLER | DOCK
    Header/dock dimensions are measured at runtime.
 */
@@ -508,7 +508,7 @@ body.vf926-workshop-open {overflow:hidden!important;overscroll-behavior:none}
 </style>
 <style id="vforge-v927-showcase-nav-fix">
 /* ============================================================
-   V-FORGE V9.2.7
+   V-FORGE V9.2.8
    Premium Showcase CTA + bottom navigation visibility hotfix.
    ============================================================ */
 
@@ -614,6 +614,26 @@ body.vf926-workshop-open #vf926-workshop {
     display: none !important;
   }
 }
+</style>
+<style id="vforge-v928-brand-cta-fix">
+#vf926-workshop{--vf926-lime:#caff62;--vf926-purple:#a86cff;--vf926-cyan:#65e8ff}
+#vf926-workshop .vf926-logo{display:grid!important;place-items:center!important;width:40px!important;height:40px!important;flex:0 0 40px!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:14px!important;color:#0b0b0e!important;background:linear-gradient(145deg,#efffce,var(--vf926-lime))!important;box-shadow:0 9px 24px rgba(202,255,98,.24),inset 0 1px 0 rgba(255,255,255,.45)!important;opacity:1!important;visibility:visible!important}
+#vf926-workshop .vf926-logo svg{width:24px!important;height:24px!important;stroke:currentColor!important;opacity:1!important}
+#vf926-workshop .vf926-brand strong{color:#fff!important}
+#vf926-workshop .vf926-brand small{color:rgba(255,255,255,.62)!important}
+#vf926-workshop .vf926-heading span,#vf926-workshop .vf926-copy>span,#vf926-workshop .vf926-action-copy>span{color:var(--vf926-lime)!important}
+#vf926-workshop .vf926-featured i,#vf926-workshop .vf926-dots button.active{background:var(--vf926-lime)!important}
+#vf926-workshop .vf926-featured i{box-shadow:0 0 13px rgba(202,255,98,.70)!important}
+#vf926-workshop .vf926-primary{position:sticky!important;bottom:max(0px,env(safe-area-inset-bottom))!important;z-index:80!important;display:grid!important;grid-template-columns:48px minmax(0,1fr) 28px!important;align-items:center!important;gap:11px!important;width:100%!important;min-height:72px!important;padding:9px 13px 9px 9px!important;border:1px solid rgba(255,255,255,.28)!important;border-radius:21px!important;color:#0b0b0d!important;background:linear-gradient(135deg,#efffce 0%,var(--vf926-lime) 55%,#9de642 100%)!important;box-shadow:0 18px 42px rgba(0,0,0,.34),0 14px 38px rgba(202,255,98,.24)!important;opacity:1!important;visibility:visible!important}
+#vf926-workshop .vf926-primary-icon{display:grid!important;place-items:center!important;width:48px!important;height:48px!important;border-radius:15px!important;color:#fff!important;background:#111116!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 6px 15px rgba(0,0,0,.18)!important}
+#vf926-workshop .vf926-primary-icon .material-icons-round{font-size:24px!important}
+#vf926-workshop .vf926-primary>span:nth-child(2){min-width:0!important;display:grid!important;gap:2px!important;color:#0b0b0d!important}
+#vf926-workshop .vf928-editor-kicker{display:block!important;margin:0!important;color:rgba(11,11,13,.58)!important;font-size:6px!important;font-style:normal!important;font-weight:900!important;line-height:1!important;letter-spacing:.17em!important}
+#vf926-workshop .vf926-primary strong{display:block!important;overflow:hidden!important;color:#0b0b0d!important;font-size:12px!important;font-weight:900!important;line-height:1.15!important;text-overflow:ellipsis!important;white-space:nowrap!important;opacity:1!important}
+#vf926-workshop .vf926-primary small{display:block!important;overflow:hidden!important;color:rgba(11,11,13,.64)!important;font-size:7px!important;font-weight:700!important;line-height:1.15!important;text-overflow:ellipsis!important;white-space:nowrap!important;opacity:1!important}
+#vf926-workshop .vf926-primary>.material-icons-round{justify-self:end!important;color:#0b0b0d!important;font-size:24px!important;opacity:1!important}
+#vf926-workshop .vf926-action{padding-bottom:max(16px,env(safe-area-inset-bottom))!important;scroll-padding-bottom:92px!important}
+@media(max-width:390px){#vf926-workshop .vf926-primary{grid-template-columns:45px minmax(0,1fr) 24px!important;min-height:68px!important;gap:9px!important;padding-right:10px!important}#vf926-workshop .vf926-primary-icon{width:45px!important;height:45px!important}#vf926-workshop .vf926-primary strong{font-size:11px!important}#vf926-workshop .vf926-primary small{font-size:6.5px!important}}
 </style>
 </head>
 <body class="v8-ui v82-ui v83-ui v9-ui" data-backend-mode="spark">
@@ -1553,7 +1573,7 @@ body.vf926-workshop-open #vf926-workshop {
 </div>
 <button class="vf926-primary" id="vf926-select-video" type="button">
 <span class="vf926-primary-icon"><span class="material-icons-round">video_library</span></span>
-<span><strong>Pilih Video &amp; Buka Editor</strong><small>MP4, MOV, WebM • proses lokal</small></span>
+<span><em class="vf928-editor-kicker">VIDEO EDITOR</em><strong>Buka V-Forge Video Editor</strong><small>Pilih video dari HP • masuk ke timeline &amp; tools</small></span>
 <span class="material-icons-round">arrow_forward</span>
 </button>
 </section>
@@ -1563,7 +1583,7 @@ body.vf926-workshop-open #vf926-workshop {
   'use strict';
 
   try {
-    const VERSION='9.2.7';
+    const VERSION='9.2.8';
     const workshop=document.getElementById('vf926-workshop');
     const carousel=document.getElementById('vf926-carousel');
     const slides=Array.from(document.querySelectorAll('[data-vf926-slide]'));
@@ -1919,7 +1939,7 @@ body.vf926-workshop-open #vf926-workshop {
       })
     };
   }catch(error){
-    console.error('[V-Forge] V9.2.7 gagal dimulai:',error);
+    console.error('[V-Forge] V9.2.8 gagal dimulai:',error);
   }
 })();
 </script>
@@ -1928,7 +1948,7 @@ body.vf926-workshop-open #vf926-workshop {
   'use strict';
 
   try {
-    const VERSION = '9.2.7';
+    const VERSION = '9.2.8';
     const workshop = document.getElementById('vf926-workshop');
     const navigation = document.getElementById('bottom-navigation');
     const selectButton = document.getElementById('vf926-select-video');
@@ -1983,9 +2003,12 @@ body.vf926-workshop-open #vf926-workshop {
       sync: syncShowcaseNavigation
     };
   } catch (error) {
-    console.error('[V-Forge] V9.2.7 Showcase navigation fix gagal:', error);
+    console.error('[V-Forge] V9.2.8 Showcase navigation fix gagal:', error);
   }
 })();
+</script>
+<script id="vforge-v928-brand-cta-fix">
+(function(){'use strict';try{const VERSION='9.2.8';const workshop=document.getElementById('vf926-workshop');const cta=document.getElementById('vf926-select-video');function keepEditorEntryVisible(){if(!workshop?.classList.contains('open')||!cta)return;window.requestAnimationFrame(()=>{try{cta.scrollIntoView({block:'nearest',inline:'nearest',behavior:'auto'});}catch(_){}})}if(workshop){new MutationObserver(keepEditorEntryVisible).observe(workshop,{attributes:true,attributeFilter:['class','aria-hidden']});}window.visualViewport?.addEventListener('resize',keepEditorEntryVisible,{passive:true});window.addEventListener('orientationchange',()=>window.setTimeout(keepEditorEntryVisible,180),{passive:true});keepEditorEntryVisible();document.documentElement.dataset.vforgeV928=VERSION;window.VForgeShowcaseBrandFix928={version:VERSION,sync:keepEditorEntryVisible};}catch(error){console.error('[V-Forge] V9.2.8 brand/CTA fix gagal:',error);}})();
 </script>
 </body>
 </html>
