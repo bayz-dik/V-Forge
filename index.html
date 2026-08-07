@@ -138,7 +138,7 @@
 .vf926-primary strong{font-size:11px}.vf926-primary small{color:rgba(10,10,12,.62);font-size:7px;font-weight:700}
 
 
-/* ===== V9.2.6 MOBILE LAYOUT CONTRACT =====
+/* ===== V9.2.7 MOBILE LAYOUT CONTRACT =====
    HEADER | PREVIEW | TIMELINE | TOOL SCROLLER | DOCK
    Header/dock dimensions are measured at runtime.
 */
@@ -504,6 +504,115 @@ body.vf926-workshop-open {overflow:hidden!important;overscroll-behavior:none}
 
 @media (prefers-reduced-motion:reduce) {
   #vf926-workshop,.vf926-slide,.vf926-dots button {transition:none!important}
+}
+</style>
+<style id="vforge-v927-showcase-nav-fix">
+/* ============================================================
+   V-FORGE V9.2.7
+   Premium Showcase CTA + bottom navigation visibility hotfix.
+   ============================================================ */
+
+/*
+ * Premium Showcase is opened while currentPage can still be Home.
+ * The global bottom navigation therefore remains visible unless
+ * explicitly suppressed while the root-level Showcase is open.
+ */
+body.vf926-workshop-open #bottom-navigation,
+body.vf926-workshop-open .v82-bottom-nav-wrapper,
+body.vf926-workshop-open .bottom-nav-wrapper {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* The overlay must always win over app-level navigation/modals. */
+body.vf926-workshop-open #vf926-workshop {
+  z-index: 2147483000 !important;
+}
+
+/*
+ * Reserve a reliable CTA area. The descriptive copy may scroll on short
+ * screens, but the edit button itself must never disappear below the fold.
+ */
+#vf926-workshop .vf926-action {
+  position: relative !important;
+  display: grid !important;
+  grid-template-rows: auto auto auto !important;
+  max-height: min(46dvh, 480px) !important;
+  min-height: 0 !important;
+  padding:
+    14px
+    15px
+    max(14px, env(safe-area-inset-bottom)) !important;
+  overflow-y: auto !important;
+  scroll-padding-bottom: 82px !important;
+}
+
+/* Keep the primary editor entry visible at the bottom of its own panel. */
+#vf926-workshop .vf926-primary {
+  position: sticky !important;
+  bottom: max(0px, env(safe-area-inset-bottom)) !important;
+  z-index: 70 !important;
+  width: 100% !important;
+  min-height: 62px !important;
+  margin-top: 3px !important;
+  box-shadow:
+    0 18px 42px rgba(0,0,0,.34),
+    0 0 0 1px rgba(202,255,98,.12),
+    0 14px 38px rgba(202,255,98,.19) !important;
+}
+
+/* Solid halo prevents text behind the sticky CTA from visually bleeding in. */
+#vf926-workshop .vf926-primary::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -10px -4px calc(-10px - env(safe-area-inset-bottom));
+  border-radius: 24px;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(9,9,14,0),
+      rgba(9,9,14,.96) 36%,
+      rgba(9,9,14,1)
+    );
+  pointer-events: none;
+}
+
+/* Small/short Android screens: prioritize the CTA over explanatory copy. */
+@media (max-width: 719px) and (max-height: 760px) {
+  #vf926-workshop {
+    grid-template-rows: auto minmax(250px, 1fr) auto !important;
+  }
+
+  #vf926-workshop .vf926-action {
+    gap: 8px !important;
+    max-height: 40dvh !important;
+    padding-top: 11px !important;
+  }
+
+  #vf926-workshop .vf926-action-copy p {
+    display: none !important;
+  }
+
+  #vf926-workshop .vf926-pills {
+    max-height: 31px !important;
+  }
+
+  #vf926-workshop .vf926-primary {
+    min-height: 58px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  #vf926-workshop .vf926-action-copy h1 {
+    font-size: 23px !important;
+  }
+
+  #vf926-workshop .vf926-pills > span:nth-child(3) {
+    display: none !important;
+  }
 }
 </style>
 </head>
@@ -1454,7 +1563,7 @@ body.vf926-workshop-open {overflow:hidden!important;overscroll-behavior:none}
   'use strict';
 
   try {
-    const VERSION='9.2.6';
+    const VERSION='9.2.7';
     const workshop=document.getElementById('vf926-workshop');
     const carousel=document.getElementById('vf926-carousel');
     const slides=Array.from(document.querySelectorAll('[data-vf926-slide]'));
@@ -1792,7 +1901,7 @@ body.vf926-workshop-open {overflow:hidden!important;overscroll-behavior:none}
     render(0,false);
 
     document.documentElement.dataset.vforgeV925=VERSION;
-    window.VForgeStability926={
+    window.VForgeStability927={
       version:VERSION,
       openShowcase:openPremiumShowcase,
       next:()=>render(index+1,true),
@@ -1810,7 +1919,71 @@ body.vf926-workshop-open {overflow:hidden!important;overscroll-behavior:none}
       })
     };
   }catch(error){
-    console.error('[V-Forge] V9.2.6 gagal dimulai:',error);
+    console.error('[V-Forge] V9.2.7 gagal dimulai:',error);
+  }
+})();
+</script>
+<script id="vforge-v927-showcase-nav-fix">
+(function () {
+  'use strict';
+
+  try {
+    const VERSION = '9.2.7';
+    const workshop = document.getElementById('vf926-workshop');
+    const navigation = document.getElementById('bottom-navigation');
+    const selectButton = document.getElementById('vf926-select-video');
+
+    if (!workshop) return;
+
+    function syncShowcaseNavigation() {
+      const open = workshop.classList.contains('open');
+
+      document.body?.classList.toggle('vf926-workshop-open', open);
+
+      if (navigation) {
+        navigation.setAttribute('aria-hidden', String(open));
+
+        if (open) {
+          navigation.setAttribute('inert', '');
+        } else {
+          navigation.removeAttribute('inert');
+        }
+      }
+
+      if (open) {
+        window.requestAnimationFrame(() => {
+          try {
+            selectButton?.scrollIntoView({
+              block: 'nearest',
+              inline: 'nearest',
+              behavior: 'auto'
+            });
+          } catch (_) {}
+        });
+      }
+    }
+
+    new MutationObserver(syncShowcaseNavigation).observe(workshop, {
+      attributes: true,
+      attributeFilter: ['class', 'aria-hidden']
+    });
+
+    window.addEventListener('resize', syncShowcaseNavigation, { passive: true });
+    window.visualViewport?.addEventListener(
+      'resize',
+      syncShowcaseNavigation,
+      { passive: true }
+    );
+
+    syncShowcaseNavigation();
+
+    document.documentElement.dataset.vforgeV927 = VERSION;
+    window.VForgeShowcaseNavFix927 = {
+      version: VERSION,
+      sync: syncShowcaseNavigation
+    };
+  } catch (error) {
+    console.error('[V-Forge] V9.2.7 Showcase navigation fix gagal:', error);
   }
 })();
 </script>
