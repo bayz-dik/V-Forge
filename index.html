@@ -20,15 +20,15 @@
 <link href="css/style.css?v=9.0.2" rel="stylesheet"/>
 <link data-vforge-v91="9.1.2" href="css/v91-editor.css?v=9.1.2" rel="stylesheet"/>
 <link data-vforge-layout-safe="9.1.3a" href="css/v913-layout.css?v=9.1.3a" rel="stylesheet"/>
-<style id="vforge-v925-style">
+<style id="vforge-v926-style">
 #page-video-workspace {
-  --vf925-lime:#caff62;
-  --vf925-purple:#a86cff;
-  --vf925-cyan:#65e8ff;
+  --vf926-lime:#caff62;
+  --vf926-purple:#a86cff;
+  --vf926-cyan:#65e8ff;
 }
 
 /* ===== Premium Showcase: detached from editor page, no editor flash ===== */
-#vf925-workshop {
+#vf926-workshop {
   position:fixed;
   inset:0;
   z-index:20000;
@@ -44,13 +44,13 @@
   transform:translate3d(0,8px,0);
   transition:opacity .22s ease, visibility .22s ease, transform .32s cubic-bezier(.2,.8,.2,1);
 }
-#vf925-workshop.open {
+#vf926-workshop.open {
   opacity:1;
   visibility:visible;
   pointer-events:auto;
   transform:none;
 }
-.vf925-workshop-header {
+.vf926-workshop-header {
   z-index:20;
   display:grid;
   grid-template-columns:42px minmax(0,1fr) auto;
@@ -63,208 +63,447 @@
   -webkit-backdrop-filter:blur(24px) saturate(170%);
   backdrop-filter:blur(24px) saturate(170%);
 }
-.vf925-back {
+.vf926-back {
   display:grid;place-items:center;width:40px;height:40px;padding:0;
   border:1px solid rgba(255,255,255,.11);border-radius:14px;color:#fff;background:rgba(255,255,255,.055);
 }
-.vf925-heading {min-width:0;display:grid;gap:2px}
-.vf925-heading span {color:var(--vf925-lime);font-size:7px;font-weight:900;letter-spacing:.18em}
-.vf925-heading strong {font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.vf925-featured {
+.vf926-heading {min-width:0;display:grid;gap:2px}
+.vf926-heading span {color:var(--vf926-lime);font-size:7px;font-weight:900;letter-spacing:.18em}
+.vf926-heading strong {font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vf926-featured {
   display:inline-flex;align-items:center;gap:5px;padding:7px 9px;border:1px solid rgba(255,255,255,.1);
   border-radius:999px;color:rgba(255,255,255,.72);font-size:7px;font-weight:900;background:rgba(255,255,255,.045)
 }
-.vf925-featured i {width:6px;height:6px;border-radius:50%;background:var(--vf925-lime);box-shadow:0 0 12px rgba(202,255,98,.6)}
+.vf926-featured i {width:6px;height:6px;border-radius:50%;background:var(--vf926-lime);box-shadow:0 0 12px rgba(202,255,98,.6)}
 
-.vf925-carousel {position:relative;min-height:0;overflow:hidden;touch-action:pan-y;background:#050507}
-.vf925-slide {
+.vf926-carousel {position:relative;min-height:0;overflow:hidden;touch-action:pan-y;background:#050507}
+.vf926-slide {
   position:absolute;inset:0;overflow:hidden;background:#07070b;
   opacity:0;visibility:hidden;transform:scale(1.015);
   transition:opacity .48s ease, visibility .48s ease, transform .75s cubic-bezier(.2,.8,.2,1)
 }
-.vf925-slide.active {opacity:1;visibility:visible;transform:scale(1)}
-.vf925-backdrop {
-  position:absolute;inset:-30px;background-image:var(--vf925-image);background-size:cover;background-position:center;
+.vf926-slide.active {opacity:1;visibility:visible;transform:scale(1)}
+.vf926-backdrop {
+  position:absolute;inset:-30px;background-image:var(--vf926-image);background-size:cover;background-position:center;
   filter:blur(25px) brightness(.38) saturate(1.1);transform:scale(1.11)
 }
-.vf925-slide>img {
+.vf926-slide>img {
   position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;
   filter:saturate(1.04) contrast(1.03) brightness(.92)
 }
-.vf925-shade {position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(0,0,0,.05),transparent 42%,rgba(4,4,8,.9) 100%)}
-.vf925-brand {position:absolute;z-index:8;top:17px;left:16px;display:flex;align-items:center;gap:9px}
-.vf925-logo {display:grid;place-items:center;width:38px;height:38px;border-radius:13px;color:#0b0b0e;background:linear-gradient(145deg,#ebffc6,var(--vf925-lime))}
-.vf925-logo svg {width:23px;height:23px;stroke:currentColor}
-.vf925-brand>span:last-child {display:grid;gap:1px}
-.vf925-brand strong {font-size:10px;letter-spacing:.14em}
-.vf925-brand small {color:rgba(255,255,255,.58);font-size:7px}
-.vf925-copy {position:absolute;z-index:8;left:20px;right:78px;bottom:24px;display:grid;gap:5px}
-.vf925-copy>span {color:var(--vf925-lime);font-size:7px;font-weight:900;letter-spacing:.18em}
-.vf925-copy h2 {margin:0;font-size:clamp(27px,9vw,44px);line-height:.92;letter-spacing:-.055em;text-shadow:0 8px 28px rgba(0,0,0,.55)}
-.vf925-copy p {margin:0;max-width:410px;color:rgba(255,255,255,.69);font-size:9px;line-height:1.42}
-.vf925-arrow {
+.vf926-shade {position:absolute;inset:0;z-index:3;background:linear-gradient(180deg,rgba(0,0,0,.05),transparent 42%,rgba(4,4,8,.9) 100%)}
+.vf926-brand {position:absolute;z-index:8;top:17px;left:16px;display:flex;align-items:center;gap:9px}
+.vf926-logo {display:grid;place-items:center;width:38px;height:38px;border-radius:13px;color:#0b0b0e;background:linear-gradient(145deg,#ebffc6,var(--vf926-lime))}
+.vf926-logo svg {width:23px;height:23px;stroke:currentColor}
+.vf926-brand>span:last-child {display:grid;gap:1px}
+.vf926-brand strong {font-size:10px;letter-spacing:.14em}
+.vf926-brand small {color:rgba(255,255,255,.58);font-size:7px}
+.vf926-copy {position:absolute;z-index:8;left:20px;right:78px;bottom:24px;display:grid;gap:5px}
+.vf926-copy>span {color:var(--vf926-lime);font-size:7px;font-weight:900;letter-spacing:.18em}
+.vf926-copy h2 {margin:0;font-size:clamp(27px,9vw,44px);line-height:.92;letter-spacing:-.055em;text-shadow:0 8px 28px rgba(0,0,0,.55)}
+.vf926-copy p {margin:0;max-width:410px;color:rgba(255,255,255,.69);font-size:9px;line-height:1.42}
+.vf926-arrow {
   position:absolute;z-index:15;top:50%;display:grid;place-items:center;width:34px;height:48px;padding:0;
   border:1px solid rgba(255,255,255,.11);color:#fff;background:rgba(8,8,12,.44);
   -webkit-backdrop-filter:blur(13px);backdrop-filter:blur(13px);transform:translateY(-50%)
 }
-.vf925-arrow.previous {left:7px;border-radius:7px 15px 15px 7px}
-.vf925-arrow.next {right:7px;border-radius:15px 7px 7px 15px}
-.vf925-dots {position:absolute;z-index:15;right:18px;bottom:27px;display:flex;gap:6px}
-.vf925-dots button {width:6px;height:6px;padding:0;border:0;border-radius:999px;background:rgba(255,255,255,.34);transition:width .25s ease,background .25s ease}
-.vf925-dots button.active {width:22px;background:var(--vf925-lime)}
+.vf926-arrow.previous {left:7px;border-radius:7px 15px 15px 7px}
+.vf926-arrow.next {right:7px;border-radius:15px 7px 7px 15px}
+.vf926-dots {position:absolute;z-index:15;right:18px;bottom:27px;display:flex;gap:6px}
+.vf926-dots button {width:6px;height:6px;padding:0;border:0;border-radius:999px;background:rgba(255,255,255,.34);transition:width .25s ease,background .25s ease}
+.vf926-dots button.active {width:22px;background:var(--vf926-lime)}
 
-.vf925-action {
+.vf926-action {
   z-index:20;display:grid;gap:10px;max-height:43dvh;padding:15px 15px max(15px,env(safe-area-inset-bottom));
   overflow-y:auto;overscroll-behavior:contain;border-top:1px solid rgba(255,255,255,.10);
   background:radial-gradient(circle at 86% 0%,rgba(168,108,255,.16),transparent 43%),linear-gradient(145deg,rgba(24,24,33,.92),rgba(9,9,14,.99));
   -webkit-backdrop-filter:blur(26px) saturate(175%);backdrop-filter:blur(26px) saturate(175%)
 }
-.vf925-action-copy {display:grid;gap:5px}
-.vf925-action-copy>span {display:inline-flex;align-items:center;gap:6px;color:var(--vf925-lime);font-size:7px;font-weight:900;letter-spacing:.16em}
-.vf925-action-copy h1 {margin:0;font-size:clamp(24px,7vw,34px);line-height:.94;letter-spacing:-.05em}
-.vf925-action-copy p {margin:0;color:rgba(255,255,255,.61);font-size:9px;line-height:1.45}
-.vf925-pills {display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
-.vf925-pills::-webkit-scrollbar{display:none}
-.vf925-pills>span {display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;padding:7px 9px;border:1px solid rgba(255,255,255,.08);border-radius:999px;color:rgba(255,255,255,.75);font-size:7px;background:rgba(255,255,255,.04)}
-.vf925-pills .material-icons-round {color:var(--vf925-cyan);font-size:12px}
-.vf925-primary {
+.vf926-action-copy {display:grid;gap:5px}
+.vf926-action-copy>span {display:inline-flex;align-items:center;gap:6px;color:var(--vf926-lime);font-size:7px;font-weight:900;letter-spacing:.16em}
+.vf926-action-copy h1 {margin:0;font-size:clamp(24px,7vw,34px);line-height:.94;letter-spacing:-.05em}
+.vf926-action-copy p {margin:0;color:rgba(255,255,255,.61);font-size:9px;line-height:1.45}
+.vf926-pills {display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.vf926-pills::-webkit-scrollbar{display:none}
+.vf926-pills>span {display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;padding:7px 9px;border:1px solid rgba(255,255,255,.08);border-radius:999px;color:rgba(255,255,255,.75);font-size:7px;background:rgba(255,255,255,.04)}
+.vf926-pills .material-icons-round {color:var(--vf926-cyan);font-size:12px}
+.vf926-primary {
   display:grid;grid-template-columns:43px minmax(0,1fr) 28px;align-items:center;gap:10px;width:100%;min-height:62px;padding:9px 11px 9px 9px;
-  border:0;border-radius:19px;color:#0b0b0d;text-align:left;background:linear-gradient(135deg,#ecffc7,var(--vf925-lime) 57%,#9ce640);
+  border:0;border-radius:19px;color:#0b0b0d;text-align:left;background:linear-gradient(135deg,#ecffc7,var(--vf926-lime) 57%,#9ce640);
   box-shadow:0 17px 38px rgba(202,255,98,.19)
 }
-.vf925-primary-icon {display:grid;place-items:center;width:43px;height:43px;border-radius:14px;color:#fff;background:#111116}
-.vf925-primary>span:nth-child(2){min-width:0;display:grid;gap:2px}
-.vf925-primary strong,.vf925-primary small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.vf925-primary strong{font-size:11px}.vf925-primary small{color:rgba(10,10,12,.62);font-size:7px;font-weight:700}
+.vf926-primary-icon {display:grid;place-items:center;width:43px;height:43px;border-radius:14px;color:#fff;background:#111116}
+.vf926-primary>span:nth-child(2){min-width:0;display:grid;gap:2px}
+.vf926-primary strong,.vf926-primary small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vf926-primary strong{font-size:11px}.vf926-primary small{color:rgba(10,10,12,.62);font-size:7px;font-weight:700}
 
-/* ===== Editor: fixed live preview + timeline, only tools scroll ===== */
+
+/* ===== V9.2.6 MOBILE LAYOUT CONTRACT =====
+   HEADER | PREVIEW | TIMELINE | TOOL SCROLLER | DOCK
+   Header/dock dimensions are measured at runtime.
+*/
 @media (max-width:899px) {
+  #page-video-workspace {
+    --vf926-page-h: 100dvh;
+    --vf926-header-h: 76px;
+    --vf926-dock-h: 78px;
+    position: relative !important;
+    width: 100% !important;
+    height: var(--vf926-page-h) !important;
+    min-height: 0 !important;
+    max-height: var(--vf926-page-h) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    background: #08080d !important;
+  }
+
+  #page-video-workspace .v82-editor-header {
+    position: absolute !important;
+    inset: 0 0 auto 0 !important;
+    z-index: 160 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  #page-video-workspace .v82-editor-dock {
+    position: absolute !important;
+    inset: auto 0 0 0 !important;
+    z-index: 160 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
   #page-video-workspace .v82-editor-shell {
-    position:relative!important;
-    display:grid!important;
-    grid-template-columns:minmax(0,1fr)!important;
-    grid-template-rows:clamp(270px,38dvh,330px) 112px minmax(0,1fr)!important;
-    width:100%!important;
-    height:calc(var(--vf-editor-height,100dvh) - 76px)!important;
-    min-height:0!important;
-    padding:0 0 calc(76px + env(safe-area-inset-bottom))!important;
-    box-sizing:border-box!important;
-    overflow:hidden!important;
-    background:radial-gradient(circle at 84% 8%,rgba(168,108,255,.12),transparent 34%),#08080d!important;
+    position: absolute !important;
+    top: var(--vf926-header-h) !important;
+    right: 0 !important;
+    bottom: var(--vf926-dock-h) !important;
+    left: 0 !important;
+    z-index: 10 !important;
+
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    grid-template-rows:
+      clamp(230px, 42%, 360px)
+      clamp(102px, 14%, 122px)
+      minmax(0,1fr) !important;
+    align-content: stretch !important;
+
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    overflow: hidden !important;
+    overscroll-behavior: none !important;
+    background:
+      radial-gradient(circle at 82% 9%, rgba(168,108,255,.10), transparent 34%),
+      #08080d !important;
   }
-  #page-video-workspace.v925-preview-expanded .v82-editor-shell {
-    grid-template-rows:clamp(390px,55dvh,510px) 96px minmax(100px,1fr)!important;
-  }
+
+  /* ---------- Zone 1: live preview ---------- */
   #page-video-workspace .v82-preview-stage {
-    position:relative!important;
-    inset:auto!important;
-    z-index:30!important;
-    grid-row:1!important;
-    width:100%!important;
-    height:100%!important;
-    min-height:0!important;
-    max-height:none!important;
-    padding:8px 10px 7px!important;
-    overflow:hidden!important;
-    background:radial-gradient(circle at 76% 18%,rgba(168,108,255,.12),transparent 38%),rgba(8,8,13,.98)!important;
-    border-bottom:1px solid rgba(255,255,255,.08);
+    position: relative !important;
+    inset: auto !important;
+    z-index: 30 !important;
+    grid-row: 1 !important;
+
+    display: grid !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 7px 10px 6px !important;
+
+    overflow: hidden !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,.08) !important;
+    border-radius: 0 !important;
+    background:
+      radial-gradient(circle at 76% 18%, rgba(168,108,255,.11), transparent 38%),
+      rgba(8,8,13,.99) !important;
+    box-shadow: none !important;
+    transform: none !important;
   }
+
   #page-video-workspace .v913-preview-layout {
-    height:100%!important;min-height:0!important;
-    grid-template-rows:auto minmax(0,1fr) auto auto!important;
-    gap:5px!important
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    grid-template-rows: 31px minmax(0,1fr) 39px !important;
+    gap: 5px !important;
+
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
   }
+
+  #page-video-workspace .v913-preview-layout .v91-preview-topbar {
+    position: static !important;
+    inset: auto !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 31px !important;
+    height: 31px !important;
+    gap: 5px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-fit-switch {
+    min-width: 0 !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-fit-switch button {
+    min-width: 40px !important;
+    min-height: 27px !important;
+    height: 27px !important;
+    padding: 0 6px !important;
+    font-size: 8px !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v913-preview-zoom {
+    grid-template-columns: 27px 42px 27px !important;
+    gap: 2px !important;
+    padding: 2px !important;
+    border-radius: 9px !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v913-preview-zoom button {
+    height: 25px !important;
+    border-radius: 7px !important;
+  }
+
   #page-video-workspace .v913-preview-layout .workspace-video-frame {
-    min-width:0!important;min-height:0!important;max-width:100%!important;max-height:100%!important;margin:0 auto!important
+    position: relative !important;
+    inset: auto !important;
+    grid-row: 2 !important;
+    align-self: center !important;
+    justify-self: center !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    margin: 0 auto !important;
+    overflow: hidden !important;
+    transform: none !important;
   }
+
   #page-video-workspace .v913-preview-layout .workspace-video-frame video {
-    object-position:center!important
+    object-position: 50% 50% !important;
   }
-  #page-video-workspace .v913-preview-layout .v82-preview-meta {
-    display:none!important
+
+  #page-video-workspace .v913-preview-layout .v91-preview-controls {
+    position: static !important;
+    inset: auto !important;
+    grid-row: 3 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 39px !important;
+    height: 39px !important;
+    margin: 0 !important;
+    padding: 3px 7px !important;
+    gap: 5px !important;
+    border-radius: 12px !important;
+    transform: none !important;
   }
+
+  #page-video-workspace .v913-preview-layout .v91-play-button,
+  #page-video-workspace .v913-preview-layout .v91-icon-button {
+    width: 29px !important;
+    height: 29px !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-time-label {
+    font-size: 7px !important;
+  }
+
+  #page-video-workspace .v82-preview-meta {
+    display: none !important;
+  }
+
+  #page-video-workspace .workspace-preview-error {
+    position: absolute !important;
+    right: 12px !important;
+    bottom: 51px !important;
+    left: 12px !important;
+    z-index: 60 !important;
+    max-height: 52px !important;
+    margin: 0 !important;
+    overflow: auto !important;
+    pointer-events: none !important;
+  }
+
+  #page-video-workspace .workspace-preview-error:empty {
+    display: none !important;
+  }
+
+  /* ---------- Zone 2: timeline ---------- */
   #page-video-workspace .v82-timeline {
-    position:relative!important;
-    inset:auto!important;
-    z-index:24!important;
-    grid-row:2!important;
-    width:100%!important;
-    height:100%!important;
-    min-height:0!important;
-    max-height:none!important;
-    margin:0!important;
-    overflow:hidden!important;
-    transform:none!important;
+    position: relative !important;
+    inset: auto !important;
+    z-index: 24 !important;
+    grid-row: 2 !important;
+    display: grid !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    background: #08080c !important;
   }
+
+  #page-video-workspace .v91-timeline-header {
+    min-height: 34px !important;
+    padding: 3px 7px !important;
+  }
+
+  #page-video-workspace .v91-history-controls button,
+  #page-video-workspace .v91-zoom-controls button {
+    width: 27px !important;
+    height: 27px !important;
+  }
+
   #page-video-workspace .v91-timeline-canvas {
-    grid-template-rows:17px 49px 23px!important
+    grid-template-rows: 16px 46px 22px !important;
+    min-height: 0 !important;
+    height: 100% !important;
   }
+
+  #page-video-workspace .v91-clip-row {
+    height: 46px !important;
+    padding-block: 3px !important;
+  }
+
+  #page-video-workspace .v91-clip {
+    height: 40px !important;
+  }
+
+  /* ---------- Zone 3: the ONLY vertical scroller ---------- */
   #page-video-workspace .v82-tool-sheet {
-    position:relative!important;
-    inset:auto!important;
-    z-index:12!important;
-    grid-row:3!important;
-    width:100%!important;
-    height:100%!important;
-    min-height:0!important;
-    max-height:none!important;
-    margin:0!important;
-    padding:10px 14px calc(26px + env(safe-area-inset-bottom))!important;
-    overflow-x:hidden!important;
-    overflow-y:auto!important;
-    overscroll-behavior-y:contain!important;
-    -webkit-overflow-scrolling:touch!important;
-    touch-action:pan-y!important;
-    transform:none!important;
-    border-radius:23px 23px 0 0!important;
-    background:linear-gradient(180deg,rgba(24,24,34,.97),rgba(9,9,14,.995))!important;
-    box-shadow:0 -15px 38px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.06)!important
+    position: relative !important;
+    inset: auto !important;
+    z-index: 12 !important;
+    grid-row: 3 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding:
+      10px
+      14px
+      max(20px, env(safe-area-inset-bottom)) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior-x: none !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    border: 0 !important;
+    border-top: 1px solid rgba(255,255,255,.08) !important;
+    border-radius: 20px 20px 0 0 !important;
+    transform: none !important;
+    background:
+      linear-gradient(180deg, rgba(24,24,34,.985), rgba(9,9,14,1)) !important;
+    box-shadow:
+      0 -12px 30px rgba(0,0,0,.30),
+      inset 0 1px 0 rgba(255,255,255,.05) !important;
+    scrollbar-gutter: stable;
   }
-  #page-video-workspace .v82-tool-sheet>.v82-sheet-handle {
-    position:sticky!important;top:0!important;z-index:30!important;margin-bottom:10px!important
+
+  #page-video-workspace .v82-tool-sheet > .v82-sheet-handle {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 40 !important;
+    margin: 0 auto 10px !important;
   }
+
   #page-video-workspace .v82-tool-panel,
   #page-video-workspace .v82-tool-panel.active {
-    min-height:0!important;max-height:none!important;overflow:visible!important
-  }
-  #page-video-workspace .v82-editor-dock {
-    z-index:110!important
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
   }
 
-  .vf925-preview-toggle {
-    display:inline-flex;align-items:center;gap:4px;min-height:30px;padding:0 9px;border:1px solid rgba(255,255,255,.10);
-    border-radius:10px;color:#fff;background:rgba(255,255,255,.065);font-size:7px;font-weight:800;pointer-events:auto
+  #page-video-workspace .v82-tool-panel.active > :last-child {
+    margin-bottom: 12px !important;
   }
-  .vf925-preview-toggle .material-icons-round {font-size:15px}
 }
 
-@media (max-width:390px) and (max-height:760px) {
+@media (max-width:899px) and (max-height:700px) {
   #page-video-workspace .v82-editor-shell {
-    grid-template-rows:245px 100px minmax(0,1fr)!important
+    grid-template-rows:
+      clamp(205px, 39%, 255px)
+      96px
+      minmax(0,1fr) !important;
   }
-  #page-video-workspace.v925-preview-expanded .v82-editor-shell {
-    grid-template-rows:350px 92px minmax(90px,1fr)!important
+
+  #page-video-workspace .v913-preview-layout {
+    grid-template-rows: 29px minmax(0,1fr) 36px !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-preview-controls {
+    min-height: 36px !important;
+    height: 36px !important;
+  }
+}
+
+@media (max-width:370px) and (max-height:650px) {
+  #page-video-workspace .v82-editor-shell {
+    grid-template-rows: 190px 90px minmax(0,1fr) !important;
+  }
+
+  #page-video-workspace .v913-preview-layout .v91-time-label {
+    display: none !important;
   }
 }
 
 @media (min-width:720px) {
-  #vf925-workshop {grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);grid-template-rows:auto minmax(0,1fr)}
-  .vf925-workshop-header {grid-column:1/-1}
-  .vf925-carousel {grid-column:1;grid-row:2}
-  .vf925-action {grid-column:2;grid-row:2;align-content:center;max-height:none;padding:28px;border-top:0;border-left:1px solid rgba(255,255,255,.10)}
+  #vf926-workshop {grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);grid-template-rows:auto minmax(0,1fr)}
+  .vf926-workshop-header {grid-column:1/-1}
+  .vf926-carousel {grid-column:1;grid-row:2}
+  .vf926-action {grid-column:2;grid-row:2;align-content:center;max-height:none;padding:28px;border-top:0;border-left:1px solid rgba(255,255,255,.10)}
 }
 
-body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
+body.vf926-workshop-open {overflow:hidden!important;overscroll-behavior:none}
 
-.vf925-live-effect-vibrant {filter:saturate(1.28) contrast(1.08)!important}
-.vf925-live-effect-cinematic {filter:contrast(1.12) saturate(.9) sepia(.08)!important}
-.vf925-live-effect-soft-film {filter:contrast(.95) saturate(.88) brightness(1.04)!important}
-.vf925-live-effect-mono {filter:grayscale(1) contrast(1.08)!important}
-.vf925-live-effect-neon {filter:saturate(1.55) contrast(1.18) hue-rotate(8deg)!important}
-.vf925-live-effect-cinematic-pro {filter:contrast(1.18) saturate(.82) sepia(.12)!important}
+.vf926-live-effect-vibrant {filter:saturate(1.28) contrast(1.08)!important}
+.vf926-live-effect-cinematic {filter:contrast(1.12) saturate(.9) sepia(.08)!important}
+.vf926-live-effect-soft-film {filter:contrast(.95) saturate(.88) brightness(1.04)!important}
+.vf926-live-effect-mono {filter:grayscale(1) contrast(1.08)!important}
+.vf926-live-effect-neon {filter:saturate(1.55) contrast(1.18) hue-rotate(8deg)!important}
+.vf926-live-effect-cinematic-pro {filter:contrast(1.18) saturate(.82) sepia(.12)!important}
 
 @media (prefers-reduced-motion:reduce) {
-  #vf925-workshop,.vf925-slide,.vf925-dots button {transition:none!important}
+  #vf926-workshop,.vf926-slide,.vf926-dots button {transition:none!important}
 }
 </style>
 </head>
@@ -1112,122 +1351,124 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
   }
 })();
 </script>
-<section aria-hidden="true" aria-label="V-Forge Premium Showcase" class="vf925-workshop" id="vf925-workshop">
-<header class="vf925-workshop-header">
-<button aria-label="Kembali" class="vf925-back" id="vf925-back" type="button">
+<section aria-hidden="true" aria-label="V-Forge Premium Showcase" class="vf926-workshop" id="vf926-workshop">
+<header class="vf926-workshop-header">
+<button aria-label="Kembali" class="vf926-back" id="vf926-back" type="button">
 <span class="material-icons-round">arrow_back</span>
 </button>
-<div class="vf925-heading">
+<div class="vf926-heading">
 <span>V-FORGE MOTION LAB</span>
 <strong>Premium Showcase</strong>
 </div>
-<span class="vf925-featured"><i></i>FEATURED</span>
+<span class="vf926-featured"><i></i>FEATURED</span>
 </header>
 
-<div aria-label="Showcase fitur Premium V-Forge" aria-roledescription="carousel" class="vf925-carousel" id="vf925-carousel" role="region">
-<article aria-label="Slide 1 dari 3" class="vf925-slide active" data-vf925-slide="0" style="--vf925-image:url('assets/images/vf-car-01.jpg')">
-<div class="vf925-backdrop"></div>
+<div aria-label="Showcase fitur Premium V-Forge" aria-roledescription="carousel" class="vf926-carousel" id="vf926-carousel" role="region">
+<article aria-label="Slide 1 dari 3" class="vf926-slide active" data-vf926-slide="0" style="--vf926-image:url('assets/images/vf-car-01.jpg')">
+<div class="vf926-backdrop"></div>
 <img alt="Promosi V-Forge Premium 4K Ultra HD" decoding="async" fetchpriority="high" src="assets/images/vf-car-01.jpg"/>
-<div class="vf925-shade"></div>
-<div class="vf925-brand">
-<span class="vf925-logo">
+<div class="vf926-shade"></div>
+<div class="vf926-brand">
+<span class="vf926-logo">
 <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
 <path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path>
 </svg>
 </span>
 <span><strong>V-FORGE PREMIUM</strong><small>OUTPUT ULTRA</small></span>
 </div>
-<div class="vf925-copy">
+<div class="vf926-copy">
 <span>PREMIUM FEATURE 01</span>
 <h2>4K Ultra HD</h2>
 <p>Output resolusi tinggi untuk perangkat dan sumber video yang mendukung.</p>
 </div>
 </article>
 
-<article aria-label="Slide 2 dari 3" class="vf925-slide" data-vf925-slide="1" style="--vf925-image:url('assets/images/vf-car-02.jpg')">
-<div class="vf925-backdrop"></div>
+<article aria-label="Slide 2 dari 3" class="vf926-slide" data-vf926-slide="1" style="--vf926-image:url('assets/images/vf-car-02.jpg')">
+<div class="vf926-backdrop"></div>
 <img alt="Promosi V-Forge Premium 120 FPS" decoding="async" loading="lazy" src="assets/images/vf-car-02.jpg"/>
-<div class="vf925-shade"></div>
-<div class="vf925-brand">
-<span class="vf925-logo">
+<div class="vf926-shade"></div>
+<div class="vf926-brand">
+<span class="vf926-logo">
 <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
 <path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path>
 </svg>
 </span>
 <span><strong>V-FORGE PREMIUM</strong><small>MOTION PRO</small></span>
 </div>
-<div class="vf925-copy">
+<div class="vf926-copy">
 <span>PREMIUM FEATURE 02</span>
 <h2>120 FPS Motion</h2>
 <p>Frame-rate tinggi untuk gerakan yang lebih halus pada perangkat kompatibel.</p>
 </div>
 </article>
 
-<article aria-label="Slide 3 dari 3" class="vf925-slide" data-vf925-slide="2" style="--vf925-image:url('assets/images/vf-car-03.jpg')">
-<div class="vf925-backdrop"></div>
+<article aria-label="Slide 3 dari 3" class="vf926-slide" data-vf926-slide="2" style="--vf926-image:url('assets/images/vf-car-03.jpg')">
+<div class="vf926-backdrop"></div>
 <img alt="Promosi V-Forge Premium Hi-Res Lossless" decoding="async" loading="lazy" src="assets/images/vf-car-03.jpg"/>
-<div class="vf925-shade"></div>
-<div class="vf925-brand">
-<span class="vf925-logo">
+<div class="vf926-shade"></div>
+<div class="vf926-brand">
+<span class="vf926-logo">
 <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.2" viewBox="0 0 24 24">
 <path d="M4 4 L12 19 L20 4"></path><path d="M4 4 H14"></path><path d="M8 11.5 H16"></path>
 </svg>
 </span>
 <span><strong>V-FORGE PREMIUM</strong><small>AUDIO MASTER</small></span>
 </div>
-<div class="vf925-copy">
+<div class="vf926-copy">
 <span>PREMIUM FEATURE 03</span>
 <h2>Hi-Res Lossless</h2>
 <p>Audio WAV terpisah untuk kualitas tinggi dan workflow yang lebih fleksibel.</p>
 </div>
 </article>
 
-<button aria-label="Promo sebelumnya" class="vf925-arrow previous" id="vf925-previous" type="button"><span class="material-icons-round">chevron_left</span></button>
-<button aria-label="Promo berikutnya" class="vf925-arrow next" id="vf925-next" type="button"><span class="material-icons-round">chevron_right</span></button>
+<button aria-label="Promo sebelumnya" class="vf926-arrow previous" id="vf926-previous" type="button"><span class="material-icons-round">chevron_left</span></button>
+<button aria-label="Promo berikutnya" class="vf926-arrow next" id="vf926-next" type="button"><span class="material-icons-round">chevron_right</span></button>
 
-<div aria-label="Pilih promo" class="vf925-dots" role="group">
-<button aria-label="Promo 1" aria-pressed="true" class="active" data-vf925-dot="0" type="button"></button>
-<button aria-label="Promo 2" aria-pressed="false" data-vf925-dot="1" type="button"></button>
-<button aria-label="Promo 3" aria-pressed="false" data-vf925-dot="2" type="button"></button>
+<div aria-label="Pilih promo" class="vf926-dots" role="group">
+<button aria-label="Promo 1" aria-pressed="true" class="active" data-vf926-dot="0" type="button"></button>
+<button aria-label="Promo 2" aria-pressed="false" data-vf926-dot="1" type="button"></button>
+<button aria-label="Promo 3" aria-pressed="false" data-vf926-dot="2" type="button"></button>
 </div>
 </div>
 
-<section class="vf925-action">
-<div class="vf925-action-copy">
+<section class="vf926-action">
+<div class="vf926-action-copy">
 <span><span class="material-icons-round">workspace_premium</span>PREMIUM CREATIVE TOOLS</span>
 <h1>Pilih video.<br/>Lihat hasilnya langsung.</h1>
 <p>Preview tetap tersedia saat kamu berpindah Edit, Audio, Text, Overlay, Effects, dan Adjust.</p>
 </div>
-<div class="vf925-pills">
+<div class="vf926-pills">
 <span><span class="material-icons-round">visibility</span>Live preview</span>
 <span><span class="material-icons-round">swipe_vertical</span>Tool scroll sendiri</span>
 <span><span class="material-icons-round">lock</span>Video tetap lokal</span>
 </div>
-<button class="vf925-primary" id="vf925-select-video" type="button">
-<span class="vf925-primary-icon"><span class="material-icons-round">video_library</span></span>
+<button class="vf926-primary" id="vf926-select-video" type="button">
+<span class="vf926-primary-icon"><span class="material-icons-round">video_library</span></span>
 <span><strong>Pilih Video &amp; Buka Editor</strong><small>MP4, MOV, WebM • proses lokal</small></span>
 <span class="material-icons-round">arrow_forward</span>
 </button>
 </section>
 </section>
-<script id="vforge-v925-script">
+<script id="vforge-v926-script">
 (function(){
   'use strict';
 
   try {
-    const VERSION='9.2.5';
-    const workshop=document.getElementById('vf925-workshop');
-    const carousel=document.getElementById('vf925-carousel');
-    const slides=Array.from(document.querySelectorAll('[data-vf925-slide]'));
-    const dots=Array.from(document.querySelectorAll('[data-vf925-dot]'));
-    const previous=document.getElementById('vf925-previous');
-    const next=document.getElementById('vf925-next');
-    const selectButton=document.getElementById('vf925-select-video');
-    const backButton=document.getElementById('vf925-back');
+    const VERSION='9.2.6';
+    const workshop=document.getElementById('vf926-workshop');
+    const carousel=document.getElementById('vf926-carousel');
+    const slides=Array.from(document.querySelectorAll('[data-vf926-slide]'));
+    const dots=Array.from(document.querySelectorAll('[data-vf926-dot]'));
+    const previous=document.getElementById('vf926-previous');
+    const next=document.getElementById('vf926-next');
+    const selectButton=document.getElementById('vf926-select-video');
+    const backButton=document.getElementById('vf926-back');
 
     const page=document.getElementById('page-video-workspace');
     const toolSheet=document.getElementById('workspace-form');
     const video=document.getElementById('workspace-video');
+    const editorHeader=page?.querySelector('.v82-editor-header');
+    const editorDock=page?.querySelector('.v82-editor-dock');
 
     if(!workshop || slides.length!==3) return;
 
@@ -1246,8 +1487,8 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
     const originalSelectStudioTemplate=typeof window.selectStudioTemplate==='function'?window.selectStudioTemplate:null;
 
     const effectClasses=[
-      'vf925-live-effect-vibrant','vf925-live-effect-cinematic','vf925-live-effect-soft-film',
-      'vf925-live-effect-mono','vf925-live-effect-neon','vf925-live-effect-cinematic-pro'
+      'vf926-live-effect-vibrant','vf926-live-effect-cinematic','vf926-live-effect-soft-film',
+      'vf926-live-effect-mono','vf926-live-effect-neon','vf926-live-effect-cinematic-pro'
     ];
 
     function navIndex(pageId){
@@ -1292,7 +1533,7 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
       fileSelected=false;
       workshop.classList.add('open');
       workshop.setAttribute('aria-hidden','false');
-      document.body?.classList.add('vf925-workshop-open');
+      document.body?.classList.add('vf926-workshop-open');
       render(0,false);
       start();
     }
@@ -1301,7 +1542,7 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
       stop();
       workshop.classList.remove('open');
       workshop.setAttribute('aria-hidden','true');
-      document.body?.classList.remove('vf925-workshop-open');
+      document.body?.classList.remove('vf926-workshop-open');
     }
 
     function openPremiumShowcase(){
@@ -1345,26 +1586,52 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
       },100);
     }
 
-    function installPreviewToggle(){
-      const topbar=document.getElementById('v91-preview-topbar');
-      if(!topbar || document.getElementById('vf925-preview-toggle')) return;
 
-      const button=document.createElement('button');
-      button.id='vf925-preview-toggle';
-      button.className='vf925-preview-toggle';
-      button.type='button';
-      button.innerHTML='<span class="material-icons-round">open_in_full</span><span>Perbesar</span>';
-      button.setAttribute('aria-label','Perbesar atau ringkas preview');
+    function syncEditorMetrics(){
+      if(!page) return;
 
-      button.addEventListener('click',()=>{
-        const expanded=page?.classList.toggle('v925-preview-expanded');
-        const icon=button.querySelector('.material-icons-round');
-        const label=button.querySelector('span:last-child');
-        if(icon) icon.textContent=expanded?'close_fullscreen':'open_in_full';
-        if(label) label.textContent=expanded?'Ringkas':'Perbesar';
+      const viewportHeight=Math.max(
+        320,
+        Math.round(
+          window.visualViewport?.height ||
+          window.innerHeight ||
+          document.documentElement.clientHeight ||
+          720
+        )
+      );
+
+      page.style.setProperty('--vf926-page-h',`${viewportHeight}px`);
+
+      window.requestAnimationFrame(()=>{
+        if(!page?.classList.contains('active')) return;
+
+        const headerHeight=Math.max(
+          56,
+          Math.ceil(editorHeader?.getBoundingClientRect().height || 76)
+        );
+        const dockHeight=Math.max(
+          62,
+          Math.ceil(editorDock?.getBoundingClientRect().height || 78)
+        );
+
+        page.style.setProperty('--vf926-header-h',`${headerHeight}px`);
+        page.style.setProperty('--vf926-dock-h',`${dockHeight}px`);
       });
+    }
 
-      topbar.appendChild(button);
+    function installMetricObservers(){
+      if(typeof ResizeObserver==='function'){
+        const observer=new ResizeObserver(syncEditorMetrics);
+        if(editorHeader) observer.observe(editorHeader);
+        if(editorDock) observer.observe(editorDock);
+      }
+
+      window.addEventListener('resize',syncEditorMetrics,{passive:true});
+      window.visualViewport?.addEventListener(
+        'resize',
+        syncEditorMetrics,
+        {passive:true}
+      );
     }
 
     function resetToolScroll(){
@@ -1381,12 +1648,12 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
       }catch(_){}
 
       const classMap={
-        vibrant:'vf925-live-effect-vibrant',
-        cinematic:'vf925-live-effect-cinematic',
-        'soft-film':'vf925-live-effect-soft-film',
-        mono:'vf925-live-effect-mono',
-        neon:'vf925-live-effect-neon',
-        'cinematic-pro':'vf925-live-effect-cinematic-pro'
+        vibrant:'vf926-live-effect-vibrant',
+        cinematic:'vf926-live-effect-cinematic',
+        'soft-film':'vf926-live-effect-soft-film',
+        mono:'vf926-live-effect-mono',
+        neon:'vf926-live-effect-neon',
+        'cinematic-pro':'vf926-live-effect-cinematic-pro'
       };
 
       if(classMap[effect]) video.classList.add(classMap[effect]);
@@ -1401,7 +1668,7 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
 
     previous?.addEventListener('click',()=>render(index-1,true));
     next?.addEventListener('click',()=>render(index+1,true));
-    dots.forEach(dot=>dot.addEventListener('click',()=>render(Number(dot.dataset.vf925Dot)||0,true)));
+    dots.forEach(dot=>dot.addEventListener('click',()=>render(Number(dot.dataset.vf926Dot)||0,true)));
 
     carousel?.addEventListener('pointerdown',event=>{
       pointerStartX=event.clientX;
@@ -1430,7 +1697,6 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
           fileSelected=true;
           pickerPending=false;
           hideWorkshop();
-          page?.classList.remove('v925-preview-expanded');
         }
         return originalHandleWorkspaceFileSelected.apply(this,arguments);
       };
@@ -1440,8 +1706,8 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
       window.openV82EditorTool=function(){
         const result=originalOpenV82EditorTool.apply(this,arguments);
         window.requestAnimationFrame(()=>{
+          syncEditorMetrics();
           resetToolScroll();
-          installPreviewToggle();
         });
         return result;
       };
@@ -1488,9 +1754,8 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
       fileSelected=true;
       pickerPending=false;
       hideWorkshop();
-      page?.classList.remove('v925-preview-expanded');
+      syncEditorMetrics();
       resetToolScroll();
-      installPreviewToggle();
       applyLiveEffect();
       syncAudioPreview();
     });
@@ -1507,7 +1772,7 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
     document.addEventListener('vforge:pagechange',event=>{
       if(event.detail?.pageId==='page-video-workspace'){
         window.requestAnimationFrame(()=>{
-          installPreviewToggle();
+          syncEditorMetrics();
           resetToolScroll();
           applyLiveEffect();
           syncAudioPreview();
@@ -1525,18 +1790,27 @@ body.vf925-workshop-open {overflow:hidden!important;overscroll-behavior:none}
     if(homeDescription) homeDescription.textContent='Lihat tiga fitur unggulan V-Forge, lalu pilih video untuk masuk ke editor.';
 
     render(0,false);
-    installPreviewToggle();
 
     document.documentElement.dataset.vforgeV925=VERSION;
-    window.VForgeStability925={
+    window.VForgeStability926={
       version:VERSION,
       openShowcase:openPremiumShowcase,
       next:()=>render(index+1,true),
       previous:()=>render(index-1,true),
-      applyLiveEffect
+      applyLiveEffect,
+      syncLayout:syncEditorMetrics,
+      layoutMetrics:()=>({
+        viewport:Math.round(window.visualViewport?.height||window.innerHeight||0),
+        header:Math.round(editorHeader?.getBoundingClientRect().height||0),
+        dock:Math.round(editorDock?.getBoundingClientRect().height||0),
+        shell:Math.round(page?.querySelector('.v82-editor-shell')?.getBoundingClientRect().height||0),
+        preview:Math.round(page?.querySelector('.v82-preview-stage')?.getBoundingClientRect().height||0),
+        timeline:Math.round(document.getElementById('studio-mini-timeline')?.getBoundingClientRect().height||0),
+        tools:Math.round(toolSheet?.getBoundingClientRect().height||0)
+      })
     };
   }catch(error){
-    console.error('[V-Forge] V9.2.5 gagal dimulai:',error);
+    console.error('[V-Forge] V9.2.6 gagal dimulai:',error);
   }
 })();
 </script>
